@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>
+Pita's django example Page
+</title>
+</head>
+<body>
+
+<h1>{{ post.title }}</h1>
+<p>{{ post.created_on }}</p>
+<p>{{ post.text }}<p>
+<h2>Comments</h2>
+{% for comment in post.comments %}
+  <h3>{{ comment.author.name }} <small>on {{ comment.created_on }}</small></h3>
+  {{ comment.text }}
+{% endfor %}
+
+<form action="." method="post">{% csrf_token %}
+{{ form_add_post.as_p }}
+<input type="submit" value="Add comment" />
+</form>
+<a href="/pita_django/"><button type="button">Back</button></a>
+
+</body>
+</html>

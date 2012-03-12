@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<style type="text/css">
+table, td, th
+{
+border:1px solid orange;
+}
+th
+{
+background-color:orange;
+color:white;
+}
+{
+padding:5px;
+}
+</style>
+<title>
+Pita's django example Page
+</title>
+</head>
+<body>
+
+
+<h1>Post Overview</h1>
+<table>
+<tr>
+<th>Name</th>
+<th>Date</th>
+<th>Comments</th>
+<th>Tag</th>
+<th>Actions</th>
+</tr>
+{% for post in post_list %}
+  <tr>
+  <td>
+  <a href="{% url post_detail post.id %}">{{ post.title }}</h2>
+  </td>
+    <td>{{ post.created_on }} </td>
+	<td>{{ post.comments|length }} comments </td>
+    <td>tagged {{ post.tags|join:', ' }} </td>
+    <td>
+    <a href="{% url post_delete post.id %}"><button type="button">Remove</button></a>
+    </td>
+  </tr>
+{% endfor %}
+</table>
+<a href="/pita_django/addPost/"><button type="button">Add Post</button></a>
+
+
+</body>
+</html>
