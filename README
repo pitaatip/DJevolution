@@ -1,2 +1,23 @@
 Mongo Django evolution algorithms mix up.
 We provide functions for operating on evolution algorithms. 
+
+############
+INSTALLATION
+
+To install django with non-realtional support visit: "http://django-mongodb.org/topics/setup.html" and complete those steps.
+
+Then download mongoDb from http://www.mongodb.org/downloads and untar it to some directory.
+
+Test project was committed with .project and .pydevproject, so if you have eclipse with pydev installed you can import existing project into your workspace.
+
+
+
+############
+RUNNING TEST APPLICATION
+
+Create data directory and run mongoDb as discribed in "http://www.mongodb.org/display/DOCS/Quickstart+Unix"
+
+Then go to /mysite and type "python manage.py runserver" to start developement server.
+Try logging to "http://127.0.0.1:8000/pita_django/". If you see table of post - success!
+
+
