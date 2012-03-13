@@ -20,4 +20,4 @@ Create data directory and run mongoDb as discribed in "http://www.mongodb.org/di
 Then go to /mysite and type "python manage.py runserver" to start developement server.
 Try logging to "http://127.0.0.1:8000/pita_django/". If you see table of post - success!
 
-
+PITA&WYSEK
