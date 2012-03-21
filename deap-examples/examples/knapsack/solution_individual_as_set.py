@@ -17,6 +17,7 @@ MU = 50
 LAMBDA = 100   
 
 
+random.seed(64)
 creator.create("FitnessMulti", base.Fitness, weights=(-1.0, 1.0))
 creator.create("Individual", set, fitness=creator.FitnessMulti) #@UndefinedVariable
 
@@ -65,7 +66,6 @@ toolbox.register("mutate", mutSet)
 toolbox.register("select", tools.selSPEA2)
 
 logging.info("Items to choose for knapsack are: %s\n", items)
-
 for _ in range(4):
     logging.info("Number of steps in evolution: %s\n\n", NGEN)
     for _ in range(3):
