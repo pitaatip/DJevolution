@@ -1,5 +1,0 @@
-# Lines starting with '#' are considered comments.
-# Ignore all pyc files
-*.pyc
-# ignore deap
-deap
