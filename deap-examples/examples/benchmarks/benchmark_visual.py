@@ -13,8 +13,8 @@ from ROOT import gROOT, TCanvas, TF2,  TPolyMarker3D
 from deap import base, creator, tools
 from math import cos,pi
 
-LOW_LIMIT = -100
-HIGH_LIMIT = 100
+LOW_LIMIT = -2
+HIGH_LIMIT = 2
 
 ## CLASSES ##
 
@@ -45,8 +45,8 @@ def eval(func, x, y):
         return (x**2+y-11)**2 + (x+y**2-7)**2
 
 def draw(func, population, gen):
-    gROOT.Reset()
     if not gen:
+        gROOT.Reset()
         func.c1 = TCanvas('c1', 'EvoBenchmark', 200, 10, 1000, 600)
         func.c1.SetGridx()
         func.c1.SetGridy() #mark =  TPolyMarker3D(1, [0,0,0], 2)
@@ -57,7 +57,7 @@ def draw(func, population, gen):
         mark.SetPoint(population.index(coordinates), coordinates[0], coordinates[1], func.eval(coordinates)[0])
     mark.Draw() #fun1.Draw('CONT1 SAME p')
     func.c1.Update()
-#    time.sleep(0.5)
+    time.sleep(0.5)
     
 ##############    
     
