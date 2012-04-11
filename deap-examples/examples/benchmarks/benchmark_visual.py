@@ -3,18 +3,29 @@ Created on Apr 10, 2012
 
 @author: wysek
 
-
+    Usage:
+        python benchmark_visual.py [--sleep x --min y --max z --function f]
+        functions:
+            1 - Rosenbrock
+            2 - Rastrigin
+            3 - Himmelblau
+        default values:
+        sleep 05
+        min -2
+        max 2
+        function 2
 '''
 
 import random
 import time
 
-from ROOT import gROOT, TCanvas, TF2,  TPolyMarker3D
+from ROOT import gROOT, TCanvas, TF2,  TPolyMarker3D #@UnresolvedImport
 from deap import base, creator, tools
 from math import cos,pi
+from optparse import OptionParser
 
-LOW_LIMIT = -2
-HIGH_LIMIT = 2
+#LOW_LIMIT = -2
+#HIGH_LIMIT = 2
 
 ## CLASSES ##
 
@@ -30,7 +41,7 @@ class Function(object):
             return '(x**2+y-11)**2 + (x+y**2-7)**2'
 
     def eval(self, individual):
-#        print eval(self.func, individual[0], individual[1])
+#        #print eval(self.func, individual[0], individual[1])
         return eval(self.func, individual[0], individual[1]),
 
 ##############
@@ -44,26 +55,54 @@ def eval(func, x, y):
     elif func == 3:
         return (x**2+y-11)**2 + (x+y**2-7)**2
 
-def draw(func, population, gen):
+def draw(func, population, gen, low, high, sleep_time):
     if not gen:
         gROOT.Reset()
         func.c1 = TCanvas('c1', 'EvoBenchmark', 200, 10, 1000, 600)
         func.c1.SetGridx()
         func.c1.SetGridy() #mark =  TPolyMarker3D(1, [0,0,0], 2)
-    fun1 = TF2('fun1', str(func), LOW_LIMIT, HIGH_LIMIT, LOW_LIMIT, HIGH_LIMIT)
-    fun1.Draw("SURF2 p")
-    mark = TPolyMarker3D(len(population), 2)
+    func.fun1 = TF2('fun1', str(func), low, high, low, high)
+    func.fun1.Draw("SURF1 p")
+    func.mark = TPolyMarker3D(len(population), 2)
     for coordinates in population:
-        mark.SetPoint(population.index(coordinates), coordinates[0], coordinates[1], func.eval(coordinates)[0])
-    mark.Draw() #fun1.Draw('CONT1 SAME p')
+        func.mark.SetPoint(population.index(coordinates), coordinates[0], coordinates[1], func.eval(coordinates)[0])
+    func.mark.Draw() #fun1.Draw('CONT1 SAME p')
     func.c1.Update()
-    time.sleep(0.5)
+    time.sleep(sleep_time)
     
-##############    
+def main():
+
+    parser = OptionParser()
+    parser.add_option("", "--sleep", action="store", type="int", dest="sleep")
+    parser.add_option("", "--max", action="store", type="int", dest="max")
+    parser.add_option("", "--min", action="store", type="int", dest="min")
+    parser.add_option("-f", "--fucntion", action="store", type="int", dest="function")
+
+    options, args = parser.parse_args()
+
+    if options.function:
+        func = Function(options.function)
+    else:
+        func = Function(2)
+        
+    if options.min:
+        low_limit = options.min
+    else:
+        if options.min == 0:
+            low_limit = 0
+        else:
+            low_limit = -2
     
-if __name__ == '__main__':
-    
-    func = Function(2)
+    if options.max:
+        high_limit = options.max
+    else:
+        high_limit = 2
+        
+    if options.sleep:
+        sleep_time = options.sleep
+    else:
+        sleep_time = 0.5
+
       
     creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
     creator.create("Individual", list, fitness=creator.FitnessMin) #@UndefinedVariable
@@ -72,8 +111,8 @@ if __name__ == '__main__':
     ind_number=500
     
     toolbox = base.Toolbox()
-    toolbox.register("attr_float", random.uniform, a=LOW_LIMIT, b=HIGH_LIMIT)
-    toolbox.register("individual", tools.initRepeat, creator.Individual,
+    toolbox.register("attr_float", random.uniform, a=low_limit, b=high_limit)
+    toolbox.register("individual", tools.initRepeat, creator.Individual, #@UndefinedVariable
                      toolbox.attr_float, n=dimensons)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
     
@@ -98,7 +137,7 @@ if __name__ == '__main__':
     print "  Evaluated %i individuals" % len(population)
 
     for generation in range(NGEN):
-        print "-- Generation %i --" % generation
+        #print "-- Generation %i --" % generation
         
         # Select the next generation individuals
         offsprings = toolbox.select(population, len(population))
@@ -130,7 +169,7 @@ if __name__ == '__main__':
         # Select best from pop and offsprings
         population[:] = toolbox.select(population + offsprings, ind_number)
         
-        # Gather all the fitnesses in one list and print the stats
+        # Gather all the fitnesses in one list and #print the stats
         fits = [ind.fitness.values[0] for ind in population]
         
         length = len(population)
@@ -138,16 +177,20 @@ if __name__ == '__main__':
         sum2 = sum(x * x for x in fits)
         std = abs(sum2 / length - mean ** 2) ** 0.5
         
-        print "  Min %s" % min(fits)
-        print "  Max %s" % max(fits)
-        print "  Avg %s" % mean
-        print "  Std %s" % std
+        #print "  Min %s" % min(fits)
+        #print "  Max %s" % max(fits)
+        #print "  Avg %s" % mean
+        #print "  Std %s" % std
         
-        draw(func, population, generation)
+        draw(func, population, generation, low_limit, high_limit, sleep_time)
     
     print "-- End of (successful) evolution --"
     
     best_ind = tools.selBest(population, 1)[0]
     print "Best individual is %s, %s" % (best_ind, best_ind.fitness.values)
-    time.sleep(5)
+    raw_input()
+#    return best_ind    
+##############    
     
+if __name__ == '__main__':
+    main()
