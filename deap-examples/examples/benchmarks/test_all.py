@@ -19,7 +19,7 @@ if __name__ == '__main__':
         print "-----"
         print "Executing %s.%s()..."%(sys.argv[i+1],sys.argv[i+2])
         start = time()
-        list_of_ind = [func() for _ in xrange(10)]
+        list_of_ind = [func() for _ in xrange(1)]
         stop = time()
         print "It took you %s sek."%int(stop-start)
         if stop - start > 100:

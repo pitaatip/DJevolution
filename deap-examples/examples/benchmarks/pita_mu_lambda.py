@@ -21,29 +21,35 @@ toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.att
 toolbox.register("population", tools.initRepeat, list, toolbox.individual) 
 
 toolbox.register("evaluate", benchmarks.rastrigin)
-toolbox.register("mate", tools.cxUniform, indpb=0.4)
-#toolbox.register("mate", tools.cxTwoPoints)
+#uniform lepszy od cxtwopoint
+#blend the best 0.2 optimum
+toolbox.register("mate", tools.cxBlend, alpha=0.2)
+#toolbox.register("mate", tools.cxSimulatedBinary, nu=100)
 toolbox.register("mutate", tools.mutGaussian, mu=0, sigma=1, indpb=0.02)
 toolbox.register("select", tools.selTournament, tournsize=5)
 
-def compute():
+MU = 130
+LAMBDA = 260
+N_GEN = 210
+
+def computePlus():
     random.seed(47)
-    pop = toolbox.population(n=180)
+    pop = toolbox.population(n=MU)
     hof = tools.HallOfFame(1)
-    stats = tools.Statistics(lambda ind: ind.fitness.values)
-    stats.register("Avg", tools.mean)
-    stats.register("Std", tools.std)
-    stats.register("Min", min)
-    stats.register("Max", max)
-    
-    algorithms.eaSimple(toolbox, pop, 0.4, 0.3, 410, halloffame=hof)
-    #algorithms.eaMuPlusLambda(toolbox, pop, 500, 100, 0.8 , 0.1, 500, hof)
+        
+    algorithms.eaMuPlusLambda(toolbox, pop, MU, LAMBDA, 0.3 , 0.5, N_GEN, hof)
     return sorted(list(hof[-1]))
-    
-    #return pop, stats, hof
+
+def computeComma():
+    random.seed(47)
+    pop = toolbox.population(n=MU)
+    hof = tools.HallOfFame(1)
+    algorithms.eaMuCommaLambda(toolbox, pop, MU, LAMBDA, 0.3, 0.5, N_GEN,  hof)
+    return sorted(list(hof[-1]))
+
 
 def main():
-    best_in=compute()
+    best_in=computePlus()
     logging.critical("Best individual is %s, %s", (lambda x: sorted(list(x)))(best_in)) 
     
 
