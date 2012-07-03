@@ -11,6 +11,7 @@ class Post(models.Model):
     comments = ListField(EmbeddedModelField('Comment'))
     
 class Comment(models.Model):
+
     created_on = models.DateTimeField(auto_now_add=True)
     author = EmbeddedModelField('Author')
     text = models.TextField()

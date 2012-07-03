@@ -6,7 +6,6 @@ Created on 06-06-2012
 @author: pita
 '''
 
-
 N=100
 GEN=200
 U=0
@@ -14,6 +13,7 @@ V=1
 
 def my_rand():
     return random.random()*(V-U) - (V+U)/2
+
 
 
 if __name__ == '__main__':
@@ -27,8 +27,9 @@ if __name__ == '__main__':
     toolbox.register("mate", tools.cxSimulatedBinaryBounded, eta=0.5, low=U, up=V)
     toolbox.register("mutate", tools.mutPolynomialBounded, eta=0.5, low=U, up=V, indpb=1)
     toolbox.register("select", tools.selNSGA2)
-    toolbox.register("selectTournament", tools.selTournamentDCD)
-    
+    toolbox.register("selectTournament",    tools.selTournamentDCD)
+
+
     # init population
     pop = toolbox.population(n=N)
     for ind in pop:
@@ -36,7 +37,7 @@ if __name__ == '__main__':
     
     # sort using non domination sort (k is the same as n of population - only sort is applied)
     pop = toolbox.select(pop, k=N)
-    
+
     for _ in xrange(GEN):
         #select parent pool with tournament dominated selection
         parent_pool = toolbox.selectTournament(pop, k=N/2)
