@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>
+        Computation details
+    </title>
+</head>
+<body>
+<h2>Computation created on: </h2>
+<p>{{ comp.created_on }}</p>
+<h2>Model of parallel computation: </h2>
+<p>{{ comp.parallel }}</p>
+<h2>Population size: </h2>
+<p>{{ comp.population_size }}<p>
+<h2>Best individual rastrigin value: </h2>
+<p>{{ comp.restrigin_val}}<p>
+<h2>Computation time: </h2>
+<p>{{ comp.computation_time}}<p>
+
+<h2>Best individual: </h2>
+<p>
+    [
+    {% for val in comp.results %}
+        {{ val }},
+    {% endfor %}
+    ]
+</p>
+<a href="/VisualControllerApp/"><button type="button">Back</button></a>
+
+</body>
+</html>
