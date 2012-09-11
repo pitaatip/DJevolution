@@ -110,7 +110,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'VisualController.urls'
 
-TEMPLATE_DIRS = ('/home/pita/CheckedOutDJ/DJevolution/VisualController/templates',)
+TEMPLATE_DIRS = ('/MPI/DJevolution/VisualController/templates',)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
