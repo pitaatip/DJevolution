@@ -4,13 +4,13 @@ Created on Apr 10, 2012
 @author: wysek
 
     Usage:
-        python benchmark_visual.py [--sleep x --min y --max z --function f]
+        python benchmark_visual.py [--sleep x --min y --max z --function f --images]
         functions:
             1 - Rosenbrock
             2 - Rastrigin
             3 - Himmelblau
         default values:
-        sleep 05
+        sleep 0.5
         min -2
         max 2
         function 2
@@ -55,7 +55,7 @@ def eval(func, x, y):
     elif func == 3:
         return (x**2+y-11)**2 + (x+y**2-7)**2
 
-def draw(func, population, gen, low, high, sleep_time):
+def draw(func, population, gen, low, high, sleep_time, screens):
     if not gen:
         gROOT.Reset()
         func.c1 = TCanvas('c1', 'EvoBenchmark', 200, 10, 1000, 600)
@@ -68,6 +68,8 @@ def draw(func, population, gen, low, high, sleep_time):
         func.mark.SetPoint(population.index(coordinates), coordinates[0], coordinates[1], func.eval(coordinates)[0])
     func.mark.Draw() #fun1.Draw('CONT1 SAME p')
     func.c1.Update()
+    if screens:
+        func.c1.SaveAs("graph" + str(gen) + ".png")
     time.sleep(sleep_time)
     
 def main():
@@ -76,7 +78,8 @@ def main():
     parser.add_option("", "--sleep", action="store", type="int", dest="sleep")
     parser.add_option("", "--max", action="store", type="int", dest="max")
     parser.add_option("", "--min", action="store", type="int", dest="min")
-    parser.add_option("-f", "--fucntion", action="store", type="int", dest="function")
+    parser.add_option("-f", "--function", action="store", type="int", dest="function")
+    parser.add_option("-s", "--images", action="store_true", dest="screens")
 
     options, args = parser.parse_args()
 
@@ -102,6 +105,11 @@ def main():
         sleep_time = options.sleep
     else:
         sleep_time = 0.5
+
+    if options.screens:
+        screens = options.screens
+    else:
+        screens = False
 
       
     creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
@@ -182,7 +190,7 @@ def main():
         #print "  Avg %s" % mean
         #print "  Std %s" % std
         
-        draw(func, population, generation, low_limit, high_limit, sleep_time)
+        draw(func, population, generation, low_limit, high_limit, sleep_time, screens)
     
     print "-- End of (successful) evolution --"
     
