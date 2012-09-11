@@ -3,5 +3,6 @@
 *.pyc
 # ignore deap
 deap
+.idea/
 
 
