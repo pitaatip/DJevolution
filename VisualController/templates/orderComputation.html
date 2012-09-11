@@ -2,16 +2,63 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+
+        body {
+            font-size: 11.5pt;
+            line-height: 1.75em;
+            color: #fff;
+            background: #b2bdc1;
+            background-position: 40px 20px;
+            letter-spacing: -0.02em;
+        }
+        h1 {
+            font-family: tahoma, arial, sans-serif;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            font-weight: normal;
+            font-size: 2.6em;
+            color: #fff;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+
+        }
+
+        #menu {
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 60px;
+            width: 910px;
+            height: 500px;
+            background: #447289;
+        }
+        p {
+            padding-left: 5px;
+            font: bold 0.9em tahoma, arial, sans-serif;
+            line-height: 1.4em;
+            border-collapse: collapse;
+            color: #fff;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+    </style>
     <title>
         Order computation
     </title>
 </head>
 <body>
-
+<div id="menu">
+    <h1>DJEVOLUTION</h1>
+    <h2>Order computation</h2>
 <form action="/VisualControllerApp/orderComputation/" method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Submit" />
 </form>
+
+
+</div>
 
 </body>
 </html>

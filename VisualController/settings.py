@@ -23,7 +23,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default' : {
         'ENGINE' : 'django_mongodb_engine',
-        'NAME' : 'djevolution-db'
+        'NAME' : 'djevolution_db'
     }
 }
 
@@ -110,7 +110,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'VisualController.urls'
 
-TEMPLATE_DIRS = ('/home/pita/CheckedOutDJ/DJevolution/VisualController/templates',)
+TEMPLATE_DIRS = ('/home/pita/magisterka/DJevolution/VisualController/templates',)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
