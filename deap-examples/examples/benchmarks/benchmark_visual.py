@@ -55,8 +55,8 @@ def eval(func, x, y):
     elif func == 3:
         return (x**2+y-11)**2 + (x+y**2-7)**2
 
-def draw(func, population, gen, low, high, sleep_time, screens):
-    if not gen:
+def draw(func, population, low, high, sleep_time, screens, gen=-1):
+    if gen < 0:
         gROOT.Reset()
         func.c1 = TCanvas('c1', 'EvoBenchmark', 200, 10, 1000, 600)
         func.c1.SetGridx()
@@ -64,10 +64,13 @@ def draw(func, population, gen, low, high, sleep_time, screens):
     func.fun1 = TF2('fun1', str(func), low, high, low, high)
     func.fun1.Draw("SURF1 p")
     func.mark = TPolyMarker3D(len(population), 2)
+    func.mark.SetMarkerSize(1.3)
+    func.mark.SetMarkerColor(46)
     for coordinates in population:
         func.mark.SetPoint(population.index(coordinates), coordinates[0], coordinates[1], func.eval(coordinates)[0])
     func.mark.Draw() #fun1.Draw('CONT1 SAME p')
     func.c1.Update()
+    #raw_input()
     if screens:
         func.c1.SaveAs("graph" + str(gen) + ".png")
     time.sleep(sleep_time)
@@ -134,7 +137,10 @@ def main():
     population = toolbox.population(n=ind_number)
     
     CXPB, MUTPB, NGEN = 0.7, 0.2, 20
-    
+
+    draw(func, population, low_limit, high_limit, sleep_time, screens)
+
+
     print "Start of Evolution"
     
     # Evaluate the entire population
@@ -190,7 +196,7 @@ def main():
         #print "  Avg %s" % mean
         #print "  Std %s" % std
         
-        draw(func, population, generation, low_limit, high_limit, sleep_time, screens)
+        draw(func, population, low_limit, high_limit, sleep_time, screens, generation)
     
     print "-- End of (successful) evolution --"
     
