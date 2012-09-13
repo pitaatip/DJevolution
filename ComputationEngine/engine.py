@@ -16,10 +16,11 @@ def compute(computation):
     computation['computed'] = True
     computation['computation_time'] = str(c.total_seconds()) + "s."
 
+
 def main():
     # initialize connection to database
     connection = pymongo.Connection()
-    db = connection['djevolution-db']
+    db = connection['djevolution_db']
     while True:
         computations_ = db['VisualControllerApp_computation']
         for computation in computations_.find({"computed": False}):
