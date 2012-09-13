@@ -27,6 +27,7 @@ from deap import algorithms, benchmarks
 from deap import base
 from deap import creator
 from deap import tools
+from datetime import datetime
 
 L = 32
 U = -4.0
@@ -106,7 +107,10 @@ toolbox.register("mate", tools.cxTwoPoints)
 toolbox.register("mutate", tools.mutFlipBit, indpb=0.001)
 toolbox.register("select", tools.selTournament, tournsize=5)
 
-def main(procid, pipein, pipeout, sync, seed=None):
+def main(procid, pipein, pipeout, sync, computation, connection, seed=None):
+
+    a = datetime.now()
+
     random.seed(seed)
     toolbox.register("migrate", migPipe, k=5, pipein=pipein, pipeout=pipeout,
         selection=tools.selBest, replacement=random.sample)
@@ -153,8 +157,20 @@ def main(procid, pipein, pipeout, sync, seed=None):
             
         if gen % MIG_RATE == 0 and gen > 0:
             toolbox.migrate(deme)
-    print "Best individual:  " + str(convertArrToFloat(hof[-1]))
-    print "Rastrigin value: " + str(rastrigin_arg0(hof[-1])[0]) + "\n\n\n"
+
+    b = datetime.now()
+
+    c = b - a
+
+    if procid == 0:
+        computation['restrigin_val'] = rastrigin_arg0(hof[-1])[0]
+        computation['results'] = convertArrToFloat(hof[-1])
+        computation['computed'] = True
+        computation['computation_time'] = str(c.total_seconds()) + "s."
+        connection.save(computation)
+
+#    print "Best individual:  " + str(convertArrToFloat(hof[-1]))
+#    print "Rastrigin value: " + str(rastrigin_arg0(hof[-1])[0]) + "\n\n\n"
 
 if __name__ == "__main__":
     random.seed(64)
@@ -176,3 +192,4 @@ if __name__ == "__main__":
     
     for proc in processes:
         proc.join()
+
