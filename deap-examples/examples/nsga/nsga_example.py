@@ -40,26 +40,17 @@ if __name__ == '__main__':
 
     for _ in xrange(GEN):
         #select parent pool with tournament dominated selection
-        parent_pool = toolbox.selectTournament(pop, k=N/2)
-        
-        #generate offspring pool size of N
-        offspring_pool = []
-        while len(offspring_pool) < N:
-            # apply crossover with 90% probability
+        parent_pool = toolbox.selectTournament(pop, k=N)
+        offspring_pool = map(toolbox.clone, parent_pool)
+
+        # Apply crossover and mutation on the offspring
+        for child1, child2 in zip(offspring_pool[::2], offspring_pool[1::2]):
             if random.random() < 0.9:
-                
-                parents = [toolbox.clone(ind) for ind in random.sample(parent_pool,2)]
-                
-                offsprings = toolbox.mate(parents[0], parents[1])
-                
-                
-            # apply mutation with 10% probability
-            else:
-                ind = toolbox.clone(random.choice(parent_pool))
-                offsprings = toolbox.mutate(ind)
-            
-            offspring_pool.extend(offsprings)
-        
+                toolbox.mate(child1, child2)
+        for mutant in offspring_pool:
+            if random.random() < 0.1:
+                toolbox.mutate(mutant)
+
         # evaluate offsprings
         for ind in offspring_pool:
             ind.fitness.values = toolbox.evaluate(ind)

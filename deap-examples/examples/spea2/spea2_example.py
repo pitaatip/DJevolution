@@ -7,15 +7,14 @@ Created on 13-11-2012
 @author: wysek
 '''
 
-N = 100
-Nbar = 100
-GEN = 200
+N = 80
+Nbar = 40
+GEN = 7
 U = 0
 V = 1
 
 def my_rand():
     return random.random() * (V - U) - (V + U) / 2
-
 
 def main():
     creator.create("FitnessMax", base.Fitness, weights=(-1.0, -1.0,))
@@ -29,15 +28,19 @@ def main():
     toolbox.register("mate", tools.cxSimulatedBinaryBounded, eta=0.5, low=U, up=V)
     toolbox.register("mutate", tools.mutPolynomialBounded, eta=0.5, low=U, up=V, indpb=1)
     toolbox.register("select", tools.selSPEA2)
-    toolbox.register("selectTournament", tools.selTournamentDCD)
+    #binary tournament selection
+    toolbox.register("selectTournament", tools.selTournament, tournsize=2)
 
 
     # Step 1 Initialization
     pop = toolbox.population(n=N)
-    archive = toolbox.population(n=Nbar)
+    archive = []
     curr_gen = 1
 
     while True:
+        print "Generacja: ", curr_gen
+        print "Pop: ", len(pop)
+        print "Arch: ", len(archive)
         # Step 2 Fitness assignement
         for ind in pop:
             ind.fitness.values = toolbox.evaluate(ind)
@@ -46,7 +49,8 @@ def main():
             ind.fitness.values = toolbox.evaluate(ind)
 
         # Step 3 Environmental selection
-        archive = toolbox.select(pop + archive, k=Nbar)
+        temp  = toolbox.select(pop + archive, k=Nbar)
+        archive = map(toolbox.clone, temp)
 
         # Step 4 Termination
         if curr_gen >= GEN:
@@ -54,30 +58,20 @@ def main():
             break
 
         # Step 5 Mating Selection
-        tools.assignCrowdingDist(archive)
-        mating_pool = toolbox.selectTournament(archive, k=Nbar / 2)
+        mating_pool = toolbox.selectTournament(archive, k=N)
+        offspring_pool = map(toolbox.clone, mating_pool)
 
         # Step 6 Variation
-        offspring_pool = []
-        while len(offspring_pool) < N:
-            # apply crossover with 90% probability
-            if random.random() < 0.9:
-                offsprings = toolbox.mate(random.choice(mating_pool), random.choice(mating_pool))
+        # Apply crossover and mutation on the offspring
+        for child1, child2 in zip(offspring_pool[::2], offspring_pool[1::2]):
+            toolbox.mate(child1, child2)
+        for mutant in offspring_pool:
+            if random.random() < 0.06:
+                toolbox.mutate(mutant)
 
-
-            # apply mutation with 10% probability
-            else:
-                ind = toolbox.clone(random.choice(mating_pool))
-                offsprings = toolbox.mutate(ind)
-
-            offspring_pool.extend(offsprings)
-
-        pop = offspring_pool
+        pop[:] = offspring_pool
 
         curr_gen += 1
-
-    #for ind in final_set:
-    #print ("%s %s\n" % (str(ind.fitness.values[0]), str(ind.fitness.values[1])))
 
     with open('spea2_wyniki', 'w') as f:
         for ind in final_set:
