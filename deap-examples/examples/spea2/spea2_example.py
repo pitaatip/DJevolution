@@ -9,7 +9,7 @@ Created on 13-11-2012
 
 N = 80
 Nbar = 40
-GEN = 7
+GEN = 100
 U = 0
 V = 1
 
@@ -23,7 +23,7 @@ def main():
     toolbox.register("attr_float", my_rand)
 
     toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_float, n=20) #@UndefinedVariable
-    toolbox.register("evaluate", benchmarks.zdt2)
+    toolbox.register("evaluate", benchmarks.zdt3)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
     toolbox.register("mate", tools.cxSimulatedBinaryBounded, eta=0.5, low=U, up=V)
     toolbox.register("mutate", tools.mutPolynomialBounded, eta=0.5, low=U, up=V, indpb=1)
@@ -38,9 +38,6 @@ def main():
     curr_gen = 1
 
     while True:
-        print "Generacja: ", curr_gen
-        print "Pop: ", len(pop)
-        print "Arch: ", len(archive)
         # Step 2 Fitness assignement
         for ind in pop:
             ind.fitness.values = toolbox.evaluate(ind)
@@ -49,8 +46,7 @@ def main():
             ind.fitness.values = toolbox.evaluate(ind)
 
         # Step 3 Environmental selection
-        temp  = toolbox.select(pop + archive, k=Nbar)
-        archive = map(toolbox.clone, temp)
+        archive  = toolbox.select(pop + archive, k=Nbar)
 
         # Step 4 Termination
         if curr_gen >= GEN:
@@ -62,14 +58,15 @@ def main():
         offspring_pool = map(toolbox.clone, mating_pool)
 
         # Step 6 Variation
-        # Apply crossover and mutation on the offspring
+        # crossover 100% and mutation 6%
         for child1, child2 in zip(offspring_pool[::2], offspring_pool[1::2]):
             toolbox.mate(child1, child2)
+
         for mutant in offspring_pool:
             if random.random() < 0.06:
                 toolbox.mutate(mutant)
 
-        pop[:] = offspring_pool
+        pop = offspring_pool
 
         curr_gen += 1
 
