@@ -10,7 +10,8 @@ def orderComputation(request):
         if form.is_valid():
             f_pop = form.cleaned_data['population_size']
             f_paral = form.cleaned_data['parallel']
-            comp=Computation(population_size=f_pop,parallel=f_paral, computed=False)
+            f_alg = form.cleaned_data['algorithm']
+            comp=Computation(population_size=f_pop,parallel=f_paral, computed=False,algorithm=f_alg)
             comp.save()
             return HttpResponseRedirect('/VisualControllerApp/') # Redirect after POST
     else:
@@ -23,7 +24,14 @@ def orderComputation(request):
 def comp_detail(request,pk):
     comp = Computation.objects.get(pk=pk)
     c = RequestContext(request, {'comp': comp,})
-    return render_to_response('computationDetails.html', c)
+    if comp.algorithm == 'SGA':
+        return render_to_response('computationDetails.html', c)
+    else:
+        if comp.algorithm == 'NSGA':
+            comp.algorithm = 'NSGA-II'
+        else:
+            comp.algorithm = "SPEA2"
+        return render_to_response('multiComputationDetails.html', c)
 
 
 def comp_delete(request, pk):

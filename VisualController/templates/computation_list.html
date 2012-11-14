@@ -161,6 +161,7 @@
 <thead>
     <tr >
         <th>Population</th>
+        <th>Algorithm</th>
         <th>Date</th>
         <th>Completed</th>
         <th>Action</th>
@@ -172,6 +173,7 @@
         <td>
         <a href="{% url comp_detail comp.id %}">{{ comp.population_size }}</a>
         </td>
+        <td>{{ comp.algorithm }} </td>
         <td>{{ comp.created_on }} </td>
         <td>{{ comp.computed }} </td>
         <td><a href="{% url comp_delete comp.id %}"><button type="button">Delete</button></a></td>

@@ -14,7 +14,11 @@ V=1
 def my_rand():
     return random.random()*(V-U) - (V+U)/2
 
-if __name__ == '__main__':
+def main(pop_n = None):
+    if pop_n:
+        N =pop_n
+    print "WIHAOIHASPOIFHSAPIFHAPOIHF"
+    print pop_n, N
     creator.create("FitnessMax", base.Fitness, weights=(-1.0,-1.0,))
     creator.create("Individual", list, fitness=creator.FitnessMax) #@UndefinedVariable
     toolbox = base.Toolbox()
@@ -32,7 +36,7 @@ if __name__ == '__main__':
     pop = toolbox.population(n=N)
     for ind in pop:
         ind.fitness.values = toolbox.evaluate(ind)
-    
+
     # sort using non domination sort (k is the same as n of population - only sort is applied)
     pop = toolbox.select(pop, k=N)
 
@@ -52,17 +56,15 @@ if __name__ == '__main__':
         # evaluate offsprings
         for ind in offspring_pool:
             ind.fitness.values = toolbox.evaluate(ind)
-        
+
         # extend base population with offsprings, pop is now 2N size
         pop.extend(offspring_pool)
-        
+
         # sort and select new population
         pop = toolbox.select(pop, k=N)
-    
+
     first_front = tools.sortFastND(pop, k=N)[0]
-    with open('nsga2_wyniki', 'w') as f:
-        for ind in first_front:
-            f.write(str(ind.fitness.values[0]) + ' ' + str(ind.fitness.values[1])+ '\n')
-    
-        
-    
+    return [(ind.fitness.values[0],ind.fitness.values[1]) for ind in first_front]
+
+if __name__ == '__main__':
+    main()

@@ -5,6 +5,8 @@ from multiprocessing import Event, Pipe, Process
 from datetime import datetime
 from time import sleep
 import simple_genetic_algorithm
+import nsgaII_algorithm
+import spea2_algorithm
 import demes_fromsite_PIPES
 
 __author__ = 'pita'
@@ -46,6 +48,28 @@ def compute_pipes(computation, computations):
         proc.join()
 
 
+def compute_nsga(computation):
+    size_ = computation['population_size']
+    a = datetime.now()
+    new_result = nsgaII_algorithm.main(size_)
+    b = datetime.now()
+    c = b - a
+    computation['new_result'] = new_result
+    computation['computed'] = True
+    computation['computation_time'] = str(c.total_seconds()) + "s."
+
+
+def compute_spea(computation):
+    size_ = computation['population_size']
+    a = datetime.now()
+    new_result = spea2_algorithm.main(size_)
+    b = datetime.now()
+    c = b - a
+    computation['new_result'] = new_result
+    computation['computed'] = True
+    computation['computation_time'] = str(c.total_seconds()) + "s."
+
+
 def main():
     # initialize connection to database
     connection = pymongo.Connection()
@@ -54,13 +78,20 @@ def main():
         computations_ = db['VisualControllerApp_computation']
         for computation in computations_.find({"computed": False}):
             print computation
-            if computation['parallel'] == "None":
-                compute(computation)
+            if computation['algorithm'] == "NSGA":
+                compute_nsga(computation)
                 computations_.save(computation)
-            elif computation['parallel'] == "Demes pipe model":
-                compute_pipes(computation, computations_)
+            elif computation['algorithm'] == "SPEA":
+                compute_spea(computation)
+                computations_.save(computation)
             else:
-                print "ERROR: MPI Model not implemented yet."
+                if computation['parallel'] == "None":
+                    compute(computation)
+                    computations_.save(computation)
+                elif computation['parallel'] == "Demes pipe model":
+                    compute_pipes(computation, computations_)
+                else:
+                    print "ERROR: MPI Model not implemented yet."
         print 'finished pooling computations. Waiting...'
         sleep(5)
 
