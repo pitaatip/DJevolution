@@ -1,22 +1,24 @@
 from django.conf.urls.defaults import patterns, include, url
+from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
-from VisualControllerApp.models import Computation
-
+from VisualControllerApp.models import Computation, ActualConfig
 
 
 admin.autodiscover()
 
-computation_list = ListView.as_view(model=Computation, template_name='computation_list.html')
+computation_list = ListView.as_view(model=Computation, template_name='computation/list.html')
 
 urlpatterns = patterns('',
     url(r'^VisualControllerApp/comp/(?P<pk>[a-z\d]+)/$', 'VisualControllerApp.views.comp_detail', name='comp_detail'),
+    url(r'^VisualControllerApp/order/computation/$', 'VisualControllerApp.views.orderComputation'),
+    url(r'^VisualControllerApp/(?P<view_name>[a-z/]+)/$', 'VisualControllerApp.views.simple_render'),
     url(r'^VisualControllerApp/$', computation_list, name='computation_list'),
     url(r'^VisualControllerApp/delete_comp/(?P<pk>[a-z\d]+)/$', 'VisualControllerApp.views.comp_delete', name='comp_delete'),
-    url(r'^VisualControllerApp/orderComputation/$', 'VisualControllerApp.views.orderComputation'),
+
     # Examples:
     # url(r'^$', 'VisualController.views.home', name='home'),
     # url(r'^VisualController/', include('VisualController.foo.urls')),

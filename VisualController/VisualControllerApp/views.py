@@ -19,19 +19,24 @@ def orderComputation(request):
     form = ComputationForm() # An unbound form
 
     c = RequestContext(request, {'form': form,})
-    return render_to_response('orderComputation.html', c)
+    return render_to_response('order/general.html', c)
 
 def comp_detail(request,pk):
     comp = Computation.objects.get(pk=pk)
     c = RequestContext(request, {'comp': comp,})
     if comp.algorithm == 'SGA':
-        return render_to_response('computationDetails.html', c)
+        return render_to_response('computation/singleDetails.html', c)
     else:
         if comp.algorithm == 'NSGA':
             comp.algorithm = 'NSGA-II'
         else:
             comp.algorithm = "SPEA2"
-        return render_to_response('multiComputationDetails.html', c)
+        return render_to_response('computation/multiDetails.html', c)
+
+
+def simple_render(request,view_name):
+    c = RequestContext(request)
+    return render_to_response(view_name+".html", c)
 
 
 def comp_delete(request, pk):

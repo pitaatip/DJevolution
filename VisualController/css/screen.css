@@ -50,6 +50,9 @@ h2 {
 #talltabs-orange ul.four{
     left:35%;
 }
+#talltabs-orange ul.cluster{
+    left:26%;
+}
 #talltabs-orange ul li {
     display:block;
     float:left;

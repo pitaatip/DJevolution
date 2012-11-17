@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block menu_left %}
+    <ul>
+        <li><a href="/VisualControllerApp">Computation List</a></li>
+        <li ><a href="/VisualControllerApp/order/computation/">Order Computation</a></li>
+        <li class="active"><a href="/VisualControllerApp/cluster/cluster/">Cluster Status</a></li>
+    </ul>
+{% endblock %}
+
+{% block menu_up %}
+    <div id="talltabs-orange">
+        <ul class="cluster">
+            <li ><a href="#"><span>Cluster info</span></a></li>
+            <li class="active"><a href="#"><span>Info Cluster</span></a></li>
+            <li><a href="#"><span>Status of cluster</span></a></li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <h2>Cluster info</h2>
+
+{% endblock %}

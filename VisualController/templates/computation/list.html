@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "computation/baseDetails.html" %}
 
 {% block menu_up %}
     <div id="talltabs-orange">
@@ -7,14 +7,6 @@
             <li><a href="#"><span>Settings</span></a></li>
         </ul>
     </div>
-{% endblock %}
-
-{% block menu_left %}
-<ul>
-    <li class="active"><a href="/VisualControllerApp/">Computation List</a></li>
-    <li ><a href="/VisualControllerApp/orderComputation/">Order Computation</a></li>
-    <li><a href="#">Cluster Status</a></li>
-</ul>
 {% endblock %}
 
 {% block content %}
@@ -45,5 +37,4 @@
         {% endfor%}
         </tbody>
     </table>
-    <a href="/VisualControllerApp/orderComputation/"><button type="button">Order computation</button></a>
 {% endblock %}

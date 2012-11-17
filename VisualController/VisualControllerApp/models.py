@@ -15,6 +15,9 @@ class Computation(models.Model):
     algorithm = models.TextField()
     new_result = RawField()
 
+class ActualConfig(models.Model):
+    population_size = models.IntegerField()
+    configuration = models.TextField()
 
 class ComputationForm(forms.Form):
     population_size = forms.IntegerField()
