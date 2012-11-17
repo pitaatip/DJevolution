@@ -1,5 +1,24 @@
 {% extends "base.html" %}
 
+{% block menu_up %}
+    <div id="talltabs-orange">
+        <ul>
+            <li class="active"><a href="#"><span>General results</span></a></li>
+            <li><a href="#"><span>Partial results</span></a></li>
+            <li><a href="#"><span>Related Configuration</span></a></li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block menu_left %}
+    <ul>
+        <li class="active"><a href="/VisualControllerApp/">Computation List</a></li>
+        <li ><a href="/VisualControllerApp/orderComputation/">Order Computation</a></li>
+        <li><a href="#">Cluster Status</a></li>
+    </ul>
+{% endblock %}
+
+
 {% block content %}
 <h2>Computation details</h2>
 <h2>Algorithm: </h2>
