@@ -1,188 +1,32 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
-{% block head %}
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <style type="text/css">
+{% extends "base.html" %}
 
-
-        table		{
-            margin: 0;
-            padding: 0;
-            font: normal 0.9em tahoma, arial, sans-serif;
-            line-height: 1.4em;
-            border-collapse: collapse;
-            border: 4px solid #ADBBCA;
-            color: #4F6480;
-            background: #F0F0F0;
-        }
-
-
-
-        table caption	{
-            margin: 0;
-            height: 32px;
-            padding: 0;
-            color: #4F6480;
-            line-height: 2em;
-            text-align: left;
-            font: bold 150% georgia, serif;
-            text-transform: uppercase;
-            letter-spacing: 0.14em;
-        }
-
-        thead		{
-            color: #fff;
-            background: #5E7796;
-        }
-
-        thead tr th	{
-            padding: 4px 8px 4px 8px;
-        }
-
-
-        thead th	{
-            border: 4px solid #ADBBCA;
-        }
-
-        tfoot		{
-            background: #fff;
-        }
-
-        tfoot tr td, tfoot tr th, tbody tr td	{
-            padding: 4px;
-        }
-
-        tbody tr:hover	{
-            background: #fff;
-        }
-
-        tbody tr	{
-            border: 4px solid #ADBBCA;
-        }
-
-        tbody th	{
-            padding: 8px;
-            border: 4px solid #ADBBCA;
-        }
-
-        tbody td	{
-            background: #E9ECEE;
-        }
-
-        tbody tr.odd		{
-            background: #C4CFDB;
-        }
-
-        tbody tr.odd td		{
-            background: #F0F0F0;
-            color: #4F6480;
-        }
-
-
-
-        tbody tr.odd:hover		{
-            background: #fff;
-        }
-
-
-
-        tbody tr th a:link		{
-            font: bold 0.9em tahoma, arial, sans-serif;
-            color: #5E7796;
-            text-decoration: underline;
-
-        }
-
-        tbody tr th a:visited		{
-            font: bold 0.9em tahoma, arial, sans-serif;
-            color: #5E7796;
-            text-decoration: none;
-
-        }
-
-        tbody tr th a:hover		{
-            font: bold 0.9em tahoma, arial, sans-serif;
-            color: #5E7796;
-            text-decoration: none;
-
-        }
-
-        tbody tr th a:active		{
-            font: bold 0.9em tahoma, arial, sans-serif;
-            color: #5E7796;
-            text-decoration: line-through;
-
-        }
-
-        tbody tr th a:visited:after {
-            content: "\00A0\221A";
-        }
-
-        tbody td a:link		{
-            font: normal 0.9em tahoma, arial, sans-serif;
-            color: #808000;
-            text-decoration: underline;
-        }
-
-        tbody td a:visited		{
-            font: normal 0.9em tahoma, arial, sans-serif;
-            color: #808000;
-            text-decoration: none;
-        }
-
-        tbody td a:hover		{
-            font: normal 0.9em tahoma, arial, sans-serif;
-            color: #808000;
-            text-decoration: none;
-        }
-
-        tbody td a:active		{
-            font: normal 0.9em tahoma, arial, sans-serif;
-            color: #808000;
-            text-decoration: underline;
-        }
-
-        tbody td a:visited:after {
-            content: "\00A0\221A";
-            color: #808000;
-            text-decoration: none;
-        }
-
-    </style>
-    <title>
-        Computation List
-    </title>
-
-
-{% endblock %}
-<body>
-<div id="menu">
-<h1>DJEVOLUTION</h1>
-<h2>Computation List</h2>
-<table id="hor-zebra">
-<thead>
-    <tr >
-        <th>Population</th>
-        <th>Algorithm</th>
-        <th>Date</th>
-        <th>Completed</th>
-        <th>Action</th>
-    </tr>
-</thead>
-    <tbody>
-    {%  for comp in computation_list %}
-        <tr class="odd">
-        <td>
-        <a href="{% url comp_detail comp.id %}">{{ comp.population_size }}</a>
-        </td>
-        <td>{{ comp.algorithm }} </td>
-        <td>{{ comp.created_on }} </td>
-        <td>{{ comp.computed }} </td>
-        <td><a href="{% url comp_delete comp.id %}"><button type="button">Delete</button></a></td>
+{% block content %}
+    <div id="menu">
+    <h2>Computation List</h2>
+    </div>
+    <table id="hor-zebra">
+        <thead>
+        <tr >
+            <th>Population</th>
+            <th>Algorithm</th>
+            <th>Date</th>
+            <th>Completed</th>
+            <th>Action</th>
         </tr>
-    {% endfor%}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        {%  for comp in computation_list %}
+            <tr class="odd">
+                <td>
+                    <a href="{% url comp_detail comp.id %}">{{ comp.population_size }}</a>
+                </td>
+                <td>{{ comp.algorithm }} </td>
+                <td>{{ comp.created_on }} </td>
+                <td>{{ comp.computed }} </td>
+                <td><a href="{% url comp_delete comp.id %}"><button type="button">Delete</button></a></td>
+            </tr>
+        {% endfor%}
+        </tbody>
+    </table>
     <a href="/VisualControllerApp/orderComputation/"><button type="button">Order computation</button></a>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,400 @@
+body {
+    margin:0;
+    padding:0;
+    border:0;			/* This removes the border around the viewport in old versions of IE */
+    width:100%;
+    background:#fff;
+    min-width:600px;    	/* Minimum width of layout - remove line if not required */
+
+    font-family:Arial, Helvetica, sans-serif;
+    /* The min-width property does not work in old versions of Internet Explorer */
+    font-size:90%;
+}
+/* <!-- */
+/* General styles */
+h1, h2, h3, p {
+    padding-left:20px;
+    clear:left;
+}
+h2 {
+    padding-top:30px;
+}
+
+/* -------------------------------------------------- */
+/* roundbar-blue */
+
+
+/* -------------------------------------------------- */
+/* talltabs-orange */
+/* -------------------------------------------------- */
+#talltabs-orange {
+    clear:left;
+    float:left;
+    padding:0;
+    width:100%;
+    overflow:hidden;
+    font-family:Arial, Helvetica, sans-serif;
+}
+#talltabs-orange ul {
+    float:left;
+    margin:0;
+    padding:0;
+    list-style:none;
+    position:relative;
+    left:25%;
+    text-align:center;
+}
+#talltabs-orange ul li {
+    display:block;
+    float:left;
+    list-style:none;
+    margin:0;
+    padding:0;
+    position:relative;
+    right:50%;
+}
+#talltabs-orange ul li a {
+    display:block;
+    float:left;
+    margin:0 1px 0 0;
+    padding:30px 10px 6px 10px;
+    background:#f78d1d;
+    text-decoration:none;
+    color:#fff;
+}
+#talltabs-orange ul li a:hover {
+    padding:35px 10px 6px 10px;
+}
+#talltabs-orange ul li.active a,
+#talltabs-orange ul li.active a:hover {
+    padding:40px 10px 6px 10px;
+}
+
+
+
+table		{
+    margin: 0;
+    padding: 0;
+    line-height: 1.4em;
+    border-collapse: collapse;
+    border: 4px solid #ffffff;
+    background: #F0F0F0;
+}
+
+
+
+table caption	{
+    margin: 0;
+    height: 32px;
+    padding: 0;
+    color: #f78d1d;
+    line-height: 2em;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+}
+
+thead		{
+    color: #f78d1d;
+    background: #ffffff;
+}
+
+thead tr th	{
+    padding: 4px 8px 4px 8px;
+}
+
+
+thead th	{
+    border: 2px solid #f78d1d;
+}
+
+tfoot		{
+    background: #fff;
+}
+
+tfoot tr td, tfoot tr th, tbody tr td	{
+    padding: 4px;
+}
+
+tbody tr:hover	{
+    background: #fff;
+}
+
+tbody tr	{
+    border: 2px solid #f78d1d;
+}
+
+tbody th	{
+    padding: 8px;
+    border: 2px solid #f78d1d;
+}
+
+tbody td	{
+    background: #E9ECEE;
+}
+
+tbody tr.odd		{
+    background: #C4CFDB;
+}
+
+tbody tr.odd td		{
+    background: #ffffff;
+    color: #000000;
+}
+
+
+
+tbody tr.odd:hover		{
+    background: #fff;
+}
+
+
+
+
+tbody tr th a:visited:after {
+    content: "\00A0\221A";
+}
+
+tbody td a:link		{
+    font: normal 0.9em tahoma, arial, sans-serif;
+    color: #808000;
+    text-decoration: underline;
+}
+
+tbody td a:visited		{
+    font: normal 0.9em tahoma, arial, sans-serif;
+    color: #808000;
+    text-decoration: none;
+}
+
+tbody td a:hover		{
+    font: normal 0.9em tahoma, arial, sans-serif;
+    color: #808000;
+    text-decoration: none;
+}
+
+tbody td a:active		{
+    font: normal 0.9em tahoma, arial, sans-serif;
+    color: #808000;
+    text-decoration: underline;
+}
+
+tbody td a:visited:after {
+    content: "\00A0\221A";
+    color: #808000;
+    text-decoration: none;
+}
+
+
+h1, h2, h3 {
+    margin:.8em 0 .2em 0;
+    padding:0;
+}
+p {
+    margin:.4em 0 .8em 0;
+    padding:0;
+}
+img {
+    margin:10px 0 5px;
+}
+#ads img {
+    display:block;
+    padding-top:10px;
+}
+#whole {
+    margin-left: auto ;
+    margin-right: auto ;
+    width: 85%;
+}
+/* Header styles */
+#header {
+    clear:both;
+    float:left;
+    width:100%;
+}
+#header {
+    border-bottom:3px solid #f78d1d
+}
+#header p,
+#header h1,
+#header h2 {
+    text-align:center;
+    padding:.4em 15px 0 15px;
+    margin:0;
+    text-shadow: 0 1px 1px #f78d1d;
+}
+
+#header h1{
+    font: 30px/100% Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+    color:#f78d1d
+}
+#header h2{
+    font: 22px/100% Arial, Helvetica, sans-serif;
+}
+
+/*.button {*/
+    /*display: inline-block;*/
+    /*outline: none;*/
+    /*cursor: pointer;*/
+    /*text-align: center;*/
+    /*text-decoration: none;*/
+    /*font: 18px/100% Arial, Helvetica, sans-serif;*/
+    /*padding: .5em 2em .55em;*/
+    /*text-shadow: 0 1px 1px rgba(0,0,0,.3);*/
+    /*-webkit-border-radius: .5em;*/
+    /*-moz-border-radius: .5em;*/
+    /*border-radius: .5em;*/
+    /*-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);*/
+    /*-moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);*/
+    /*box-shadow: 0 1px 2px rgba(0,0,0,.2);*/
+/*}*/
+/*.button:hover {*/
+    /*text-decoration: none;*/
+/*}*/
+/*.button:active {*/
+    /*position: relative;*/
+    /*top: 1px;*/
+/*}*/
+
+.button {
+background: #bd660f;
+background: -webkit-gradient(linear, left top, left bottom, from(#f78e1d), to(#bd660f));
+background: -webkit-linear-gradient(top, #f78e1d, #bd660f);
+background: -moz-linear-gradient(top, #f78e1d, #bd660f);
+background: -ms-linear-gradient(top, #f78e1d, #bd660f);
+background: -o-linear-gradient(top, #f78e1d, #bd660f);
+padding: 12.5px 45px;
+
+color: #ffffff;
+font-size: 24px;
+font-family: Georgia, serif;
+text-decoration: none;
+/*vertical-align: middle;*/
+}
+.button:hover {
+background: #28597a;
+color: #999999;
+}
+
+
+.orange {
+    color: #fef4e9;
+    border: solid 1px #da7c0c;
+    background: #f78d1d;
+    background: -webkit-gradient(linear, left top, left bottom, from(#faa51a), to(#f47a20));
+    background: -moz-linear-gradient(top,  #faa51a,  #f47a20);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#faa51a', endColorstr='#f47a20');
+}
+.orange:hover {
+    background: #f47c20;
+    background: -webkit-gradient(linear, left top, left bottom, from(#f88e11), to(#f06015));
+    background: -moz-linear-gradient(top,  #f88e11,  #f06015);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#f88e11', endColorstr='#f06015');
+}
+.orange:active {
+    color: #fcd3a5;
+    background: -webkit-gradient(linear, left top, left bottom, from(#f47a20), to(#faa51a));
+    background: -moz-linear-gradient(top,  #f47a20,  #faa51a);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#f47a20', endColorstr='#faa51a');
+}
+#header ul li a.active,
+#header ul li a.active:hover {
+    color:#fff;
+    background:#000;
+    font-weight:bold;
+}
+#header ul li a span {
+    display:block;
+}
+/* 'widths' sub menu */
+#layoutdims {
+    clear:both;
+    background:#eee;
+    border-top:4px solid #000;
+    margin:0;
+    padding:6px 15px !important;
+    text-align:right;
+}
+/* column container */
+.colmask {
+    position:relative;	/* This fixes the IE7 overflow hidden bug */
+    clear:both;
+    float:left;
+    width:100%;			/* width of whole page */
+    overflow:hidden;		/* This chops off any overhanging divs */
+}
+/* common column settings */
+.colright,
+.colmid,
+.colleft {
+    float:left;
+    width:100%;
+    position:relative;
+}
+.col1,
+.col2,
+.col3 {
+    float:left;
+    position:relative;
+    padding:0 0 1em 0;
+    overflow:hidden;
+}
+/* 2 Column (left menu) settings */
+.leftmenu {
+    background:#fff;		/* right column background colour */
+    border-left:3px solid #f78d1d;
+}
+.leftmenu .colleft {
+    right:86%;			/* right column width */
+    border-left:3px solid #f78d1d;
+
+    background:#fff;	/* left column background colour */
+}
+
+.leftmenu .colleft .kleks ul{
+list-style:none;
+}
+.leftmenu .colleft .kleks li a{
+    font-family:Arial, Helvetica, sans-serif;
+    padding:25px 10px 5px 15px;
+    display: block;
+    margin: 1px;
+    color:#fff;
+    position: relative;
+    text-decoration:none;
+    width: 72%;
+    background:#f78d1d;
+    list-style: none;
+}
+.leftmenu .colleft .kleks li a:hover {
+    padding:25px 10px 5px 20px;
+}
+.leftmenu .colleft .kleks li.active a,
+.leftmenu .colleft .kleks li.active a:hover {
+    padding:25px 10px 5px 25px;
+}
+
+.leftmenu .col1 {
+    width:76%;			/* right column content width */
+    left:102%;			/* 100% plus left column left padding */
+}
+.leftmenu .col2 {
+    width:21%;			/* left column content width (column width minus left and right padding) */
+    left:6%;			/* (right column left and right padding) plus (left column left padding) */
+}
+/* Footer styles */
+#footer {
+    clear:both;
+    float:left;
+    width:100%;
+    /*border-top:3px solid #f78d1d;*/
+}
+#footer p {
+    padding:10px;
+    margin:0;
+}
+#base_content{
+    position: relative;
+    left: 7%;
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB">
+<head>
+    <title>The Perfect 2 Column Liquid Layout (left menu): No CSS hacks. SEO friendly. iPhone compatible.</title>
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}screen.css" media="screen" />
+</head>
+<style media="screen" type="text/css">
+
+</style>
+<body>
+<div id="whole">
+    <div id="header">
+        <h1>DJEVOLUTION</h1>
+        <h2>Fast evolution algorithms test platform</h2>
+    </div>
+    <div class="colmask leftmenu">
+        <div class="colleft">
+            <div class="col1">
+                <!-- Column 1 start -->
+                <div id="talltabs-orange">
+                    <ul>
+                        <li ><a href="#">Home <span>Page</span></a></li>
+                        <li class="active"><a href="#">Our <span>Products</span></a></li>
+                        <li><a href="#">About <span>Us</span></a></li>
+                        <li ><a href="#">Contact <span>Us</span></a></li>
+                    </ul>
+                </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <div id="base_content">
+            {% block content %}this is the content{% endblock %}
+            </div>
+
+
+            </div>
+            <div class="col2">
+                <!-- Column 2 start -->
+                <div class="kleks">
+                    <br/>
+                    <br/>
+                    <br/>
+                <ul>
+                    <li><a href="#">asda</a></li>
+                    <li class="active"><a href="#">asda</a></li>
+                    <li><a href="#">asda</a></li>
+                </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="footer">
+        By Pita and Wysek
+    </div>
+</div>
+
+</body>
+</html>

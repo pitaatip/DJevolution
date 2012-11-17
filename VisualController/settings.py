@@ -78,6 +78,7 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 # Additional locations of static files
 STATICFILES_DIRS = (
     '/home/pita/magisterka/DJevolution/VisualController/js',
+    '/home/pita/magisterka/DJevolution/VisualController/css',
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -87,6 +88,7 @@ STATICFILES_DIRS = (
 # various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
