@@ -14,17 +14,18 @@ V=1
 def my_rand():
     return random.random()*(V-U) - (V+U)/2
 
-def main(pop_n = None):
+def main(pop_n = None, problem="zdt2"):
     if pop_n:
         N =pop_n
-    print "WIHAOIHASPOIFHSAPIFHAPOIHF"
-    print pop_n, N
+    print pop_n, N, problem
+    f_problem = getattr(benchmarks, problem)
+
     creator.create("FitnessMax", base.Fitness, weights=(-1.0,-1.0,))
     creator.create("Individual", list, fitness=creator.FitnessMax) #@UndefinedVariable
     toolbox = base.Toolbox()
     toolbox.register("attr_float", my_rand)
     toolbox.register("individual", tools.initRepeat, creator.Individual,toolbox.attr_float, n=20) #@UndefinedVariable
-    toolbox.register("evaluate", benchmarks.zdt2)
+    toolbox.register("evaluate", f_problem)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
     toolbox.register("mate", tools.cxSimulatedBinaryBounded, eta=0.5, low=U, up=V)
     toolbox.register("mutate", tools.mutPolynomialBounded, eta=0.5, low=U, up=V, indpb=1)
@@ -64,7 +65,8 @@ def main(pop_n = None):
         pop = toolbox.select(pop, k=N)
 
     first_front = tools.sortFastND(pop, k=N)[0]
-    return [(ind.fitness.values[0],ind.fitness.values[1]) for ind in first_front]
+    front_ = [(ind.fitness.values[0], ind.fitness.values[1]) for ind in first_front]
+    return sorted(front_,key=lambda x:x[0])
 
 if __name__ == '__main__':
     main()

@@ -50,8 +50,9 @@ def compute_pipes(computation, computations):
 
 def compute_nsga(computation):
     size_ = computation['population_size']
+    problem_ = computation['problem']
     a = datetime.now()
-    new_result = nsgaII_algorithm.main(size_)
+    new_result = nsgaII_algorithm.main(size_,problem_)
     b = datetime.now()
     c = b - a
     computation['new_result'] = new_result
@@ -61,8 +62,9 @@ def compute_nsga(computation):
 
 def compute_spea(computation):
     size_ = computation['population_size']
+    problem_ = computation['problem']
     a = datetime.now()
-    new_result = spea2_algorithm.main(size_)
+    new_result = spea2_algorithm.main(size_,problem_)
     b = datetime.now()
     c = b - a
     computation['new_result'] = new_result

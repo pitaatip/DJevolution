@@ -16,17 +16,20 @@ V = 1
 def my_rand():
     return random.random() * (V - U) - (V + U) / 2
 
-def main(pop_n=None):
+def main(pop_n=None,problem="zdt3"):
     if pop_n:
         N = pop_n
         Nbar = pop_n
+
+    f_problem = getattr(benchmarks, problem)
+
     creator.create("FitnessMax", base.Fitness, weights=(-1.0, -1.0,))
     creator.create("Individual", list, fitness=creator.FitnessMax) #@UndefinedVariable
     toolbox = base.Toolbox()
     toolbox.register("attr_float", my_rand)
 
     toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_float, n=20) #@UndefinedVariable
-    toolbox.register("evaluate", benchmarks.zdt3)
+    toolbox.register("evaluate", f_problem)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
     toolbox.register("mate", tools.cxSimulatedBinaryBounded, eta=0.5, low=U, up=V)
     toolbox.register("mutate", tools.mutPolynomialBounded, eta=0.5, low=U, up=V, indpb=1)
@@ -73,7 +76,8 @@ def main(pop_n=None):
 
         curr_gen += 1
 
-    return [(ind.fitness.values[0],ind.fitness.values[1]) for ind in final_set]
+    set_ = [(ind.fitness.values[0], ind.fitness.values[1]) for ind in final_set]
+    return sorted(set_,  key=lambda x:x[0])
 
 if __name__ == '__main__':
     main()

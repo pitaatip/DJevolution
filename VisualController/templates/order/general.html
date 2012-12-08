@@ -12,11 +12,15 @@
 
 
 {% block content %}
-    <h2>Order computation</h2>
+    <h2>General</h2>
+    <br/>
+    <a class='button' href="/VisualControllerApp/order/start"><span>Start computation</span></a>
+    <br/>
+    <br/>
     <form action="/VisualControllerApp/order/computation/" method="post">{% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Submit" />
-</form>
+        <input type="submit" value="Save" />
+    </form>
 
 
 
