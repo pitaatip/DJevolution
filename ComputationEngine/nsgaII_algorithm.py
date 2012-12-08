@@ -1,5 +1,7 @@
 from deap import benchmarks, algorithms, base, creator, tools
 import random
+import sys
+
 '''
 Created on 06-06-2012
 
@@ -14,24 +16,29 @@ V=1
 def my_rand():
     return random.random()*(V-U) - (V+U)/2
 
-def main(pop_n = None, problem="zdt2"):
+def main(pop_n = None, problem="zdt2",configuration = None):
     if pop_n:
         N =pop_n
     print pop_n, N, problem
     f_problem = getattr(benchmarks, problem)
-
-    creator.create("FitnessMax", base.Fitness, weights=(-1.0,-1.0,))
-    creator.create("Individual", list, fitness=creator.FitnessMax) #@UndefinedVariable
     toolbox = base.Toolbox()
-    toolbox.register("attr_float", my_rand)
-    toolbox.register("individual", tools.initRepeat, creator.Individual,toolbox.attr_float, n=20) #@UndefinedVariable
-    toolbox.register("evaluate", f_problem)
-    toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-    toolbox.register("mate", tools.cxSimulatedBinaryBounded, eta=0.5, low=U, up=V)
-    toolbox.register("mutate", tools.mutPolynomialBounded, eta=0.5, low=U, up=V, indpb=1)
-    toolbox.register("select", tools.selNSGA2)
-    toolbox.register("selectTournament",    tools.selTournamentDCD)
+    try:
+        for command in configuration.split('\n'):
+            if command:
+                print "executing: ", command
+                eval(command)
+    except SyntaxError as e:
+        print "Syntax error", e.filename, e.offset, e.lineno, e.text
+        return []
+    except NameError as e:
+        print "Name error", e.message
+        return []
+    except:
+        print "Unexpected error in evaluating configuration:", sys.exc_info()[0]
+        print configuration
+        return []
 
+    toolbox.register("evaluate", f_problem)
 
     # init population
     pop = toolbox.population(n=N)

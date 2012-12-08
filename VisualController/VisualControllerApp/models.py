@@ -15,6 +15,7 @@ class Computation(models.Model):
     computation_time = models.TextField()
     algorithm = models.TextField()
     new_result = RawField()
+    configuration = models.TextField()
     problem = models.TextField()
 
 class ActualConfig(models.Model):
@@ -31,7 +32,10 @@ def retrieve_choices(benchmarks):
 
 
 class ComputationForm(forms.Form):
-    f_pop = forms.IntegerField(label="Population")
-    f_alg = forms.ChoiceField(choices=(('SGA', 'SGA',), ('NSGA', 'NSGA-II',),('SPEA', 'SPEA 2',)),label="Algorithm")
-    f_paral = forms.ChoiceField(choices=(('None', 'None',), ('Demes pipe model', 'Demes pipe model',),('Demes Mpi model', 'Demes Mpi model',)),label="Parallelization")
-    f_problem = forms.ChoiceField(choices=retrieve_choices(benchmarks),label="Problem")
+    population_size = forms.IntegerField(label="Population")
+    algorithm = forms.ChoiceField(choices=(('SGA', 'SGA',), ('NSGA', 'NSGA-II',),('SPEA', 'SPEA 2',)),label="Algorithm")
+    parallel = forms.ChoiceField(choices=(('None', 'None',), ('Demes pipe model', 'Demes pipe model',),('Demes Mpi model', 'Demes Mpi model',)),label="Parallelization")
+    problem = forms.ChoiceField(choices=retrieve_choices(benchmarks),label="Problem")
+
+class ConfigurationForm(forms.Form):
+    configuration = forms.CharField(widget=forms.Textarea(attrs={"rows":"15", "cols":"95"}),label="")
