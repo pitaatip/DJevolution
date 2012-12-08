@@ -21,7 +21,7 @@ def orderComputation(request):
 
 def comp_detail(request,pk):
     comp = Computation.objects.get(pk=pk)
-    c = RequestContext(request, {'comp': comp,})
+    c = RequestContext(request, {'comp': comp,'pk' : pk,})
     if comp.algorithm == 'SGA':
         return render_to_response('computation/singleDetails.html', c)
     else:
@@ -31,6 +31,14 @@ def comp_detail(request,pk):
             comp.algorithm = "SPEA2"
         return render_to_response('computation/multiDetails.html', c)
 
+def partial_res(request,pk):
+    c = RequestContext(request, {"pk" : pk,})
+    return render_to_response('computation/partial.html', c)
+
+def view_configuration(request,pk):
+    comp = Computation.objects.get(pk=pk)
+    c = RequestContext(request, {'comp': comp,'pk' : pk,})
+    return render_to_response('computation/configuration.html', c)
 
 def set_configuration(request):
     if request.method == 'POST':

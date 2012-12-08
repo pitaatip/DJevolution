@@ -14,6 +14,8 @@ computation_list = ListView.as_view(model=Computation, template_name='computatio
 
 urlpatterns = patterns('',
     url(r'^VisualControllerApp/comp/(?P<pk>[a-z\d]+)/$', 'VisualControllerApp.views.comp_detail', name='comp_detail'),
+    url(r'^VisualControllerApp/computation/partial/(?P<pk>[a-z\d]+)/$', 'VisualControllerApp.views.partial_res', name='partial_res'),
+    url(r'^VisualControllerApp/computation/configuration/(?P<pk>[a-z\d]+)/$', 'VisualControllerApp.views.view_configuration', name='view_conf'),
     url(r'^VisualControllerApp/order/computation/$', 'VisualControllerApp.views.orderComputation'),
     url(r'^VisualControllerApp/order/configuration/$', 'VisualControllerApp.views.set_configuration'),
     url(r'^VisualControllerApp/(?P<view_name>[a-z/]+)/$', 'VisualControllerApp.views.simple_render'),
