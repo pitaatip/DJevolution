@@ -24,22 +24,18 @@
                 });
 
                 var chart;
-                var time = (new Date()).getTime();
-                var i,j;
-                var temp = [];
-                var tab = [];
+                var tab = [
+                    {%  for res in comp.partial_result %}
+                        [
+                            {% for val in res %}
+                                {{ val }},
+                            {% endfor %}
+                        ],
+                    {% endfor %}
 
-                for (j=0;j<3;j++){
-                    for (i = -19; i <= 0; i++) {
-                        temp.push({
-                            x: time + i * 1000,
-                            y: Math.random()
-                        });
-                    }
-                    tab.push(temp);
-                    temp = [];
-                };
-                i = 0;
+                        ];
+
+                var i = 0;
                 chart = new Highcharts.Chart({
                     chart: {
                         renderTo: 'container',
@@ -51,11 +47,11 @@
                                 // set up the updating of the chart each second
                                 var series = this.series[0];
                                 setInterval(function() {
-                                    i= (i+1) % 3;
+                                    i= (i+1) % {{ comp.partial_result|length }};
                                     series.setData(tab[i],false);
                                    series.name = i
-                                    chart.redraw();
-                                }, 3000);
+                                   chart.redraw();
+                                }, 1500);
 
                             }
                         }
@@ -113,21 +109,8 @@
                         enabled: false
                     },
                     series: [{
-                        name: 'Random data',
-                        data: (function() {
-                            // generate an array of random data
-                            var data = [],
-                                    time = (new Date()).getTime(),
-                                    i;
-
-                            for (i = -19; i <= 0; i++) {
-                                data.push({
-                                    x: time + i * 1000,
-                                    y: Math.random()
-                                });
-                            }
-                            return data;
-                        })()
+                        name: '0',
+                        data: tab[0]
                     }]
                 });
             });

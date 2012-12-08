@@ -53,10 +53,11 @@ def compute_nsga(computation):
     problem_ = computation['problem']
     configuration_ = computation['configuration']
     a = datetime.now()
-    new_result = nsgaII_algorithm.main(size_,problem_,configuration_)
+    new_result,partial_result = nsgaII_algorithm.main(size_,problem_,configuration_)
     b = datetime.now()
     c = b - a
     computation['new_result'] = new_result
+    computation['partial_result'] = partial_result
     computation['computed'] = True
     computation['computation_time'] = str(c.total_seconds()) + "s."
 
@@ -66,10 +67,11 @@ def compute_spea(computation):
     problem_ = computation['problem']
     configuration_ = computation['configuration']
     a = datetime.now()
-    new_result = spea2_algorithm.main(size_,problem_,configuration_)
+    new_result,partial_result = spea2_algorithm.main(size_,problem_,configuration_)
     b = datetime.now()
     c = b - a
     computation['new_result'] = new_result
+    computation['partial_result'] = partial_result
     computation['computed'] = True
     computation['computation_time'] = str(c.total_seconds()) + "s."
 

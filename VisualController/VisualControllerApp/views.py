@@ -32,7 +32,13 @@ def comp_detail(request,pk):
         return render_to_response('computation/multiDetails.html', c)
 
 def partial_res(request,pk):
-    c = RequestContext(request, {"pk" : pk,})
+    comp = Computation.objects.get(pk=pk)
+    print "printing partial res"
+    for a in comp.partial_result:
+        print "for each a"
+        for b in a:
+            print b
+    c = RequestContext(request, {'comp': comp,'pk' : pk,})
     return render_to_response('computation/partial.html', c)
 
 def view_configuration(request,pk):

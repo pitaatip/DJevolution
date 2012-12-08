@@ -46,7 +46,7 @@ def main(pop_n=None,problem="zdt3",configuration = None):
     pop = toolbox.population(n=N)
     archive = []
     curr_gen = 1
-
+    partial_res = []
     while True:
         # Step 2 Fitness assignement
         for ind in pop:
@@ -77,11 +77,12 @@ def main(pop_n=None,problem="zdt3",configuration = None):
                 toolbox.mutate(mutant)
 
         pop = offspring_pool
-
+        if curr_gen % 10 == 0:
+            partial_res.append(sorted([(ind.fitness.values[0], ind.fitness.values[1]) for ind in pop],key=lambda x:x[0]))
         curr_gen += 1
 
     set_ = [(ind.fitness.values[0], ind.fitness.values[1]) for ind in final_set]
-    return sorted(set_,  key=lambda x:x[0])
+    return sorted(set_,  key=lambda x:x[0]),partial_res
 
 if __name__ == '__main__':
     main()

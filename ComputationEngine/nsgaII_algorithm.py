@@ -48,7 +48,8 @@ def main(pop_n = None, problem="zdt2",configuration = None):
     # sort using non domination sort (k is the same as n of population - only sort is applied)
     pop = toolbox.select(pop, k=N)
 
-    for _ in xrange(GEN):
+    partial_res = []
+    for g in xrange(GEN):
         #select parent pool with tournament dominated selection
         parent_pool = toolbox.selectTournament(pop, k=N)
         offspring_pool = map(toolbox.clone, parent_pool)
@@ -71,9 +72,12 @@ def main(pop_n = None, problem="zdt2",configuration = None):
         # sort and select new population
         pop = toolbox.select(pop, k=N)
 
+        if g % 10 == 0:
+            partial_res.append(sorted([(ind.fitness.values[0], ind.fitness.values[1]) for ind in pop],key=lambda x:x[0]))
+
     first_front = tools.sortFastND(pop, k=N)[0]
     front_ = [(ind.fitness.values[0], ind.fitness.values[1]) for ind in first_front]
-    return sorted(front_,key=lambda x:x[0])
+    return sorted(front_,key=lambda x:x[0]), partial_res
 
 if __name__ == '__main__':
     main()

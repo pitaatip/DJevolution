@@ -17,6 +17,7 @@ class Computation(models.Model):
     new_result = RawField()
     configuration = models.TextField()
     problem = models.TextField()
+    partial_result = RawField()
 
 class ActualConfig(models.Model):
     population_size = models.IntegerField()
