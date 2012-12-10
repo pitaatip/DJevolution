@@ -14,5 +14,9 @@
 
 {% block content %}
     <h2>Parallelization settings</h2>
+    <form action="/VisualControllerApp/order/parallelization/" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Next" />
+    </form>
 
 {% endblock %}

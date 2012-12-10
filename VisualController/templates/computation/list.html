@@ -1,5 +1,6 @@
 {% extends "computation/baseDetails.html" %}
 
+
 {% block menu_up %}
     <div id="talltabs-orange">
         <ul class="two">
@@ -10,27 +11,37 @@
 {% endblock %}
 
 {% block content %}
+    <script type="text/javascript">
+        function ChangePointer(tableRow)
+        {
+            tableRow.style.cursor='pointer'
+        }
+
+        function DoNav(theUrl)
+        {
+            document.location.href = theUrl;
+        }
+    </script>
     <div id="menu">
     <h2>Computation List</h2>
     </div>
     <table id="hor-zebra">
         <thead>
         <tr >
-            <th>Population</th>
-            <th>Algorithm</th>
             <th>Date</th>
+            <th>Algorithm</th>
+            <th>Problem</th>
             <th>Completed</th>
             <th>Action</th>
         </tr>
         </thead>
         <tbody>
         {%  for comp in computation_list %}
-            <tr class="odd">
-                <td>
-                    <a href="{% url comp_detail comp.id %}">{{ comp.population_size }}</a>
-                </td>
-                <td>{{ comp.algorithm }} </td>
+            <tr class="odd"  onmouseover="ChangePointer(this);"
+                onclick="DoNav('{% url comp_detail comp.id %}');">
                 <td>{{ comp.created_on }} </td>
+                <td>{{ comp.algorithm }} </td>
+                <td>{{ comp.problem }} </td>
                 <td>{{ comp.computed }} </td>
                 <td><a href="{% url comp_delete comp.id %}"><button type="button">Delete</button></a></td>
             </tr>

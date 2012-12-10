@@ -5,7 +5,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
-from VisualControllerApp.models import Computation, ActualConfig
+from VisualControllerApp.models import Computation
 
 
 admin.autodiscover()
@@ -18,6 +18,8 @@ urlpatterns = patterns('',
     url(r'^VisualControllerApp/computation/configuration/(?P<pk>[a-z\d]+)/$', 'VisualControllerApp.views.view_configuration', name='view_conf'),
     url(r'^VisualControllerApp/order/computation/$', 'VisualControllerApp.views.orderComputation'),
     url(r'^VisualControllerApp/order/configuration/$', 'VisualControllerApp.views.set_configuration'),
+    url(r'^VisualControllerApp/order/monitoring/$', 'VisualControllerApp.views.set_monitoring'),
+    url(r'^VisualControllerApp/order/parallelization/$', 'VisualControllerApp.views.set_parallel'),
     url(r'^VisualControllerApp/(?P<view_name>[a-z/]+)/$', 'VisualControllerApp.views.simple_render'),
     url(r'^VisualControllerApp/$', computation_list, name='computation_list'),
     url(r'^VisualControllerApp/order/start$', 'VisualControllerApp.views.start_computation'),

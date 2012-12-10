@@ -1,3 +1,5 @@
+pop_n = 100
+n_gen = 200
 creator.create("FitnessMax", base.Fitness, weights=(-1.0,-1.0,))
 creator.create("Individual", list, fitness=creator.FitnessMax)
 toolbox.register("attr_float", my_rand)

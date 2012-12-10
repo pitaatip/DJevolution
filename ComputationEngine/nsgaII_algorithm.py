@@ -16,17 +16,18 @@ V=1
 def my_rand():
     return random.random()*(V-U) - (V+U)/2
 
-def main(pop_n = None, problem="zdt2",configuration = None):
-    if pop_n:
-        N =pop_n
-    print pop_n, N, problem
+def main(monitor = 10,problem="zdt2",configuration = None):
     f_problem = getattr(benchmarks, problem)
     toolbox = base.Toolbox()
     try:
         for command in configuration.split('\n'):
             if command:
-                print "executing: ", command
-                eval(command)
+                if " = " in command:
+                    print "executing", command
+                    exec command
+                else:
+                    print "evaluating: ", command
+                    eval(command)
     except SyntaxError as e:
         print "Syntax error", e.filename, e.offset, e.lineno, e.text
         return []
@@ -37,6 +38,11 @@ def main(pop_n = None, problem="zdt2",configuration = None):
         print "Unexpected error in evaluating configuration:", sys.exc_info()[0]
         print configuration
         return []
+
+    if pop_n:
+        N = pop_n
+    if n_gen:
+        GEN = n_gen
 
     toolbox.register("evaluate", f_problem)
 
@@ -72,7 +78,7 @@ def main(pop_n = None, problem="zdt2",configuration = None):
         # sort and select new population
         pop = toolbox.select(pop, k=N)
 
-        if g % 10 == 0:
+        if g % monitor == 0:
             partial_res.append(sorted([(ind.fitness.values[0], ind.fitness.values[1]) for ind in pop],key=lambda x:x[0]))
 
     first_front = tools.sortFastND(pop, k=N)[0]

@@ -2,18 +2,16 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
-from VisualControllerApp.models import ComputationForm, Computation, ConfigurationForm
+from VisualControllerApp.models import ComputationForm, Computation, ConfigurationForm, ParallelForm, MonitoringForm
 
 def orderComputation(request):
     if request.method == 'POST':
         form = ComputationForm(request.POST)
         if form.is_valid():
-            request.session.update(get_data(form.cleaned_data,'population_size','parallel','algorithm','problem'))
+            request.session.update(get_data(form.cleaned_data,'algorithm','problem'))
             return HttpResponseRedirect('/VisualControllerApp/order/configuration') # Redirect after POST
-    else:
-        pass
     if request.session.get('algorithm') is not None:
-        form = ComputationForm(get_data(request.session,'population_size','parallel','algorithm','problem'))
+        form = ComputationForm(get_data(request.session,'algorithm','problem'))
     else:
         form = ComputationForm()
     c = RequestContext(request, {'form': form,})
@@ -52,8 +50,6 @@ def set_configuration(request):
         if form.is_valid():
             request.session.update(get_data(form.cleaned_data,'configuration'))
             return HttpResponseRedirect('/VisualControllerApp/order/monitoring') # Redirect after POST
-    else:
-        pass
     if request.session.get('configuration') is not None:
         form = ConfigurationForm(get_data(request.session,'configuration'))
     else:
@@ -61,6 +57,33 @@ def set_configuration(request):
         form = ConfigurationForm({'configuration':conf})
     c = RequestContext(request, {'form': form,})
     return render_to_response('order/configuration.html', c)
+
+def set_monitoring(request):
+    if request.method == 'POST':
+        form = MonitoringForm(request.POST)
+        if form.is_valid():
+            request.session.update(get_data(form.cleaned_data,'monitoring'))
+            return HttpResponseRedirect('/VisualControllerApp/order/parallelization') # Redirect after POST
+    if request.session.get('monitoring') is not None:
+        form = MonitoringForm(get_data(request.session,'monitoring'))
+    else:
+        form = MonitoringForm()
+    c = RequestContext(request, {'form': form,})
+    return render_to_response('order/monitoring.html', c)
+
+def set_parallel(request):
+    if request.method == 'POST':
+        form = ParallelForm(request.POST)
+        if form.is_valid():
+            request.session.update(get_data(form.cleaned_data,'parallel'))
+            return HttpResponseRedirect('/VisualControllerApp/order/computation/') # Redirect after POST
+    if request.session.get('parallel') is not None:
+        form = ParallelForm(get_data(request.session,'parallel'))
+    else:
+        form = ParallelForm()
+    c = RequestContext(request, {'form': form,})
+    return render_to_response('order/parallelization.html', c)
+
 
 def simple_render(request,view_name):
     c = RequestContext(request)
@@ -72,7 +95,7 @@ def comp_delete(request, pk):
     return HttpResponseRedirect('/VisualControllerApp/') # Redirect after POST
 
 def start_computation(request):
-    parameters = get_data(request.session,'problem','population_size','parallel','algorithm','configuration')
+    parameters = get_data(request.session,'problem','parallel','algorithm','configuration','monitoring')
     parameters['computed'] = False
     comp=Computation(**parameters)
     request.session.clear()

@@ -6,9 +6,8 @@ from deap import benchmarks
 
 # Create your models here.
 class Computation(models.Model):
-    created_on = models.DateTimeField(default=datetime.datetime.now())
+    created_on = models.DateTimeField(auto_now_add=True, null=True)
     computed = models.BooleanField()
-    population_size = models.IntegerField()
     results = ListField(models.FloatField(),null=True,default=[])
     restrigin_val = models.FloatField(null=True)
     parallel = models.TextField()
@@ -18,10 +17,7 @@ class Computation(models.Model):
     configuration = models.TextField()
     problem = models.TextField()
     partial_result = RawField()
-
-class ActualConfig(models.Model):
-    population_size = models.IntegerField()
-    configuration = models.TextField()
+    monitoring = models.IntegerField()
 
 
 def retrieve_choices(benchmarks):
@@ -33,10 +29,16 @@ def retrieve_choices(benchmarks):
 
 
 class ComputationForm(forms.Form):
-    population_size = forms.IntegerField(label="Population")
+#    population_size = forms.IntegerField(label="Population")
+#    generations = forms.IntegerField(label="Nr of generations")
     algorithm = forms.ChoiceField(choices=(('SGA', 'SGA',), ('NSGA', 'NSGA-II',),('SPEA', 'SPEA 2',)),label="Algorithm")
-    parallel = forms.ChoiceField(choices=(('None', 'None',), ('Demes pipe model', 'Demes pipe model',),('Demes Mpi model', 'Demes Mpi model',)),label="Parallelization")
     problem = forms.ChoiceField(choices=retrieve_choices(benchmarks),label="Problem")
 
 class ConfigurationForm(forms.Form):
     configuration = forms.CharField(widget=forms.Textarea(attrs={"rows":"15", "cols":"95"}),label="")
+
+class MonitoringForm(forms.Form):
+    monitoring = forms.IntegerField(label="Gather results after this many generations")
+
+class ParallelForm(forms.Form):
+    parallel = forms.ChoiceField(choices=(('None', 'None',), ('Demes pipe model', 'Demes pipe model',),('Demes Mpi model', 'Demes Mpi model',)),label="Parallelization")

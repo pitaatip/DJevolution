@@ -14,5 +14,10 @@
 
 {% block content %}
     <h2>Monitoring settings</h2>
+    <form action="/VisualControllerApp/order/monitoring/" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Next" />
+    </form>
+
 
 {% endblock %}

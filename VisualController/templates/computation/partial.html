@@ -47,10 +47,10 @@
                                 // set up the updating of the chart each second
                                 var series = this.series[0];
                                 setInterval(function() {
-                                    i= (i+1) % {{ comp.partial_result|length }};
                                     series.setData(tab[i],false);
-                                   series.name = i
-                                   chart.redraw();
+                                    series.name = i
+                                    i= (i+1) % {{ comp.partial_result|length }};
+                                    chart.redraw();
                                 }, 1500);
 
                             }
@@ -121,6 +121,9 @@
     </script>
 
     <h2>Partial results of computation</h2>
+
+    Results were gathered ech {{ comp.monitoring }} generations.
+
     <div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
     ​
 
