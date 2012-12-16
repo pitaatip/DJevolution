@@ -18,6 +18,7 @@ class Computation(models.Model):
     problem = models.TextField()
     partial_result = RawField()
     monitoring = models.IntegerField()
+    repeat = models.IntegerField()
 
 
 def retrieve_choices(benchmarks):
@@ -29,10 +30,9 @@ def retrieve_choices(benchmarks):
 
 
 class ComputationForm(forms.Form):
-#    population_size = forms.IntegerField(label="Population")
-#    generations = forms.IntegerField(label="Nr of generations")
     algorithm = forms.ChoiceField(choices=(('SGA', 'SGA',), ('NSGA', 'NSGA-II',),('SPEA', 'SPEA 2',)),label="Algorithm")
     problem = forms.ChoiceField(choices=retrieve_choices(benchmarks),label="Problem")
+    repeat = forms.IntegerField(label="Repeat computation")
 
 class ConfigurationForm(forms.Form):
     configuration = forms.CharField(widget=forms.Textarea(attrs={"rows":"15", "cols":"95"}),label="")

@@ -52,12 +52,13 @@ def compute_nsga(computation):
     problem_ = computation['problem']
     configuration_ = computation['configuration']
     monitor = computation['monitoring']
+    repeat = computation['repeat']
     a = datetime.now()
-    new_result,partial_result = nsgaII_algorithm.main(monitor,problem_,configuration_)
+    results = [nsgaII_algorithm.main(monitor,problem_,configuration_) for _ in xrange(repeat)]
     b = datetime.now()
     c = b - a
-    computation['new_result'] = new_result
-    computation['partial_result'] = partial_result
+    computation['new_result'] = [x for (x,_) in results]
+    computation['partial_result'] = [x for (_,x) in results]
     computation['computed'] = True
     computation['computation_time'] = str(c.total_seconds()) + "s."
 
@@ -66,12 +67,13 @@ def compute_spea(computation):
     problem_ = computation['problem']
     configuration_ = computation['configuration']
     monitor = computation['monitoring']
+    repeat = computation['repeat']
     a = datetime.now()
-    new_result,partial_result = spea2_algorithm.main(monitor,problem_,configuration_)
+    results = [spea2_algorithm.main(monitor,problem_,configuration_) for _ in xrange(repeat)]
     b = datetime.now()
     c = b - a
-    computation['new_result'] = new_result
-    computation['partial_result'] = partial_result
+    computation['new_result'] = [x for (x,_) in results]
+    computation['partial_result'] = [x for (_,x) in results]
     computation['computed'] = True
     computation['computation_time'] = str(c.total_seconds()) + "s."
 

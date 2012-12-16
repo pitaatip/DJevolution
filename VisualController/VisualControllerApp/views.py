@@ -8,10 +8,10 @@ def orderComputation(request):
     if request.method == 'POST':
         form = ComputationForm(request.POST)
         if form.is_valid():
-            request.session.update(get_data(form.cleaned_data,'algorithm','problem'))
+            request.session.update(get_data(form.cleaned_data,'algorithm','problem','repeat'))
             return HttpResponseRedirect('/VisualControllerApp/order/configuration') # Redirect after POST
     if request.session.get('algorithm') is not None:
-        form = ComputationForm(get_data(request.session,'algorithm','problem'))
+        form = ComputationForm(get_data(request.session,'algorithm','problem','repeat'))
     else:
         form = ComputationForm()
     c = RequestContext(request, {'form': form,})
@@ -19,7 +19,7 @@ def orderComputation(request):
 
 def comp_detail(request,pk):
     comp = Computation.objects.get(pk=pk)
-    c = RequestContext(request, {'comp': comp,'pk' : pk,})
+    c = RequestContext(request, {'comp': comp,'pk' : pk,'range':range(30)})
     if comp.algorithm == 'SGA':
         return render_to_response('computation/singleDetails.html', c)
     else:
@@ -95,7 +95,7 @@ def comp_delete(request, pk):
     return HttpResponseRedirect('/VisualControllerApp/') # Redirect after POST
 
 def start_computation(request):
-    parameters = get_data(request.session,'problem','parallel','algorithm','configuration','monitoring')
+    parameters = get_data(request.session,'problem','parallel','algorithm','configuration','monitoring','repeat')
     parameters['computed'] = False
     comp=Computation(**parameters)
     request.session.clear()
