@@ -4,7 +4,17 @@ from django import forms
 from djangotoolbox.fields import ListField, RawField
 from deap import benchmarks
 
-# Create your models here.
+
+# HELPER METHODS
+
+def retrieve_choices(benchmarks):
+    choices = []
+    for b in dir(benchmarks):
+        if "__" not in b:
+            choices.append((str(b),str(b),))
+    return choices
+
+# ENTITIES
 class Computation(models.Model):
     created_on = models.DateTimeField(auto_now_add=True, null=True)
     computed = models.BooleanField()
@@ -20,15 +30,7 @@ class Computation(models.Model):
     monitoring = models.IntegerField()
     repeat = models.IntegerField()
 
-
-def retrieve_choices(benchmarks):
-    choices = []
-    for b in dir(benchmarks):
-        if "__" not in b:
-            choices.append((str(b),str(b),))
-    return choices
-
-
+#FORMS
 class ComputationForm(forms.Form):
     algorithm = forms.ChoiceField(choices=(('SGA', 'SGA',), ('NSGA', 'NSGA-II',),('SPEA', 'SPEA 2',)),label="Algorithm")
     problem = forms.ChoiceField(choices=retrieve_choices(benchmarks),label="Problem")
@@ -42,3 +44,6 @@ class MonitoringForm(forms.Form):
 
 class ParallelForm(forms.Form):
     parallel = forms.ChoiceField(choices=(('None', 'None',), ('Demes pipe model', 'Demes pipe model',),('Demes Mpi model', 'Demes Mpi model',)),label="Parallelization")
+
+
+

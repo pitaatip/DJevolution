@@ -4,12 +4,12 @@ from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 from VisualControllerApp.models import ComputationForm, Computation, ConfigurationForm, ParallelForm, MonitoringForm
 
+### VIEWS METHODS
+
 def orderComputation(request):
     if request.method == 'POST':
-        form = ComputationForm(request.POST)
-        if form.is_valid():
-            request.session.update(get_data(form.cleaned_data,'algorithm','problem','repeat'))
-            return HttpResponseRedirect('/VisualControllerApp/order/configuration') # Redirect after POST
+        return updateSessionAndRedirect(request,ComputationForm,
+            '/VisualControllerApp/order/configuration','algorithm','problem','repeat')
     if request.session.get('algorithm') is not None:
         form = ComputationForm(get_data(request.session,'algorithm','problem','repeat'))
     else:
@@ -46,10 +46,8 @@ def view_configuration(request,pk):
 
 def set_configuration(request):
     if request.method == 'POST':
-        form = ConfigurationForm(request.POST)
-        if form.is_valid():
-            request.session.update(get_data(form.cleaned_data,'configuration'))
-            return HttpResponseRedirect('/VisualControllerApp/order/monitoring') # Redirect after POST
+        return updateSessionAndRedirect(request,ConfigurationForm,
+            '/VisualControllerApp/order/monitoring','configuration')
     if request.session.get('configuration') is not None:
         form = ConfigurationForm(get_data(request.session,'configuration'))
     else:
@@ -60,10 +58,8 @@ def set_configuration(request):
 
 def set_monitoring(request):
     if request.method == 'POST':
-        form = MonitoringForm(request.POST)
-        if form.is_valid():
-            request.session.update(get_data(form.cleaned_data,'monitoring'))
-            return HttpResponseRedirect('/VisualControllerApp/order/parallelization') # Redirect after POST
+        return updateSessionAndRedirect(request,MonitoringForm,
+            '/VisualControllerApp/order/parallelization','monitoring')
     if request.session.get('monitoring') is not None:
         form = MonitoringForm(get_data(request.session,'monitoring'))
     else:
@@ -73,10 +69,8 @@ def set_monitoring(request):
 
 def set_parallel(request):
     if request.method == 'POST':
-        form = ParallelForm(request.POST)
-        if form.is_valid():
-            request.session.update(get_data(form.cleaned_data,'parallel'))
-            return HttpResponseRedirect('/VisualControllerApp/order/computation/') # Redirect after POST
+        return updateSessionAndRedirect(request,ParallelForm,
+            '/VisualControllerApp/order/computation/','parallel')
     if request.session.get('parallel') is not None:
         form = ParallelForm(get_data(request.session,'parallel'))
     else:
@@ -84,6 +78,13 @@ def set_parallel(request):
     c = RequestContext(request, {'form': form,})
     return render_to_response('order/parallelization.html', c)
 
+### HELPER METHODS
+
+def updateSessionAndRedirect(request,formClass,redirectDestiny,*sessionAttrs):
+    form = formClass(request.POST)
+    if form.is_valid():
+        request.session.update(get_data(form.cleaned_data,*sessionAttrs))
+        return HttpResponseRedirect(redirectDestiny) # Redirect after POST
 
 def simple_render(request,view_name):
     c = RequestContext(request)
