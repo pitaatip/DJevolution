@@ -59,9 +59,9 @@ def set_configuration(request):
 def set_monitoring(request):
     if request.method == 'POST':
         return updateSessionAndRedirect(request,MonitoringForm,
-            '/VisualControllerApp/order/parallelization','monitoring')
+            '/VisualControllerApp/order/parallelization','monitoring','is_part_spacing')
     if request.session.get('monitoring') is not None:
-        form = MonitoringForm(get_data(request.session,'monitoring'))
+        form = MonitoringForm(get_data(request.session,'monitoring','is_part_spacing'))
     else:
         form = MonitoringForm()
     c = RequestContext(request, {'form': form,})
@@ -96,7 +96,7 @@ def comp_delete(request, pk):
     return HttpResponseRedirect('/VisualControllerApp/') # Redirect after POST
 
 def start_computation(request):
-    parameters = get_data(request.session,'problem','parallel','algorithm','configuration','monitoring','repeat')
+    parameters = get_data(request.session,'problem','parallel','algorithm','configuration','monitoring','repeat','is_part_spacing')
     parameters['computed'] = False
     comp=Computation(**parameters)
     request.session.clear()
@@ -115,3 +115,4 @@ def retrieve_conf_for_alg(session):
     file_name = {"NSGA":"nsga_config.py","SPEA":"spea_config.py"}[session.get("algorithm")]
     with open(file_name) as f:
         return f.read()
+

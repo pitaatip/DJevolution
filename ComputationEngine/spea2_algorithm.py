@@ -10,8 +10,8 @@ Created on 13-11-2012
 '''
 
 class Spea2Algorithm(BaseAlgorithm):
-    def __init__(self,monitoring,problem,configuration):
-        BaseAlgorithm.__init__(self,monitoring,problem,configuration)
+    def __init__(self,monitoring,problem,configuration,is_part_spacing):
+        BaseAlgorithm.__init__(self,monitoring,problem,configuration,is_part_spacing)
         self.N=80
         self.GEN=100
         self.Nbar = 40
@@ -22,6 +22,7 @@ class Spea2Algorithm(BaseAlgorithm):
         curr_gen = 1
 
         while True:
+            print "CURRENT GEN: " + str(curr_gen)
             # Step 2 Fitness assignement
             for ind in pop:
                 ind.fitness.values = toolbox.evaluate(ind)
@@ -53,6 +54,8 @@ class Spea2Algorithm(BaseAlgorithm):
             pop = offspring_pool
 
             self.monitor(curr_gen - 1,pop)
+
+            self.compute_partial_spacing(archive)
 
             curr_gen += 1
 

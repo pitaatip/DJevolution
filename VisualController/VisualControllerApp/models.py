@@ -29,10 +29,14 @@ class Computation(models.Model):
     partial_result = RawField()
     monitoring = models.IntegerField()
     repeat = models.IntegerField()
+    final_space = ListField(models.FloatField(null=True))
+    is_part_spacing = models.BooleanField(default=False)
+    partial_spacing = RawField()
+
 
 #FORMS
 class ComputationForm(forms.Form):
-    algorithm = forms.ChoiceField(choices=(('SGA', 'SGA',), ('NSGA', 'NSGA-II',),('SPEA', 'SPEA 2',)),label="Algorithm")
+    algorithm = forms.ChoiceField(choices=(('NSGA', 'NSGA-II',),('SPEA', 'SPEA 2',)),label="Algorithm")
     problem = forms.ChoiceField(choices=retrieve_choices(benchmarks),label="Problem")
     repeat = forms.IntegerField(label="Repeat computation")
 
@@ -41,6 +45,7 @@ class ConfigurationForm(forms.Form):
 
 class MonitoringForm(forms.Form):
     monitoring = forms.IntegerField(label="Gather results after this many generations")
+    is_part_spacing = forms.BooleanField(label="Compute spacing value after each generation?")
 
 class ParallelForm(forms.Form):
     parallel = forms.ChoiceField(choices=(('None', 'None',), ('Demes pipe model', 'Demes pipe model',),('Demes Mpi model', 'Demes Mpi model',)),label="Parallelization")

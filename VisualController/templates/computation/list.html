@@ -9,6 +9,7 @@
         </ul>
     </div>
 {% endblock %}
+{% load poll_extras %}
 
 {% block content %}
     <script type="text/javascript">
@@ -32,6 +33,7 @@
             <th>Algorithm</th>
             <th>Problem</th>
             <th>Completed</th>
+            <th>Spacing</th>
             <th>Action</th>
         </tr>
         </thead>
@@ -43,6 +45,7 @@
                 <td>{{ comp.algorithm }} </td>
                 <td>{{ comp.problem }} </td>
                 <td>{{ comp.computed }} </td>
+                <td>{{ comp.final_space|mean }} </td>
                 <td><a href="{% url comp_delete comp.id %}"><button type="button">Delete</button></a></td>
             </tr>
         {% endfor%}

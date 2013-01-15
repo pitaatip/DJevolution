@@ -10,8 +10,8 @@ Created on 06-06-2012
 '''
 
 class NsgaIIAlgorithm(BaseAlgorithm):
-    def __init__(self,monitoring,problem,configuration):
-        BaseAlgorithm.__init__(self,monitoring,problem,configuration)
+    def __init__(self,monitoring,problem,configuration,is_part_spacing):
+        BaseAlgorithm.__init__(self,monitoring,problem,configuration,is_part_spacing)
         self.N=100
         self.GEN=200
 
@@ -25,6 +25,7 @@ class NsgaIIAlgorithm(BaseAlgorithm):
         pop = toolbox.select(pop, k=self.N)
 
         for g in xrange(self.GEN):
+            print "CURRENT GEN: " + str(g)
             #select parent pool with tournament dominated selection
             parent_pool = toolbox.selectTournament(pop, k=self.N)
             offspring_pool = map(toolbox.clone, parent_pool)
@@ -48,5 +49,7 @@ class NsgaIIAlgorithm(BaseAlgorithm):
             pop = toolbox.select(pop, k=self.N)
 
             self.monitor(g,pop)
+
+            self.compute_partial_spacing(pop)
 
         self.final_front = tools.sortFastND(pop, k=self.N)[0]

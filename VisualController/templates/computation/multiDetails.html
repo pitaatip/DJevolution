@@ -1,4 +1,5 @@
 {% extends "computation/baseDetails.html" %}
+{% load poll_extras %}
 
 {% block menu_up %}
     <div id="talltabs-orange">
@@ -17,6 +18,7 @@
 
     <script>
         var chart;
+        var chart2;
         $(document).ready(function() {
             chart = new Highcharts.Chart({
                 chart: {
@@ -128,13 +130,128 @@
 
                 ]
             });
+
+            chart2 = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'container2',
+                    type: 'spline',
+                    inverted: false,
+                    width: 900,
+                    zoomType: 'xy'
+                },
+                title: {
+                    text: 'Computed spacing in each generation'
+                },
+                colors: [
+                    'rgba(223, 83, 83, .5)',
+                    'rgba(0, 0, 255, .5)',
+                    'rgba(255, 0, 0, .5)',
+                    'rgba(0, 255, 0, .5)',
+                    'rgba(119, 152, 191, .5)',
+                    'rgba(255,	20,	147	,.5)',
+                    'rgba(0,	250,	154	,.5)',
+                    'rgba(139,	90,	0,.5)',
+                    'rgba(238,	180,	34	,.5)',
+                    'rgba(238,	121,	66	,.5)',
+                    'rgba(255,	69,	0	,.5)',
+                    'rgba(142,	156,	142	,.5)',
+                    'rgba(255,	193,	193	,.5)',
+                    'rgba(139,	0,	0	,.5)'
+
+                ],
+                subtitle: {
+                    text: '{{ comp.algorithm }}'
+                },
+                xAxis: {
+                    reversed: false,
+                    title: {
+                        enabled: true,
+                        text: 'Generations'
+                    },
+                    gridLineColor: "#6bbb06",
+                    lineColor: "#6bbb06",
+                    minorGridLineColor: "#6bbb06",
+                    minorTickColor: "#6bbb06",
+                    tickColor: "#6bbb06",
+                    maxPadding: 0.05,
+                    startOnTick: true,
+                    endOnTick: true,
+                    showLastLabel: true
+                },
+                yAxis: {
+                    title: {
+                        text: 'Spacing val'
+                    },
+                    gridLineColor: "#6bbb06",
+                    lineColor: "#6bbb06",
+                    minorGridLineColor: "#6bbb06",
+                    minorTickColor: "#6bbb06",
+                    tickColor: "#6bbb06",
+
+                    lineWidth: 2
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'left',
+                    verticalAlign: 'top',
+                    x: 100,
+                    y: 70,
+                    floating: true,
+                    backgroundColor: '#FFFFFF',
+                    borderWidth: 1
+                },
+                tooltip: {
+                    formatter: function() {
+                        return 'Generation: '+
+                                this.x +' and spacing: '+ this.y;
+                    }
+                },
+                plotOptions: {
+                    spline: {
+                        lineWidth: 4,
+                        states: {
+                            hover: {
+                                lineWidth: 5
+                            }
+                        },
+                        marker: {
+                            enabled: false,
+                            states: {
+                                hover: {
+                                    enabled: true,
+                                    symbol: 'circle',
+                                    radius: 5,
+                                    lineWidth: 1
+                                }
+                            }
+                        },
+                        pointInterval: 1,
+                        pointStart: 0
+                    }
+                },
+                series: [
+                    {% for res in comp.partial_spacing %}
+                        {
+                            name: '{{ forloop.counter }} Computation',
+                            data:     [
+                                {% for val in res %}
+                                    {{ val }},
+                                {% endfor %}
+                            ],
+                            visible: {% if forloop.first %} true {% else %} false {% endif %}
+                        },
+                    {% endfor %}
+
+                ]
+            });
         });
 
 
 
 
 
-    </script>
+ </script>
+
 
 <h2>Computation details</h2>
 <h2>Algorithm: </h2>
@@ -145,8 +262,12 @@
 <p>{{ comp.created_on }}</p>
 <h2>Computation time: </h2>
 <p>{{ comp.computation_time}}<p>
+<h2>Spacing value, standard deviation: </h2>
+<p>{{ comp.final_space|mean}} , {{ comp.final_space|std}}<p>
 
 <div id="container" style="width: 100%; height: 600px"></div>
+
+<div id="container2" style="width: 100%; height: 600px"></div>
 
 <a href="/VisualControllerApp"><button type="button">Back</button></a>
 
