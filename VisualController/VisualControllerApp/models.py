@@ -48,7 +48,7 @@ class MonitoringForm(forms.Form):
     is_part_spacing = forms.BooleanField(label="Compute spacing value after each generation?")
 
 class ParallelForm(forms.Form):
-    parallel = forms.ChoiceField(choices=(('None', 'None',), ('Demes pipe model', 'Demes pipe model',),('Demes Mpi model', 'Demes Mpi model',)),label="Parallelization")
+    parallel = forms.ChoiceField(choices=(('None', 'None',), ('Demes pipe model', 'Demes pipe model',), ('picloud', 'Run multiple repeats at PiCloud',),('Demes Mpi model', 'Demes Mpi model',)),label="Parallelization")
 
 
 

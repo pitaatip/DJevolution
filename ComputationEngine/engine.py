@@ -2,11 +2,12 @@ import random
 
 from collections import deque
 from multiprocessing import Event, Pipe, Process
-from datetime import datetime
+from datetime import datetime, time
 from time import sleep
 from nsgaII_algorithm import NsgaIIAlgorithm
 from spea2_algorithm import Spea2Algorithm
 import demes_fromsite_PIPES
+import cloud
 
 __author__ = 'pita'
 
@@ -43,11 +44,43 @@ def prepareArgs(computation):
         args[arg] = computation[arg]
     return args
 
+def allDone(iterable):
+    for element in iterable:
+        if cloud.status(element) != 'done':
+            return False
+    return True
+
 def compute(computation, algorithm):
     args = prepareArgs(computation)
     a = datetime.now()
     alg = algorithms[algorithm](**args)
     results = [alg.compute() for _ in xrange(computation['repeat'])]
+    b = datetime.now()
+    c = b - a
+    changed_res = [ [u[i] for u in results] for i in xrange(4) ]
+    computation['new_result'] = changed_res[0]
+    computation['partial_result'] = changed_res[1]
+    computation['final_space'] = changed_res[2]
+    computation['partial_spacing'] = changed_res[3]
+    computation['computed'] = True
+    computation['computation_time'] = str(c.total_seconds()) + "s."
+
+
+def compute_on_picloud(computation, algorithm):
+    args = prepareArgs(computation)
+    a = datetime.now()
+    alg = algorithms[algorithm](**args)
+
+    # gather jids
+    print 'making call to cloud'
+    jids = [cloud.call(alg.compute) for _ in xrange(computation['repeat'])]
+    print 'list of job ids: ' +str(jids)
+    while not allDone(jids):
+        print 'some of job has not been accomplished'
+        sleep(1)
+
+    print 'all jobs done, gathering results'
+    results = [cloud.result(jid) for jid in jids]
     b = datetime.now()
     c = b - a
     changed_res = [ [u[i] for u in results] for i in xrange(4) ]
@@ -67,6 +100,9 @@ def main():
             print computation
             if computation['parallel'] == "None":
                 compute(computation,computation['algorithm'])
+                computations_.save(computation)
+            elif computation['parallel'] == "picloud":
+                compute_on_picloud(computation,computation['algorithm'])
                 computations_.save(computation)
             elif computation['parallel'] == "Demes pipe model":
                 compute_pipes(computation, computations_)
