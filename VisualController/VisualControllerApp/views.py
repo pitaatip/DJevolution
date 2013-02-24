@@ -5,6 +5,8 @@ from django.template.context import RequestContext
 from VisualControllerApp.models import ComputationForm, Computation, ConfigurationForm, ParallelForm, MonitoringForm
 
 ### VIEWS METHODS
+alg_conf_dispatcher = {"NsgaIIAlgorithm": "nsga_config.py", "Spea2Algorithm": "spea_config.py",
+                       "SimpleGeneticAlgorithm": "sga_config.py"}
 
 def orderComputation(request):
     if request.method == 'POST':
@@ -112,7 +114,7 @@ def get_data(container, *args):
 def retrieve_conf_for_alg(session):
     if not "algorithm" in session.keys() or session.get("algorithm") is None:
         return "Select algorithm first"
-    file_name = {"NSGA":"nsga_config.py","SPEA":"spea_config.py"}[session.get("algorithm")]
+    file_name = alg_conf_dispatcher[session.get("algorithm")]
     with open(file_name) as f:
         return f.read()
 
