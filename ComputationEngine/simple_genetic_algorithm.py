@@ -4,7 +4,6 @@ Created on 22-04-2012
 @author: pita
 '''
 
-
 import array
 import random
 
@@ -12,76 +11,58 @@ from deap import benchmarks, algorithms
 from deap import base
 from deap import creator
 from deap import tools
+import configuration_executor
 from alg_helper import eaSimple
 
-L = 32
-U = -4.0
-V = 4.0
-DIM = 20
+class SimpleGeneticAlgorithm(object):
+    def __init__(self,monitoring,problem,configuration,is_part_spacing):
+        self.monitoring = monitoring
+        # retrieve problem from benchmarks
+        self.f_problem = getattr(benchmarks, problem)
+        self.configuration = configuration
+        self.is_part_spacing = is_part_spacing
 
-def rastrigin_arg0(sol):
-    return benchmarks.rastrigin(convertArrToFloat(sol))
+    def compute(self):
+        # init toolbox
+        toolbox = base.Toolbox()
+        configuration_executor.execute(self.configuration)
+        # toolbox.register("evaluate", self.f_problem)
+        # before tests, only rastrigin
+        toolbox.register("evaluate", self.rastrigin_arg0)
+        random.seed(64)
 
-def binListToInt(l):
-    w=''
-    for a in l:
-        w=''.join([w,str(a)])
-    return int(w,2)
+        # init population
+        pop = toolbox.population(n=self.POP)
+        hof = tools.HallOfFame(1)
+        stats = tools.Statistics(lambda ind: ind.fitness.values)
+        stats.register("avg", tools.mean)
+        stats.register("std", tools.std)
+        stats.register("min", min)
+        stats.register("max", max)
 
-def sliceIntGen(arr,slice_n):
-    for i in xrange(0,len(arr)-slice_n,slice_n):
-        yield binListToInt(arr[i:i+slice_n].tolist())
+        algorithms.eaSimple(pop, toolbox, cxpb=0.8, mutpb=1, ngen=100, stats=stats,
+            halloffame=hof, verbose=True)
 
-def convertArrToFloat(arr):
-    x=[]
-    for a in sliceIntGen(arr,L):
-        x.append(U + (float(a) / (2**float(L) -1.0) )*(V - U))
-    return x
+        print "Best individual:  " + str(self.convertArrToFloat(hof[-1]))
+        print "Rastrigin value: " + str(self.rastrigin_arg0(hof[-1])[0]) + "\n\n\n"
 
+        return pop, stats, hof
 
-def main(population_size):
-    random.seed(64)
-    
-    creator.create("FitnessMax", base.Fitness, weights=(-1.0,))
-    creator.create("Individual", array.array, typecode='b', fitness=creator.FitnessMax) #@UndefinedVariable
-    
-    toolbox = base.Toolbox()
-    
-    # Attribute generator
-    toolbox.register("attr_bool", random.randint, 0, 1)
-    
-    # Structure initializers
-    toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_bool, DIM*L) #@UndefinedVariable
-    toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-    
-    
-    toolbox.register("evaluate", rastrigin_arg0)
-    toolbox.register("mate", tools.cxTwoPoints)
-    toolbox.register("mutate", tools.mutFlipBit, indpb=0.001)
-    toolbox.register("select", tools.selTournament, tournsize=5)
-    
-    pop = toolbox.population(n=population_size)
-    hof = tools.HallOfFame(1)
-    stats = tools.Statistics(lambda ind: ind.fitness.values)
-    stats.register("avg", tools.mean)
-    stats.register("std", tools.std)
-    stats.register("min", min)
-    stats.register("max", max)
-    
-    algorithms.eaSimple(pop, toolbox, cxpb=0.8, mutpb=1, ngen=100, stats=stats,
-                        halloffame=hof, verbose=True)
-    
-    return pop, stats, hof
+    def rastrigin_arg0(self,sol):
+        return benchmarks.rastrigin(self.convertArrToFloat(sol))
 
-if __name__ == "__main__":
-        print "\nDimension: "+str(DIM)
-        pop,stats,hof = main(300)
-        print "Best individual:  " + str(convertArrToFloat(hof[-1]))
-        print "Rastrigin value: " + str(rastrigin_arg0(hof[-1])[0]) + "\n\n\n"
-    
-#    for l in xrange(16,80,8):
-#        L = l
-#        print "\nDimension: "+str(DIM)
-#        pop,stats,hof = main()
-#        print "Best individual:  " + str(convertArrToFloat(hof[-1]))
-#        print "Rastrigin value: " + str(rastrigin_arg0(hof[-1])[0]) + "\n\n\n"
+    def binListToInt(self,l):
+        w=''
+        for a in l:
+            w=''.join([w,str(a)])
+        return int(w,2)
+
+    def sliceIntGen(self,arr,slice_n):
+        for i in xrange(0,len(arr)-slice_n,slice_n):
+            yield self.binListToInt(arr[i:i+slice_n].tolist())
+
+    def convertArrToFloat(self,arr):
+        x=[]
+        for a in self.sliceIntGen(arr):
+            x.append(self.U + (float(a) / (2**float(self.L) -1.0) )*(self.V - self.U))
+        return x

@@ -1,7 +1,7 @@
 from deap import benchmarks, algorithms, base, creator, tools
 import random
 import sys
-from base_algorithm import BaseAlgorithm
+from base_algorithm import BaseMultiAlgorithm
 
 '''
 Created on 13-11-2012
@@ -9,9 +9,9 @@ Created on 13-11-2012
 @author: wysek
 '''
 
-class Spea2Algorithm(BaseAlgorithm):
+class Spea2Algorithm(BaseMultiAlgorithm):
     def __init__(self,monitoring,problem,configuration,is_part_spacing):
-        BaseAlgorithm.__init__(self,monitoring,problem,configuration,is_part_spacing)
+        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,is_part_spacing)
         self.N=80
         self.GEN=100
         self.Nbar = 40

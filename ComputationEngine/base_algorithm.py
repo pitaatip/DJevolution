@@ -2,6 +2,7 @@ from deap import benchmarks, algorithms, base, creator, tools
 import random
 import sys
 import math
+import configuration_executor
 
 '''
 Created on 06-06-2012
@@ -12,7 +13,7 @@ Created on 06-06-2012
 def my_rand(V=1,U=0):
     return random.random()*(V-U) - (V+U)/2
 
-class BaseAlgorithm(object):
+class BaseMultiAlgorithm(object):
     def __init__(self,monitoring,problem,configuration,is_part_spacing):
         self.monitoring = monitoring
         # retrieve problem from benchmarks
@@ -24,7 +25,7 @@ class BaseAlgorithm(object):
         # init toolbox
         toolbox = base.Toolbox()
 
-        self.parse_and_execute_configuration(toolbox)
+        self.parse_and_execute_configuration()
 
         toolbox.register("evaluate", self.f_problem)
 
@@ -55,31 +56,8 @@ class BaseAlgorithm(object):
         part = sum( [math.pow(d_mean - d_vect,2) for d_vect in d_vects] )
         return math.sqrt( ( 1.0 / (len(d_vects) - 1.0) ) * part )
 
-
-
-    def parse_and_execute_configuration(self,toolbox):
-        try:
-            # process each line in configuration
-            for command in self.configuration.split('\n'):
-                if command:
-                    # if line is command
-                    if " = " in command:
-                        print "executing", command
-                        exec command
-                    # if line should be evaluated
-                    else:
-                        print "evaluating: ", command
-                        eval(command)
-        except SyntaxError as e:
-            print "Syntax error", e.filename, e.offset, e.lineno, e.text
-            return []
-        except NameError as e:
-            print "Name error", e.message
-            return []
-        except:
-            print "Unexpected error in evaluating configuration:", sys.exc_info()[0]
-            print self.configuration
-            return []
+    def parse_and_execute_configuration(self):
+        configuration_executor.execute(self.configuration)
 
     def monitor(self,generation,pop):
         if generation % self.monitoring == 0:
