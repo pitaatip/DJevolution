@@ -36,7 +36,7 @@ class Computation(models.Model):
 
 #FORMS
 class ComputationForm(forms.Form):
-    algorithm = forms.ChoiceField(choices=(('NSGA', 'NSGA-II',),('SPEA', 'SPEA 2',)),label="Algorithm")
+    algorithm = forms.ChoiceField(choices=(('NsgaIIAlgorithm', 'NSGA-II',),('Spea2Algorithm', 'SPEA 2',),('SimpleGeneticAlgorithm', 'SGA',)),label="Algorithm")
     problem = forms.ChoiceField(choices=retrieve_choices(benchmarks),label="Problem")
     repeat = forms.IntegerField(label="Repeat computation")
 

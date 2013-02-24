@@ -6,14 +6,12 @@ from datetime import datetime
 from time import sleep
 from nsgaII_algorithm import NsgaIIAlgorithm
 from spea2_algorithm import Spea2Algorithm
+from simple_genetic_algorithm import SimpleGeneticAlgorithm
 import demes_fromsite_PIPES
 
 __author__ = 'pita'
 
 import pymongo
-
-algorithms = {"NSGA" : NsgaIIAlgorithm,
-              "SPEA" : Spea2Algorithm}
 
 def compute_pipes(computation, computations):
     size_ = computation['population_size']
@@ -46,7 +44,8 @@ def prepareArgs(computation):
 def compute(computation, algorithm):
     args = prepareArgs(computation)
     a = datetime.now()
-    alg = algorithms[algorithm](**args)
+    alg = eval(algorithm)(**args)
+#    alg = algorithms[algorithm](**args)
     results = [alg.compute() for _ in xrange(computation['repeat'])]
     b = datetime.now()
     c = b - a
