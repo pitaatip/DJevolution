@@ -26,10 +26,6 @@ def comp_detail(request,pk):
     if comp.algorithm == 'SGA':
         return render_to_response('computation/singleDetails.html', c)
     else:
-        if comp.algorithm == 'NSGA':
-            comp.algorithm = 'NSGA-II'
-        else:
-            comp.algorithm = "SPEA2"
         return render_to_response('computation/multiDetails.html', c)
 
 def partial_res(request,pk):
@@ -106,7 +102,6 @@ def download_ind(request, pk):
     c.writerow(["Fitness1","Fitness2"])
     for ind in comp.new_result:
         c.writerow([str(ind[0]),str(ind[1])])
-
     return response
 
 def start_computation(request):

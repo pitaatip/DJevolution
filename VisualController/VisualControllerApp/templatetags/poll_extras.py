@@ -10,6 +10,11 @@ register = template.Library()
 def mean(value):
     return numpy.mean(value)
 
+
+@register.filter
+def sort_comp(value):
+    return sorted(value, key=lambda x: x.created_on, reverse=True)
+
 @register.filter
 def std(value):
     return numpy.std(value)

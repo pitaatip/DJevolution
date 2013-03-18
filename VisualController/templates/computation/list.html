@@ -38,7 +38,7 @@
         </tr>
         </thead>
         <tbody>
-        {%  for comp in computation_list %}
+        {%  for comp in computation_list|sort_comp %}
             <tr class="odd"  onmouseover="ChangePointer(this);"
                 onclick="DoNav('{% url comp_detail comp.id %}');">
                 <td>{{ comp.created_on }} </td>
