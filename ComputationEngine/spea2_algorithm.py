@@ -61,7 +61,7 @@ class Spea2Algorithm(BaseMultiAlgorithm):
                 ind.fitness.values = toolbox.evaluate(ind)
 
             # Step 3 Environmental selection
-            archive  = toolbox.select(pop + archive, k=self.Nbar)
+            archive,archive_fitness  = toolbox.select(pop + archive, k=self.Nbar)
 
             # Step 4 Termination
             if curr_gen >= self.GEN:
@@ -69,7 +69,7 @@ class Spea2Algorithm(BaseMultiAlgorithm):
                 break
 
             # Step 5 Mating Selection
-            mating_pool = selTournamentSPEA2(archive, k=self.N, tournsize=2)
+            mating_pool = toolbox.selectTournament(archive, k=self.N, fitness=archive_fitness)
             offspring_pool = map(toolbox.clone, mating_pool)
 
             # Step 6 Variation

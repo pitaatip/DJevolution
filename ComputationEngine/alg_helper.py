@@ -5,6 +5,7 @@ Created on 22-04-2012
 '''
 from deap import tools
 import random
+import math
 
 
 def varAnd(population, toolbox, cxpb, mutpb):
@@ -123,7 +124,7 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
         logger.logGeneration(evals=len(population), gen=0, stats=stats)
 
     # Begin the generational process
-    if (stop_val):
+    if stop_val:
         gen = 1
         while(toolbox.evaluate(halloffame[-1])[0]>stop_val):
             # Select the next generation individuals
@@ -149,8 +150,6 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
             if stats is not None:
                 stats.update(population)
     
-            if verbose:
-                logger.logGeneration(evals=len(invalid_ind), gen=gen, stats=stats)
             gen+=1
         print "Evolution successful, generation nr: " + str(gen)
     else:
@@ -178,9 +177,6 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
             if stats is not None:
                 stats.update(population)
     
-            if verbose:
-                logger.logGeneration(evals=len(invalid_ind), gen=gen, stats=stats)
-
     return population
 
 def selSPEA2(individuals, k):
@@ -321,7 +317,7 @@ def selTournament(individuals, k, tournsize, fitness):
     for i in xrange(k):
         chosen.append(random.choice(individuals))
         for j in xrange(tournsize - 1):
-            aspirant = random.choice(N)
+            aspirant = random.randint(0,N-1)
             if fitness[aspirant] > fitness[i]:
                 chosen[i] = individuals[aspirant]
 

@@ -1,7 +1,8 @@
 # Create your views here.
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
+import csv
 from VisualControllerApp.models import ComputationForm, Computation, ConfigurationForm, ParallelForm, MonitoringForm
 
 ### VIEWS METHODS
@@ -97,6 +98,17 @@ def comp_delete(request, pk):
     comp.delete()
     return HttpResponseRedirect('/VisualControllerApp/') # Redirect after POST
 
+def download_ind(request, pk):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="individuals.csv"'
+    comp = Computation.objects.get(pk=pk)
+    c = csv.writer(response)
+    c.writerow(["Fitness1","Fitness2"])
+    for ind in comp.new_result:
+        c.writerow([str(ind[0]),str(ind[1])])
+
+    return response
+
 def start_computation(request):
     parameters = get_data(request.session,'problem','parallel','algorithm','configuration','monitoring','repeat','is_part_spacing')
     parameters['computed'] = False
@@ -117,4 +129,3 @@ def retrieve_conf_for_alg(session):
     file_name = alg_conf_dispatcher[session.get("algorithm")]
     with open(file_name) as f:
         return f.read()
-
