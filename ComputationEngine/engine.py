@@ -8,6 +8,7 @@ from nsgaII_algorithm import NsgaIIAlgorithm
 from spea2_algorithm import Spea2Algorithm
 from simple_genetic_algorithm import SimpleGeneticAlgorithm
 import demes_fromsite_PIPES
+import alg_helper
 
 __author__ = 'pita'
 

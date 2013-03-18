@@ -8,5 +8,5 @@ toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.att
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 toolbox.register("mate", tools.cxSimulatedBinaryBounded, eta=0.5, low=0, up=1)
 toolbox.register("mutate", tools.mutPolynomialBounded, eta=0.5, low=0, up=1, indpb=1)
-toolbox.register("select", tools.selSPEA2)
-toolbox.register("selectTournament", tools.selTournament, tournsize=2)
+toolbox.register("select", alg_helper.selSPEA2)
+toolbox.register("selectTournament", alg_helper.selTournament, tournsize=2)
