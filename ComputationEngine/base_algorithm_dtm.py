@@ -1,4 +1,4 @@
-from deap import benchmarks, algorithms, base, creator, tools
+from deap import benchmarks, algorithms, base, creator, tools, dtm
 import sys
 import math
 import configuration_executor
@@ -36,6 +36,9 @@ class BaseMultiAlgorithm(object):
         # init list for partial results and partial spacing
         self.partial_res = []
         self.partial_spacing = []
+
+        # prepare dtm
+        self.toolbox.register("map", dtm.map)
 
         # main computation body, each algorithm implements it
         self.main_computation_body(pop,self.toolbox)

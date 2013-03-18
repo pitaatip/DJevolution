@@ -1,5 +1,5 @@
-self.N = 100
-self.GEN = 200
+comp_prop["N"] = 100
+comp_prop["GEN"] = 200
 creator.create("FitnessMax", base.Fitness, weights=(-1.0,-1.0,))
 creator.create("Individual", list, fitness=creator.FitnessMax)
 toolbox.register("attr_float", my_rand)

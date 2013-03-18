@@ -1,4 +1,4 @@
-from deap import benchmarks, algorithms, base, creator, tools
+from deap import benchmarks, algorithms, base, creator, tools, dtm
 import random
 import sys
 from base_algorithm import BaseMultiAlgorithm
@@ -9,12 +9,42 @@ Created on 13-11-2012
 @author: wysek
 '''
 
+def selTournamentSPEA2(individuals, k, tournsize):
+    """Select *k* individuals from the input *individuals* using *k*
+    tournaments of *tournsize* individuals. The list returned contains
+    references to the input *individuals*.
+
+    :param individuals: A list of individuals to select from.
+    :param k: The number of individuals to select.
+    :param tournsize: The number of individuals participating in each tournament.
+    :returns: A list of selected individuals.
+
+    This function uses the :func:`~random.choice` function from the python base
+    :mod:`random` module.
+    """
+    chosen = []
+    for i in xrange(k):
+        chosen.append(random.choice(individuals))
+        for j in xrange(tournsize - 1):
+            aspirant = random.choice(individuals)
+            if abs(sum(aspirant.fitness.wvalues)) > abs(sum(chosen[i].fitness.wvalues)):
+                chosen[i] = aspirant
+
+    return chosen
+
 class Spea2Algorithm(BaseMultiAlgorithm):
     def __init__(self,monitoring,problem,configuration,is_part_spacing):
         BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,is_part_spacing)
-        self.N=80
-        self.GEN=100
-        self.Nbar = 40
+
+    def set_globals(self):
+        if self.comp_prop:
+            self.N = self.comp_prop["N"]
+            self.Nbar = self.comp_prop["Nbar"]
+            self.GEN = self.comp_prop["GEN"]
+        else:
+            self.N=80
+            self.GEN=100
+            self.Nbar = 40
 
     def main_computation_body(self,pop,toolbox):
         # Step 1 Initialization
@@ -39,7 +69,7 @@ class Spea2Algorithm(BaseMultiAlgorithm):
                 break
 
             # Step 5 Mating Selection
-            mating_pool = toolbox.selectTournament(archive, k=self.N)
+            mating_pool = selTournamentSPEA2(archive, k=self.N, tournsize=2)
             offspring_pool = map(toolbox.clone, mating_pool)
 
             # Step 6 Variation

@@ -21,11 +21,27 @@ class SimpleGeneticAlgorithm(object):
         self.f_problem = getattr(benchmarks, problem)
         self.configuration = configuration
         self.is_part_spacing = is_part_spacing
+        self.comp_prop = dict()
+
+    def set_globals(self):
+        if self.comp_prop:
+            self.L = self.comp_prop["L"]
+            self.U = self.comp_prop["U"]
+            self.V = self.comp_prop["V"]
+            self.DIM = self.comp_prop["DIM"]
+            self.POP = self.comp_prop["POP"]
+        else:
+            self.L = 32
+            self.U = -4.0
+            self.V = 4.0
+            self.DIM = 20
+            self.POP = 300
 
     def compute(self):
         # init toolbox
         toolbox = base.Toolbox()
-        configuration_executor.execute(self.configuration)
+        configuration_executor.execute(self.configuration, toolbox, self.comp_prop)
+        self.set_globals()
         # toolbox.register("evaluate", self.f_problem)
         # before tests, only rastrigin
         toolbox.register("evaluate", self.rastrigin_arg0)
@@ -57,7 +73,8 @@ class SimpleGeneticAlgorithm(object):
             w=''.join([w,str(a)])
         return int(w,2)
 
-    def sliceIntGen(self,arr,slice_n):
+    def sliceIntGen(self,arr):
+        slice_n = self.L
         for i in xrange(0,len(arr)-slice_n,slice_n):
             yield self.binListToInt(arr[i:i+slice_n].tolist())
 
