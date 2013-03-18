@@ -1,7 +1,8 @@
 from deap import benchmarks, base, tools
 import random
 import sys
-from base_algorithm import BaseMultiAlgorithm, my_rand
+from base_algorithm import BaseMultiAlgorithm
+from CommonTools import my_rand
 
 '''
 Created on 06-06-2012
@@ -12,8 +13,14 @@ Created on 06-06-2012
 class NsgaIIAlgorithm(BaseMultiAlgorithm):
     def __init__(self,monitoring,problem,configuration,is_part_spacing):
         BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,is_part_spacing)
-        self.N=100
-        self.GEN=200
+
+    def set_globals(self):
+        if self.comp_prop:
+            self.N = self.comp_prop["N"]
+            self.GEN = self.comp_prop["GEN"]
+        else:
+            self.N=100
+            self.GEN=200
 
     def main_computation_body(self,pop,toolbox):
 

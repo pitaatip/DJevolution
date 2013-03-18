@@ -64,7 +64,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = '/home/pita/magisterka/DJevolution/VisualController/staticfiles'
+STATIC_ROOT = '/MPI/files/DJevolution/VisualController/staticfiles'
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -77,8 +77,8 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    '/home/pita/magisterka/DJevolution/VisualController/js',
-    '/home/pita/magisterka/DJevolution/VisualController/css',
+    '/MPI/files/DJevolution/VisualController/js',
+    '/MPI/files/DJevolution/VisualController/css',
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -113,7 +113,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'VisualController.urls'
 
-TEMPLATE_DIRS = ('/home/pita/magisterka/DJevolution/VisualController/templates',)
+TEMPLATE_DIRS = ('/MPI/files/DJevolution/VisualController/templates',)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
