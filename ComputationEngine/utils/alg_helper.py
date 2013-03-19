@@ -324,7 +324,6 @@ def selTournament(individuals, k, tournsize, fitness):
             aspirant = random.randint(0,N-1)
 #            print len(fitness), aspirant, i
             if fitness[aspirant] > fitness[chosen_i]:
-                print "put ",aspirant," into ",i
                 chosen[i] = individuals[aspirant]
 
     return chosen

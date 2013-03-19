@@ -22,7 +22,8 @@ def orderComputation(request):
 
 def comp_detail(request,pk):
     comp = Computation.objects.get(pk=pk)
-    c = RequestContext(request, {'comp': comp,'pk' : pk,'range':range(30)})
+    front = get_comp_front(comp)
+    c = RequestContext(request, {'comp': comp,'pk' : pk, 'front':front})
     if comp.algorithm == 'SGA':
         return render_to_response('computation/singleDetails.html', c)
     else:
@@ -30,12 +31,9 @@ def comp_detail(request,pk):
 
 def partial_res(request,pk):
     comp = Computation.objects.get(pk=pk)
-    print "printing partial res"
-    for a in comp.partial_result:
-        print "for each a"
-        for b in a:
-            print b
-    c = RequestContext(request, {'comp': comp,'pk' : pk,})
+    # prepare comp
+    front = get_comp_front(comp)
+    c = RequestContext(request, {'comp': comp,'pk' : pk, 'front':front})
     return render_to_response('computation/partial.html', c)
 
 def view_configuration(request,pk):
@@ -124,3 +122,8 @@ def retrieve_conf_for_alg(session):
     file_name = alg_conf_dispatcher[session.get("algorithm")]
     with open("alg_config/" + file_name) as f:
         return f.read()
+
+def get_comp_front(comp):
+    objectives = len(comp.new_result[0].fitness.values)
+    front = [(ind.fitness.values[i] for i in xrange(objectives)) for ind in comp.new_result]
+    return front
