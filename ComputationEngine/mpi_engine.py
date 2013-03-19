@@ -4,9 +4,6 @@ from collections import deque
 from multiprocessing import Event, Pipe, Process
 from datetime import datetime
 from time import sleep
-from nsgaII_algorithm import NsgaIIAlgorithm
-from spea2_algorithm import Spea2Algorithm
-from simple_genetic_algorithm import SimpleGeneticAlgorithm
 import demes_fromsite_PIPES
 
 __author__ = 'pita'

@@ -1,7 +1,5 @@
-from deap import benchmarks, algorithms, base, creator, tools, dtm
 import random
-import sys
-from base_algorithm import BaseMultiAlgorithm
+from algorithm.base_algorithm import BaseMultiAlgorithm
 
 '''
 Created on 13-11-2012

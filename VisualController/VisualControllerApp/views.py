@@ -122,5 +122,5 @@ def retrieve_conf_for_alg(session):
     if not "algorithm" in session.keys() or session.get("algorithm") is None:
         return "Select algorithm first"
     file_name = alg_conf_dispatcher[session.get("algorithm")]
-    with open(file_name) as f:
+    with open("alg_config/" + file_name) as f:
         return f.read()

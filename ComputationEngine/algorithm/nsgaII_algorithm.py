@@ -1,8 +1,6 @@
-from deap import benchmarks, base, tools
+from deap import   tools
 import random
-import sys
-from base_algorithm import BaseMultiAlgorithm
-from CommonTools import my_rand
+from algorithm.base_algorithm import BaseMultiAlgorithm
 
 '''
 Created on 06-06-2012

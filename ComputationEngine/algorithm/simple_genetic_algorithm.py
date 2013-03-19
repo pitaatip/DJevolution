@@ -9,10 +9,8 @@ import random
 
 from deap import benchmarks, algorithms
 from deap import base
-from deap import creator
 from deap import tools
-import configuration_executor
-from alg_helper import eaSimple
+from utils import configuration_executor
 
 class SimpleGeneticAlgorithm(object):
     def __init__(self,monitoring,problem,configuration,is_part_spacing):
