@@ -116,7 +116,7 @@
                     }
                 },
                 series: [
-                    {% for res in front %}
+                    {% for res in comp.fitness_values %}
                     {
                     name: '{{ forloop.counter }} Computation',
                     data:     [

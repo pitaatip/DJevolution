@@ -39,9 +39,10 @@ class BaseMultiAlgorithm(object):
 
         # main computation body, each algorithm implements it
         self.main_computation_body(pop,self.toolbox)
-
-        front_ = [ind for ind in self.final_front]
-        return sorted(front_,key=lambda x:x.fitness.values[0]), self.partial_res, self.compute_spacing(front_), self.partial_spacing
+        objectives = len(self.final_front[0].fitness.values)
+        sorted_individuals = sorted(self.final_front,key=lambda x:x.fitness.values[0])
+        fitness_values = [[ind.fitness.values[i] for i in xrange(objectives)] for ind in sorted_individuals]
+        return sorted_individuals,fitness_values, self.partial_res, self.compute_spacing(sorted_individuals), self.partial_spacing
 
     def compute_spacing(self,pop):
         d_vects = []

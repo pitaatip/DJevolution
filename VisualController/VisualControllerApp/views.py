@@ -22,8 +22,7 @@ def orderComputation(request):
 
 def comp_detail(request,pk):
     comp = Computation.objects.get(pk=pk)
-    front = get_comp_front(comp)
-    c = RequestContext(request, {'comp': comp,'pk' : pk, 'front':front})
+    c = RequestContext(request, {'comp': comp,'pk' : pk})
     if comp.algorithm == 'SGA':
         return render_to_response('computation/singleDetails.html', c)
     else:
@@ -32,8 +31,7 @@ def comp_detail(request,pk):
 def partial_res(request,pk):
     comp = Computation.objects.get(pk=pk)
     # prepare comp
-    front = get_comp_front(comp)
-    c = RequestContext(request, {'comp': comp,'pk' : pk, 'front':front})
+    c = RequestContext(request, {'comp': comp,'pk' : pk})
     return render_to_response('computation/partial.html', c)
 
 def view_configuration(request,pk):
@@ -97,16 +95,24 @@ def download_ind(request, pk):
     response['Content-Disposition'] = 'attachment; filename="individuals.csv"'
     comp = Computation.objects.get(pk=pk)
     c = csv.writer(response)
-    objectives = len(comp.new_result[0][0].fitness.values)
-    ind_dim = len(comp.new_result[0][0])
+    objectives = len(comp.fitness_values[0][0])
+    ind_dim = len(comp.sorted_individuals[0][0])
     # prepare header
-    header = ["Computation of nr"]
+    header = []
     for i in xrange(objectives):
-        header.append("Fitness" + i)
-
-    c.writerow(["Fitness1","Fitness2"])
-    for ind in comp.new_result:
-        c.writerow([str(ind[0]),str(ind[1])])
+        header.append("Fitness" + str(i))
+    for i in xrange(ind_dim):
+        header.append("Individual" + str(i))
+    for fitness_res,individuals_res in zip(comp.fitness_values,comp.sorted_individuals):
+        c.writerow(header)
+        for fitness, ind in zip(fitness_res,individuals_res):
+            row = []
+            for fit_val in fitness:
+                row.append(str(fit_val))
+            for ind_attr in ind:
+                row.append(str(ind_attr))
+            c.writerow(row)
+        c.writerow([])
     return response
 
 def start_computation(request):
@@ -129,8 +135,3 @@ def retrieve_conf_for_alg(session):
     file_name = alg_conf_dispatcher[session.get("algorithm")]
     with open("alg_config/" + file_name) as f:
         return f.read()
-
-def get_comp_front(comp):
-    objectives = len(comp.new_result[0][0].fitness.values)
-    front = [[(ind.fitness.values[i] for i in xrange(objectives)) for ind in result] for result in comp.new_result ]
-    return front
