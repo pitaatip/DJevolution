@@ -1,5 +1,6 @@
 from deap import benchmarks, base
 import math
+from numpy.numarray.util import MathDomainError
 from utils import configuration_executor
 
 '''
@@ -45,11 +46,19 @@ class BaseMultiAlgorithm(object):
     def compute_spacing(self,pop):
         d_vects = []
         for ind in pop:
-            f1, f2 = self.f_problem(ind)
+            try:
+                f1, f2 = self.f_problem(ind)
+            except ValueError as e:
+                f1, f2 = -1, -1
+                print e
             all = []
             for ind2 in pop:
                 if not ind is ind2:
-                    f1_p, f2_p = self.f_problem(ind2)
+                    try:
+                        f1_p, f2_p = self.f_problem(ind2)
+                    except ValueError as e:
+                        f1_p, f2_p = -1, -1
+                        print e
                     all.append(abs(f1_p - f1) + abs(f2_p - f2))
             d_vects.append(min(all))
         d_mean = sum(d_vects) / len(d_vects)

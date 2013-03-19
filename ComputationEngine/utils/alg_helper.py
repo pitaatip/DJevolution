@@ -318,10 +318,13 @@ def selTournament(individuals, k, tournsize, fitness):
     chosen = []
     N = len(individuals)
     for i in xrange(k):
-        chosen.append(random.choice(individuals))
+        chosen_i = random.randint(0,N-1)
+        chosen.append(individuals[chosen_i])
         for j in xrange(tournsize - 1):
             aspirant = random.randint(0,N-1)
-            if fitness[aspirant] > fitness[i]:
+#            print len(fitness), aspirant, i
+            if fitness[aspirant] > fitness[chosen_i]:
+                print "put ",aspirant," into ",i
                 chosen[i] = individuals[aspirant]
 
     return chosen
