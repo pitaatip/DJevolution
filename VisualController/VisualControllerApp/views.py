@@ -97,6 +97,13 @@ def download_ind(request, pk):
     response['Content-Disposition'] = 'attachment; filename="individuals.csv"'
     comp = Computation.objects.get(pk=pk)
     c = csv.writer(response)
+    objectives = len(comp.new_result[0][0].fitness.values)
+    ind_dim = len(comp.new_result[0][0])
+    # prepare header
+    header = ["Computation of nr"]
+    for i in xrange(objectives):
+        header.append("Fitness" + i)
+
     c.writerow(["Fitness1","Fitness2"])
     for ind in comp.new_result:
         c.writerow([str(ind[0]),str(ind[1])])
@@ -124,6 +131,6 @@ def retrieve_conf_for_alg(session):
         return f.read()
 
 def get_comp_front(comp):
-    objectives = len(comp.new_result[0].fitness.values)
-    front = [(ind.fitness.values[i] for i in xrange(objectives)) for ind in comp.new_result]
+    objectives = len(comp.new_result[0][0].fitness.values)
+    front = [[(ind.fitness.values[i] for i in xrange(objectives)) for ind in result] for result in comp.new_result ]
     return front
