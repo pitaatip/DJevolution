@@ -3,6 +3,8 @@ comp_prop["U"] = -4.0
 comp_prop["V"] = 4.0
 comp_prop["DIM"] = 20
 comp_prop["POP"] = 300
+comp_prop["HOF_SIZE"] = 1
+comp_prop["GEN"] = 100
 creator.create("FitnessMax", base.Fitness, weights=(-1.0,))
 creator.create("Individual", array.array, typecode='b', fitness=creator.FitnessMax)
 toolbox.register("attr_bool", random.randint, 0, 1)

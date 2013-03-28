@@ -15,148 +15,219 @@
     <script src="{{ STATIC_URL }}highcharts.js" type="text/javascript"></script>
 
     <script>
-        $(function () {
-            $(document).ready(function() {
+        var chart;
+        var i = 0;
+        var tab = [
+            {%  for computation in comp.partial_result %}
+                [
+                    {% for res in computation %}
+                        [
+                            {% for val in res %}
+                                {{ val }},
+                            {% endfor %}
+                        ],
+                    {% endfor %}
+                ],
+
+            {% endfor %}
+        ];
+        var event_tab = [];
+        for(var a = 0; a<tab.length; a++)
+        {
+            tt = [];
+            for(var b = 0;b<tab[a].length; b++)
+            {
+                tt_p = [];
+                for(var c = 0;c<tab[a][b].length; c++){
+                    tt_pp = [tab[a][b][c][0] , tab[a][b][c][1]];
+                    tt_p.push(tt_pp);
+                }
+                tt.push(tt_p);
+            }
+            event_tab.push(tt);
+        }
+        var options = {
+            chart: {
+                renderTo: 'container',
+                type: 'scatter',
+                inverted: true,
+                width: 900,
+                zoomType: 'xy',
+                events: {
+                    load: function() {
+
+                        // set up the updating of the chart each second
+                        var series = this.series;
+                        setInterval(function() {
+                            for(var j=0;j<event_tab.length;j++)
+                            {
+                                series[j].setData(event_tab[j][i],false);
+                                series[j].name = i + " Step"
+                            }
+                            i= (i+1) % {{ comp.partial_result.0|length }};
+                            chart.redraw();
+                        }, 1500);
+
+                    }
+                }
+            },
+            title: {
+                text: 'Partial results'
+            },
+            colors: [
+                'rgba(223, 83, 83, .5)',
+                'rgba(0, 0, 255, .5)',
+                'rgba(255, 0, 0, .5)',
+                'rgba(0, 255, 0, .5)',
+                'rgba(119, 152, 191, .5)',
+                'rgba(255,	20,	147	,.5)',
+                'rgba(0,	250,	154	,.5)',
+                'rgba(139,	90,	0,.5)',
+                'rgba(238,	180,	34	,.5)',
+                'rgba(238,	121,	66	,.5)',
+                'rgba(255,	69,	0	,.5)',
+                'rgba(142,	156,	142	,.5)',
+                'rgba(255,	193,	193	,.5)',
+                'rgba(139,	0,	0	,.5)'
+            ],
+            xAxis: {
+                reversed: false,
+                title: {
+                    enabled: true,
+                    text: 'f1'
+                },
+                gridLineColor: "#6bbb06",
+                lineColor: "#6bbb06",
+                minorGridLineColor: "#6bbb06",
+                minorTickColor: "#6bbb06",
+                tickColor: "#6bbb06",
+                maxPadding: 0.05,
+                tickPixelInterval: 150,
+                startOnTick: true,
+                endOnTick: true,
+                showLastLabel: true
+            },
+            yAxis: {
+                title: {
+                    text: 'Value'
+                },
+                gridLineColor: "#6bbb06",
+                lineColor: "#6bbb06",
+                minorGridLineColor: "#6bbb06",
+                minorTickColor: "#6bbb06",
+                tickColor: "#6bbb06",
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function() {
+                    return '<b>'+ this.series.name +'</b><br/>'+
+                            Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+
+                            Highcharts.numberFormat(this.y, 2);
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'left',
+                verticalAlign: 'top',
+                x: 100,
+                y: 70,
+                floating: true,
+                backgroundColor: '#FFFFFF',
+                borderWidth: 1
+            },
+            exporting: {
+                enabled: false
+            },
+            series: [
+                {%  for res in comp.partial_result %}
+                    {
+                        name: '{{ forloop.counter }}  Computation',
+                        data: event_tab[{{ forloop.counter0 }}][0],
+                        visible: {% if forloop.first %} true {% else %} false {% endif %}
+
+                    },
+                {% endfor %}
+            ]
+        };
+
+        $(document).ready(function() {
                 Highcharts.setOptions({
                     global: {
                         useUTC: false
                     }
                 });
 
-                var chart;
-                var tab = [
-                    {%  for computation in comp.partial_result %}
-                        [
-                        {% for res in computation %}
-                        [
-                            {% for val in res %}
-                                {{ val }},
-                            {% endfor %}
-                        ],
-                            {% endfor %}
-                        ],
-
-                    {% endfor %}
-                        ];
-
-                var i = 0;
-                chart = new Highcharts.Chart({
-                    chart: {
-                        renderTo: 'container',
-                        type: 'scatter',
-                        inverted: true,
-                        width: 900,
-                        zoomType: 'xy',
-                        events: {
-                            load: function() {
-
-                                // set up the updating of the chart each second
-                                var series = this.series;
-                                setInterval(function() {
-                                    for(var j=0;j<tab.length;j++)
-                                    {
-                                    series[j].setData(tab[j][i],false);
-                                    series[j].name = i + " Step"
-                                    }
-                                    i= (i+1) % {{ comp.partial_result.0|length }};
-                                    chart.redraw();
-                                }, 1500);
-
-                            }
-                        }
-                    },
-                    title: {
-                        text: 'Partial results'
-                    },
-                    colors: [
-                        'rgba(223, 83, 83, .5)',
-                        'rgba(0, 0, 255, .5)',
-                        'rgba(255, 0, 0, .5)',
-                        'rgba(0, 255, 0, .5)',
-                        'rgba(119, 152, 191, .5)',
-                        'rgba(255,	20,	147	,.5)',
-                        'rgba(0,	250,	154	,.5)',
-                        'rgba(139,	90,	0,.5)',
-                        'rgba(238,	180,	34	,.5)',
-                        'rgba(238,	121,	66	,.5)',
-                        'rgba(255,	69,	0	,.5)',
-                        'rgba(142,	156,	142	,.5)',
-                        'rgba(255,	193,	193	,.5)',
-                        'rgba(139,	0,	0	,.5)'
-                    ],
-                    xAxis: {
-                        reversed: false,
-                        title: {
-                            enabled: true,
-                            text: 'f1'
-                        },
-                        gridLineColor: "#6bbb06",
-                        lineColor: "#6bbb06",
-                        minorGridLineColor: "#6bbb06",
-                        minorTickColor: "#6bbb06",
-                        tickColor: "#6bbb06",
-                        maxPadding: 0.05,
-                        tickPixelInterval: 150,
-                        startOnTick: true,
-                        endOnTick: true,
-                        showLastLabel: true
-                    },
-                    yAxis: {
-                        title: {
-                            text: 'Value'
-                        },
-                        gridLineColor: "#6bbb06",
-                        lineColor: "#6bbb06",
-                        minorGridLineColor: "#6bbb06",
-                        minorTickColor: "#6bbb06",
-                        tickColor: "#6bbb06",
-                        plotLines: [{
-                            value: 0,
-                            width: 1,
-                            color: '#808080'
-                        }]
-                    },
-                    tooltip: {
-                        formatter: function() {
-                            return '<b>'+ this.series.name +'</b><br/>'+
-                                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+
-                                    Highcharts.numberFormat(this.y, 2);
-                        }
-                    },
-                    legend: {
-                        layout: 'vertical',
-                        align: 'left',
-                        verticalAlign: 'top',
-                        x: 100,
-                        y: 70,
-                        floating: true,
-                        backgroundColor: '#FFFFFF',
-                        borderWidth: 1
-                    },
-                    exporting: {
-                        enabled: false
-                    },
-                    series: [
-                        {%  for res in comp.new_result %}
-                        {
-                        name: '{{ forloop.counter }}  Computation',
-                        data: tab[{{ forloop.counter0 }}][0],
-                        visible: {% if forloop.first %} true {% else %} false {% endif %}
-
-                        },
-                        {% endfor %}
-                    ]
-                });
-            });
-
+                chart = new Highcharts.Chart(options);
         });
 
+        function RedrawChart() {
+            var foo = document.getElementById('function_x');
+            if (foo)
+            {
+                var selectedx = foo.selectedIndex;
+            }
+            foo = document.getElementById('function_y');
+            if(foo)
+            {
+                var selectedy = foo.selectedIndex;
+            }
+            chart.destroy();
+            var new_series = [];
+            var new_tab = [];
+            for (var p=0;p<tab.length;p++)
+            {
+                var n_data = []
+                for (var j=0;j<tab[p].length;j++){
+                    var nn_data = []
+                    for (var k=0;k<tab[p][j].length;k++){
+                        nn_data.push([tab[p][j][k][selectedx],tab[p][j][k][selectedy]]);
+                    }
+                    n_data.push(nn_data)
+                }
+                var is_visible = (p == 0);
+                var s = {
+                    name: p + ' Computation',
+                    data: n_data[0],
+                    visible:is_visible
+                }
+                new_series.push(s)
+                new_tab.push(n_data)
+            }
+            event_tab = new_tab
+            options.series = new_series;
+            chart = new Highcharts.Chart(options);
+        }
 
     </script>
 
     <h2>Partial results of computation</h2>
 
     Results were gathered each {{ comp.monitoring }} generations.
+
+    <br>
+    <select id="function_x">
+        {% for res in obj_range %}
+            <option value="option{{ forloop.counter }}" {% if forloop.first %} selected="selected" {% endif %}>Fun {{ forloop.counter }}</option>
+        {% endfor %}
+    </select>
+    <select id="function_y">
+        {% for res in obj_range %}
+            <option value="option{{ forloop.counter }}" {% if forloop.counter == 2 %} selected="selected" {% endif %}>Fun {{ forloop.counter }}</option>
+        {% endfor %}
+    </select>
+
+    <script type="text/javascript">
+        $('#function_x').change(function() {
+            RedrawChart();
+        });
+        $('#function_y').change(function() {
+            RedrawChart();
+        });
+    </script>
 
     <div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
     ​

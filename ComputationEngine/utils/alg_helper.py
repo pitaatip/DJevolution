@@ -3,6 +3,7 @@ Created on 22-04-2012
 
 @author: pita
 '''
+from copy import deepcopy
 from deap import tools
 import random
 import math
@@ -61,12 +62,15 @@ def varAnd(population, toolbox, cxpb, mutpb):
     
     return offspring
 
+def monitor(hof,monitoring,gen,partial_res):
+    if gen % monitoring == 0:
+        partial_res.append(hof[0].fitness.values[0])
 
-def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
-             halloffame=None, verbose=__debug__, stop_val=None):
+def eaSimple(population, toolbox, cxpb, mutpb, ngen,monitoring,is_partial_spacing, stats=None,
+             halloffame=None, verbose=__debug__):
     """This algorithm reproduce the simplest evolutionary algorithm as
     presented in chapter 7 of [Back2000]_.
-    
+
     :param population: A list of individuals.
     :param toolbox: A :class:`~deap.base.Toolbox` that contains the evolution
                     operators.
@@ -79,7 +83,7 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
                        contain the best individuals, optional.
     :param verbose: Whether or not to log the statistics.
     :returns: The final population.
-    
+
     It uses :math:`\lambda = \kappa = \mu` and goes as follow.
     It first initializes the population (:math:`P(0)`) by evaluating
     every individual presenting an invalid fitness. Then, it enters the
@@ -87,12 +91,12 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
     population. Then the crossover operator is applied on a proportion of
     :math:`P(g+1)` according to the *cxpb* probability, the resulting and the
     untouched individuals are placed in :math:`P'(g+1)`. Thereafter, a
-    proportion of :math:`P'(g+1)`, determined by *mutpb*, is 
+    proportion of :math:`P'(g+1)`, determined by *mutpb*, is
     mutated and placed in :math:`P''(g+1)`, the untouched individuals are
     transferred :math:`P''(g+1)`. Finally, those new individuals are evaluated
     and the evolution loop continues until *ngen* generations are completed.
     Briefly, the operators are applied in the following order ::
-    
+
         evaluate(population)
         for i in range(ngen):
             offspring = select(population)
@@ -100,11 +104,11 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
             offspring = mutate(offspring)
             evaluate(offspring)
             population = offspring
-    
+
     This function expects :meth:`toolbox.mate`, :meth:`toolbox.mutate`,
     :meth:`toolbox.select` and :meth:`toolbox.evaluate` aliases to be
     registered in the toolbox.
-    
+
     .. [Back2000] Back, Fogel and Michalewicz, "Evolutionary Computation 1 :
        Basic Algorithms and Operators", 2000.
     """
@@ -125,62 +129,41 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen, stats=None,
         logger = tools.EvolutionLogger(column_names)
         logger.logHeader()
         logger.logGeneration(evals=len(population), gen=0, stats=stats)
-
+    partial_res = []
     # Begin the generational process
-    if stop_val:
-        gen = 1
-        while(toolbox.evaluate(halloffame[-1])[0]>stop_val):
-            # Select the next generation individuals
-            offspring = toolbox.select(population, len(population))
-            
-            # Variate the pool of individuals
-            offspring = varAnd(offspring, toolbox, cxpb, mutpb)
-            
-            # Evaluate the individuals with an invalid fitness
-            invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
-            fitnesses = toolbox.map(toolbox.evaluate, invalid_ind)
-            for ind, fit in zip(invalid_ind, fitnesses):
-                ind.fitness.values = fit
-            
-            # Update the hall of fame with the generated individuals
-            if halloffame is not None:
-                halloffame.update(offspring)
-                
-            # Replace the current population by the offspring
-            population[:] = offspring
-            
-            # Update the statistics with the new population
-            if stats is not None:
-                stats.update(population)
-    
-            gen+=1
-        print "Evolution successful, generation nr: " + str(gen)
-    else:
-        for gen in range(1, ngen+1):
-            # Select the next generation individuals
-            offspring = toolbox.select(population, len(population))
-            
-            # Variate the pool of individuals
-            offspring = varAnd(offspring, toolbox, cxpb, mutpb)
-            
-            # Evaluate the individuals with an invalid fitness
-            invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
-            fitnesses = toolbox.map(toolbox.evaluate, invalid_ind)
-            for ind, fit in zip(invalid_ind, fitnesses):
-                ind.fitness.values = fit
-            
-            # Update the hall of fame with the generated individuals
-            if halloffame is not None:
-                halloffame.update(offspring)
-                
-            # Replace the current population by the offspring
-            population[:] = offspring
-            
-            # Update the statistics with the new population
-            if stats is not None:
-                stats.update(population)
-    
-    return population
+    for gen in range(1, ngen+1):
+        # Select the next generation individuals
+        offspring = toolbox.select(population, len(population))
+
+        # Variate the pool of individuals
+        offspring = varAnd(offspring, toolbox, cxpb, mutpb)
+
+        # Evaluate the individuals with an invalid fitness
+        invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
+        fitnesses = toolbox.map(toolbox.evaluate, invalid_ind)
+        for ind, fit in zip(invalid_ind, fitnesses):
+            ind.fitness.values = fit
+
+        # Update the hall of fame with the generated individuals
+        if halloffame is not None:
+            halloffame.update(offspring)
+
+        # monitor partial results
+        monitor(halloffame,monitoring,gen,partial_res)
+
+        # Replace the current population by the offspring
+        population[:] = offspring
+
+        # Update the statistics with the new population
+        if stats is not None:
+            stats.update(population)
+
+        if verbose:
+            logger.logGeneration(evals=len(invalid_ind), gen=gen, stats=stats)
+
+    return population, partial_res
+
+
 
 def selSPEA2(individuals, k):
     """Apply SPEA-II selection operator on the *individuals*. Usually, the
@@ -324,7 +307,6 @@ def selTournament(individuals, k, tournsize, fitness):
             aspirant = random.randint(0,N-1)
 #            print len(fitness), aspirant, i
             if fitness[aspirant] > fitness[chosen_i]:
-                print "put ",aspirant," into ",i
                 chosen[i] = individuals[aspirant]
 
     return chosen

@@ -1,7 +1,7 @@
 from deap import benchmarks, base
 import math
 from numpy.numarray.util import MathDomainError
-from utils import configuration_executor
+from utils import configuration_executor, problems
 
 '''
 Created on 06-06-2012
@@ -13,7 +13,7 @@ class BaseMultiAlgorithm(object):
     def __init__(self,monitoring,problem,configuration,is_part_spacing):
         self.monitoring = monitoring
         # retrieve problem from benchmarks
-        self.f_problem = getattr(benchmarks, problem)
+        self.f_problem = getattr(problems, problem)
         self.configuration = configuration
         self.is_part_spacing = is_part_spacing
         self.comp_prop = dict()
@@ -39,27 +39,28 @@ class BaseMultiAlgorithm(object):
 
         # main computation body, each algorithm implements it
         self.main_computation_body(pop,self.toolbox)
-
-        front_ = [(ind.fitness.values[0], ind.fitness.values[1]) for ind in self.final_front]
-        return sorted(front_,key=lambda x:x[0]), self.partial_res, self.compute_spacing(front_), self.partial_spacing
+        objectives = len(self.final_front[0].fitness.values)
+        sorted_individuals = sorted(self.final_front,key=lambda x:x.fitness.values[0])
+        fitness_values = [[ind.fitness.values[i] for i in xrange(objectives)] for ind in sorted_individuals]
+        return sorted_individuals,fitness_values, self.partial_res, self.compute_spacing(sorted_individuals), self.partial_spacing
 
     def compute_spacing(self,pop):
         d_vects = []
         for ind in pop:
             try:
-                f1, f2 = self.f_problem(ind)
+                fs = self.f_problem(ind)
             except ValueError as e:
-                f1, f2 = -1, -1
+                fs = [-1]
                 print e
             all = []
             for ind2 in pop:
                 if not ind is ind2:
                     try:
-                        f1_p, f2_p = self.f_problem(ind2)
+                        fs_p = self.f_problem(ind2)
                     except ValueError as e:
-                        f1_p, f2_p = -1, -1
+                        fs_p = [1]
                         print e
-                    all.append(abs(f1_p - f1) + abs(f2_p - f2))
+                    all.append( sum( [abs(f - f_p) for f,f_p in zip(fs,fs_p)]))
             d_vects.append(min(all))
         d_mean = sum(d_vects) / len(d_vects)
         part = sum( [math.pow(d_mean - d_vect,2) for d_vect in d_vects] )
@@ -70,7 +71,8 @@ class BaseMultiAlgorithm(object):
 
     def monitor(self,generation,pop):
         if generation % self.monitoring == 0:
-            self.partial_res.append(sorted([(ind.fitness.values[0], ind.fitness.values[1]) for ind in pop],key=lambda x:x[0]))
+            pop_ = [[i for i in ind.fitness.values] for ind in pop]
+            self.partial_res.append(sorted(pop_,key=lambda x:x[0]))
 
     def compute_partial_spacing(self,pop):
         if self.is_part_spacing:

@@ -22,21 +22,25 @@ def orderComputation(request):
 
 def comp_detail(request,pk):
     comp = Computation.objects.get(pk=pk)
-    c = RequestContext(request, {'comp': comp,'pk' : pk,'range':range(30)})
-    if comp.algorithm == 'SGA':
+
+    c = RequestContext(request, {'comp': comp,'pk' : pk})
+    if comp.algorithm == 'SimpleGeneticAlgorithm':
         return render_to_response('computation/singleDetails.html', c)
     else:
+        obj_range = range(len(comp.fitness_values[0][0]))
+        c['obj_range'] = obj_range
         return render_to_response('computation/multiDetails.html', c)
 
 def partial_res(request,pk):
     comp = Computation.objects.get(pk=pk)
-    print "printing partial res"
-    for a in comp.partial_result:
-        print "for each a"
-        for b in a:
-            print b
-    c = RequestContext(request, {'comp': comp,'pk' : pk,})
-    return render_to_response('computation/partial.html', c)
+    # prepare comp
+    c = RequestContext(request, {'comp': comp,'pk' : pk})
+    if comp.algorithm == 'SimpleGeneticAlgorithm':
+        return render_to_response('computation/partialSingle.html', c)
+    else:
+        obj_range = range(len(comp.fitness_values[0][0]))
+        c['obj_range'] = obj_range
+        return render_to_response('computation/partial.html', c)
 
 def view_configuration(request,pk):
     comp = Computation.objects.get(pk=pk)
@@ -99,9 +103,30 @@ def download_ind(request, pk):
     response['Content-Disposition'] = 'attachment; filename="individuals.csv"'
     comp = Computation.objects.get(pk=pk)
     c = csv.writer(response)
-    c.writerow(["Fitness1","Fitness2"])
-    for ind in comp.new_result:
-        c.writerow([str(ind[0]),str(ind[1])])
+    if isinstance(comp.fitness_values[0][0],list):
+        objectives = len(comp.fitness_values[0][0])
+    else:
+        objectives = 1
+    ind_dim = len(comp.sorted_individuals[0][0])
+    # prepare header
+    header = []
+    for i in xrange(objectives):
+        header.append("Fitness" + str(i))
+    for i in xrange(ind_dim):
+        header.append("Individual" + str(i))
+    for fitness_res,individuals_res in zip(comp.fitness_values,comp.sorted_individuals):
+        c.writerow(header)
+        for fitness, ind in zip(fitness_res,individuals_res):
+            row = []
+            if isinstance(fitness,list):
+                for fit_val in fitness:
+                    row.append(str(fit_val))
+            else:
+                row.append(str(fitness))
+            for ind_attr in ind:
+                row.append(str(ind_attr))
+            c.writerow(row)
+        c.writerow([])
     return response
 
 def start_computation(request):
