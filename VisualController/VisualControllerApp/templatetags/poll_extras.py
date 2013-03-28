@@ -10,6 +10,14 @@ register = template.Library()
 def mean(value):
     return numpy.mean(value)
 
+@register.filter
+def get_el(value,el):
+    i = int(el) - 1
+    return value[i]
+
+@register.filter
+def multip(value,el):
+    return value * el
 
 @register.filter
 def sort_comp(value):

@@ -22,17 +22,25 @@ def orderComputation(request):
 
 def comp_detail(request,pk):
     comp = Computation.objects.get(pk=pk)
+
     c = RequestContext(request, {'comp': comp,'pk' : pk})
-    if comp.algorithm == 'SGA':
+    if comp.algorithm == 'SimpleGeneticAlgorithm':
         return render_to_response('computation/singleDetails.html', c)
     else:
+        obj_range = range(len(comp.fitness_values[0][0]))
+        c['obj_range'] = obj_range
         return render_to_response('computation/multiDetails.html', c)
 
 def partial_res(request,pk):
     comp = Computation.objects.get(pk=pk)
     # prepare comp
     c = RequestContext(request, {'comp': comp,'pk' : pk})
-    return render_to_response('computation/partial.html', c)
+    if comp.algorithm == 'SimpleGeneticAlgorithm':
+        return render_to_response('computation/partialSingle.html', c)
+    else:
+        obj_range = range(len(comp.fitness_values[0][0]))
+        c['obj_range'] = obj_range
+        return render_to_response('computation/partial.html', c)
 
 def view_configuration(request,pk):
     comp = Computation.objects.get(pk=pk)
@@ -95,7 +103,10 @@ def download_ind(request, pk):
     response['Content-Disposition'] = 'attachment; filename="individuals.csv"'
     comp = Computation.objects.get(pk=pk)
     c = csv.writer(response)
-    objectives = len(comp.fitness_values[0][0])
+    if isinstance(comp.fitness_values[0][0],list):
+        objectives = len(comp.fitness_values[0][0])
+    else:
+        objectives = 1
     ind_dim = len(comp.sorted_individuals[0][0])
     # prepare header
     header = []
@@ -107,8 +118,11 @@ def download_ind(request, pk):
         c.writerow(header)
         for fitness, ind in zip(fitness_res,individuals_res):
             row = []
-            for fit_val in fitness:
-                row.append(str(fit_val))
+            if isinstance(fitness,list):
+                for fit_val in fitness:
+                    row.append(str(fit_val))
+            else:
+                row.append(str(fitness))
             for ind_attr in ind:
                 row.append(str(ind_attr))
             c.writerow(row)

@@ -2,10 +2,9 @@ import datetime
 from django.db import models
 from django import forms
 from djangotoolbox.fields import ListField, RawField
-from deap import benchmarks
-
 
 # HELPER METHODS
+from VisualControllerApp import problems
 
 def retrieve_choices(benchmarks):
     choices = []
@@ -38,7 +37,7 @@ class Computation(models.Model):
 #FORMS
 class ComputationForm(forms.Form):
     algorithm = forms.ChoiceField(choices=(('NsgaIIAlgorithm', 'NSGA-II',),('Spea2Algorithm', 'SPEA 2',),('SimpleGeneticAlgorithm', 'SGA',)),label="Algorithm")
-    problem = forms.ChoiceField(choices=retrieve_choices(benchmarks),label="Problem")
+    problem = forms.ChoiceField(choices=retrieve_choices(problems),label="Problem")
     repeat = forms.IntegerField(label="Repeat computation")
 
 class ConfigurationForm(forms.Form):
@@ -46,7 +45,7 @@ class ConfigurationForm(forms.Form):
 
 class MonitoringForm(forms.Form):
     monitoring = forms.IntegerField(label="Gather results after this many generations")
-    is_part_spacing = forms.BooleanField(label="Compute spacing value after each generation?")
+    is_part_spacing = forms.BooleanField(label="Compute spacing value after each generation?",initial=False,required=False)
 
 class ParallelForm(forms.Form):
     parallel = forms.ChoiceField(choices=(('None', 'None',), ('Demes pipe model', 'Demes pipe model',),('Demes Mpi model', 'Demes Mpi model',)),label="Parallelization")
