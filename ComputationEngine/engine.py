@@ -1,9 +1,10 @@
 import random
 
 from collections import deque
-from multiprocessing import Event, Pipe, Process
+from multiprocessing import Event, Pipe, Process, Pool
 from datetime import datetime
 from time import sleep
+from deap import base
 from algorithm.nsgaII_algorithm import NsgaIIAlgorithm
 from algorithm.spea2_algorithm import Spea2Algorithm
 from algorithm.simple_genetic_algorithm import SimpleGeneticAlgorithm
@@ -39,13 +40,13 @@ def prepareArgs(computation):
     args = {}
     for arg in ['problem','configuration','monitoring','is_part_spacing']:
         args[arg] = computation[arg]
+    args['parallel'] = computation['parallel']
     return args
 
 def compute(computation, algorithm):
     args = prepareArgs(computation)
     a = datetime.now()
     alg = eval(algorithm)(**args)
-#    alg = algorithms[algorithm](**args)
     results = [alg.compute() for _ in xrange(computation['repeat'])]
     b = datetime.now()
     c = b - a
@@ -65,7 +66,7 @@ def main():
         computations_ = db['VisualControllerApp_computation']
         for computation in computations_.find({"computed": False}):
             print computation
-            if computation['parallel'] == "None":
+            if computation['parallel'] == "None" or computation['parallel'] == "Multiprocess":
                 compute(computation,computation['algorithm'])
                 computations_.save(computation)
             elif computation['parallel'] == "Demes pipe model":

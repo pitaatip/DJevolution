@@ -31,8 +31,8 @@ def selTournamentSPEA2(individuals, k, tournsize):
     return chosen
 
 class Spea2Algorithm(BaseMultiAlgorithm):
-    def __init__(self,monitoring,problem,configuration,is_part_spacing):
-        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,is_part_spacing)
+    def __init__(self,monitoring,problem,configuration,is_part_spacing,parallel):
+        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,is_part_spacing,parallel)
 
     def set_globals(self):
         if self.comp_prop:

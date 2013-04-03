@@ -1,3 +1,4 @@
+from multiprocessing import Pool
 from deap import   tools
 import random
 from algorithm.base_algorithm import BaseMultiAlgorithm
@@ -9,8 +10,19 @@ Created on 06-06-2012
 '''
 
 class NsgaIIAlgorithm(BaseMultiAlgorithm):
-    def __init__(self,monitoring,problem,configuration,is_part_spacing):
-        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,is_part_spacing)
+    def __init__(self,monitoring,problem,configuration,is_part_spacing,parallel):
+        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,is_part_spacing,parallel)
+
+    def multi_map(self):
+        pool = Pool(2)
+        return pool.map
+
+    def simple_map(self):
+        return map
+
+    def prepareToolbox(self,parallel,toolbox):
+        map_fun = self.maps_fun[parallel]
+        toolbox.register("map", map_fun)
 
     def set_globals(self):
         if self.comp_prop:
@@ -23,8 +35,13 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
     def main_computation_body(self,pop,toolbox):
 
         # init population
-        for ind in pop:
-            ind.fitness.values = toolbox.evaluate(ind)
+        self.maps_fun = {"Multiprocess" : self.multi_map(),"None" : self.simple_map() }
+        self.prepareToolbox(self.parallel,self.toolbox)
+        fit_val = toolbox.map(toolbox.evaluate,pop)
+        for ind,fit in zip(pop,fit_val):
+            ind.fitness.values = fit
+#        for ind in pop:
+#            ind.fitness.values = toolbox.evaluate(ind)
 
         # sort using non domination sort (k is the same as n of population - only sort is applied)
         pop = toolbox.select(pop, k=self.N)
@@ -44,8 +61,11 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
                     toolbox.mutate(mutant)
 
             # evaluate offsprings
-            for ind in offspring_pool:
-                ind.fitness.values = toolbox.evaluate(ind)
+            fit_val = toolbox.map(toolbox.evaluate,offspring_pool)
+            for ind,fit in zip(offspring_pool,fit_val):
+                ind.fitness.values = fit
+#            for ind in offspring_pool:
+#                ind.fitness.values = toolbox.evaluate(ind)
 
             # extend base population with offsprings, pop is now 2N size
             pop.extend(offspring_pool)

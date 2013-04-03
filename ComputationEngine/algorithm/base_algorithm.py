@@ -1,3 +1,4 @@
+from multiprocessing import Pool
 from deap import benchmarks, base
 import math
 from numpy.numarray.util import MathDomainError
@@ -9,8 +10,9 @@ Created on 06-06-2012
 @author: pita
 '''
 
+
 class BaseMultiAlgorithm(object):
-    def __init__(self,monitoring,problem,configuration,is_part_spacing):
+    def __init__(self,monitoring,problem,configuration,is_part_spacing,parallel):
         self.monitoring = monitoring
         # retrieve problem from benchmarks
         self.f_problem = getattr(problems, problem)
