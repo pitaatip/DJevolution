@@ -1,14 +1,17 @@
+import pickle
 import random
 
 from collections import deque
 from multiprocessing import Queue, Pipe, Process, Pool
 from datetime import datetime
 from time import sleep
+from deap import base
 from algorithm.nsgaII_algorithm import NsgaIIAlgorithm
 from algorithm.spea2_algorithm import Spea2Algorithm
 from algorithm.simple_genetic_algorithm import SimpleGeneticAlgorithm
 import demes_fromsite_PIPES
 import sys
+from utils import configuration_executor
 
 __author__ = 'pita'
 
@@ -45,6 +48,8 @@ def compute(computation, algorithm):
     for iter in xrange(computation['repeat']):
         algs = list()
         processes = list()
+        # in order to create all names in module, so deserialization runs painlessly
+        configuration_executor.execute(args['configuration'], base.Toolbox(), dict())
         for deme in xrange(NBR_DEMES):
             args['rank'] = (pipes_in[deme], pipes_out[deme], queue)
             algs.append(eval(algorithm)(**args))

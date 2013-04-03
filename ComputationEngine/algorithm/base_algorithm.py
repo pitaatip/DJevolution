@@ -1,3 +1,4 @@
+import pickle
 from deap import benchmarks, base
 import math
 from numpy.numarray.util import MathDomainError
@@ -65,7 +66,6 @@ class BaseMultiAlgorithm(object):
         objectives = len(self.final_front[0].fitness.values)
         sorted_individuals = sorted(self.final_front, key=lambda x: x.fitness.values[0])
         fitness_values = [[ind.fitness.values[i] for i in xrange(objectives)] for ind in sorted_individuals]
-        sorted_individuals = [list(ind) for ind in sorted_individuals]
         computed_spacing = self.compute_spacing(sorted_individuals)
 
         answer_to_return = sorted_individuals, fitness_values, self.partial_res, computed_spacing, self.partial_spacing

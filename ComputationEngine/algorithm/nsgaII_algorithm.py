@@ -55,9 +55,9 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
 
             self.compute_partial_spacing(pop)
 
-            #if self.parallel and "DEMES" in self.parallel:
-            #    if g % self.migration_rate == 0 and g > 0:
-             #       print "DEME {} MIGRATING".format(self.rank)
-              #      toolbox.migrate(pop)
+            if self.parallel and "DEMES" in self.parallel:
+                if g % self.migration_rate == 0 and g > 0:
+                    print "DEME {} MIGRATING".format(self.rank)
+                    toolbox.migrate(pop)
 
         self.final_front = tools.sortFastND(pop, k=self.N)[0]
