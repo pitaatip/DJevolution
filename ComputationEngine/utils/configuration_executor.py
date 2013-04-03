@@ -3,7 +3,7 @@ import array
 import random
 
 from deap import benchmarks, algorithms, base, creator, tools
-from CommonTools import my_rand
+from common_tools import my_rand
 import alg_helper
 
 

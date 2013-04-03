@@ -9,28 +9,27 @@ Created on 06-06-2012
 '''
 
 class NsgaIIAlgorithm(BaseMultiAlgorithm):
-    def __init__(self,monitoring,problem,configuration,is_part_spacing):
-        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,is_part_spacing)
+    def __init__(self, monitoring, problem, configuration, is_part_spacing, parallel=None, rank=None):
+        BaseMultiAlgorithm.__init__(self, monitoring, problem, configuration, is_part_spacing, parallel, rank)
 
     def set_globals(self):
         if self.comp_prop:
             self.N = self.comp_prop["N"]
             self.GEN = self.comp_prop["GEN"]
         else:
-            self.N=100
-            self.GEN=200
+            self.N = 100
+            self.GEN = 200
 
-    def main_computation_body(self,pop,toolbox):
-
+    def main_computation_body(self, pop, toolbox):
         # init population
-        for ind in pop:
-            ind.fitness.values = toolbox.evaluate(ind)
+        pop = toolbox.evaluate(toolbox, pop)
 
         # sort using non domination sort (k is the same as n of population - only sort is applied)
         pop = toolbox.select(pop, k=self.N)
 
         for g in xrange(self.GEN):
-            print "CURRENT GEN: " + str(g)
+            if not self.rank:
+                print "CURRENT GEN: " + str(g)
             #select parent pool with tournament dominated selection
             parent_pool = toolbox.selectTournament(pop, k=self.N)
             offspring_pool = map(toolbox.clone, parent_pool)
@@ -44,8 +43,7 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
                     toolbox.mutate(mutant)
 
             # evaluate offsprings
-            for ind in offspring_pool:
-                ind.fitness.values = toolbox.evaluate(ind)
+            pop = toolbox.evaluate(toolbox, pop)
 
             # extend base population with offsprings, pop is now 2N size
             pop.extend(offspring_pool)
@@ -53,8 +51,13 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
             # sort and select new population
             pop = toolbox.select(pop, k=self.N)
 
-            self.monitor(g,pop)
+            self.monitor(g, pop)
 
             self.compute_partial_spacing(pop)
+
+            #if self.parallel and "DEMES" in self.parallel:
+            #    if g % self.migration_rate == 0 and g > 0:
+             #       print "DEME {} MIGRATING".format(self.rank)
+              #      toolbox.migrate(pop)
 
         self.final_front = tools.sortFastND(pop, k=self.N)[0]

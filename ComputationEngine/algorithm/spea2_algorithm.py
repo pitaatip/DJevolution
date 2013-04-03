@@ -1,5 +1,5 @@
 import random
-from algorithm.base_algorithm import BaseMultiAlgorithm
+from base_algorithm import BaseMultiAlgorithm
 
 '''
 Created on 13-11-2012
@@ -7,32 +7,9 @@ Created on 13-11-2012
 @author: wysek
 '''
 
-def selTournamentSPEA2(individuals, k, tournsize):
-    """Select *k* individuals from the input *individuals* using *k*
-    tournaments of *tournsize* individuals. The list returned contains
-    references to the input *individuals*.
-
-    :param individuals: A list of individuals to select from.
-    :param k: The number of individuals to select.
-    :param tournsize: The number of individuals participating in each tournament.
-    :returns: A list of selected individuals.
-
-    This function uses the :func:`~random.choice` function from the python base
-    :mod:`random` module.
-    """
-    chosen = []
-    for i in xrange(k):
-        chosen.append(random.choice(individuals))
-        for j in xrange(tournsize - 1):
-            aspirant = random.choice(individuals)
-            if abs(sum(aspirant.fitness.wvalues)) > abs(sum(chosen[i].fitness.wvalues)):
-                chosen[i] = aspirant
-
-    return chosen
-
 class Spea2Algorithm(BaseMultiAlgorithm):
-    def __init__(self,monitoring,problem,configuration,is_part_spacing):
-        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,is_part_spacing)
+    def __init__(self, monitoring, problem, configuration, is_part_spacing, parallel=None, rank=None):
+        BaseMultiAlgorithm.__init__(self, monitoring, problem, configuration, is_part_spacing, parallel, rank)
 
     def set_globals(self):
         if self.comp_prop:
@@ -40,26 +17,27 @@ class Spea2Algorithm(BaseMultiAlgorithm):
             self.Nbar = self.comp_prop["Nbar"]
             self.GEN = self.comp_prop["GEN"]
         else:
-            self.N=80
-            self.GEN=100
+            self.N = 80
+            self.GEN = 100
             self.Nbar = 40
 
-    def main_computation_body(self,pop,toolbox):
+    def main_computation_body(self, pop, toolbox):
         # Step 1 Initialization
         archive = []
         curr_gen = 1
 
         while True:
-            print "CURRENT GEN: " + str(curr_gen)
-            # Step 2 Fitness assignement
-            for ind in pop:
-                ind.fitness.values = toolbox.evaluate(ind)
+            if not self.rank:
+                print "CURRENT GEN: {}".format(curr_gen)
 
-            for ind in archive:
-                ind.fitness.values = toolbox.evaluate(ind)
+            # Step 2 Fitness assignement
+            pop = toolbox.evaluate(toolbox, pop)
+
+            if archive:
+                archive = toolbox.evaluate(toolbox, archive)
 
             # Step 3 Environmental selection
-            archive,archive_fitness  = toolbox.select(pop + archive, k=self.Nbar)
+            archive, archive_fitness = toolbox.select(pop + archive, k=self.Nbar)
 
             # Step 4 Termination
             if curr_gen >= self.GEN:
@@ -81,9 +59,14 @@ class Spea2Algorithm(BaseMultiAlgorithm):
 
             pop = offspring_pool
 
-            self.monitor(curr_gen - 1,pop)
+            self.monitor(curr_gen - 1, pop)
 
             self.compute_partial_spacing(archive)
+
+            if self.parallel and "DEMES" in self.parallel:
+                if curr_gen % self.migration_rate == 0 and curr_gen > 0:
+                    print "DEME {} MIGRATING".format(self.rank)
+                    toolbox.migrate(pop)
 
             curr_gen += 1
 

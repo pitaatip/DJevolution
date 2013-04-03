@@ -44,32 +44,32 @@ class Node(object):
 #        self.my_rank = rank
 #        self.ring_size = size
         assert size <= 10, "This example is designed for no more than 10 islands."
-        
-    @staticmethod    
+
+    @staticmethod
     def last_node():
         return size-1
-    
+
     def next(self):
         if rank != self.last_node():
             return rank+1
         else:
             return 0
-        
+
     def prev(self):
-        if rank != 0:
+        if rank:
             return rank-1
         else:
             return self.last_node()
-        
+
     def pair(self, my_task):
             if my_task == SEND:
                 return rank*10 + self.next()
             else:
                 return self.prev()*10 + rank
-            
+
     def send(self, msg):
         comm.send(msg, dest=self.next(), tag=self.pair(SEND))
-        
+
     def recv(self):
         msg = comm.recv(source=self.prev(), tag=self.pair(RECV))
         return msg
@@ -196,7 +196,7 @@ def main(seed=None):
         stats.update(deme)
         hof.update(deme)
         logger.logGeneration(gen="%d" % gen, deme=rank, evals=len(invalid_ind), stats=stats)
-            
+
         if gen % MIG_RATE == 0 and gen > 0:
             toolbox.migrate(deme)
     print "Best individual:  " + str(convertArrToFloat(hof[-1]))
