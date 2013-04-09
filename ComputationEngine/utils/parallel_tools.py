@@ -1,17 +1,34 @@
 __author__ = 'wysek'
 
 from mpi4py import MPI
+from itertools import chain
 
 
-def evaluate_individuals_in_groups(individuals):
+def divide_list(lst, n):
+    return [lst[i::n] for i in xrange(n)]
+
+
+def chain_list(lst):
+    return list(chain.from_iterable(lst))
+
+
+def evaluate_individuals_in_groups(func, rank, individuals):
     comm = MPI.COMM_WORLD
-    global toolbox
+    size = MPI.COMM_WORLD.Get_size()
 
-    ind_for_eval = comm.scatter(individuals)
-    eval_population(toolbox, ind_for_eval)
+    packages = None
+    if not rank:
+        packages = divide_list(individuals, size)
+
+    ind_for_eval = comm.scatter(packages)
+    eval_population(func, ind_for_eval)
 
     pop_with_fit = comm.gather(ind_for_eval)
-    return pop_with_fit
+
+    if not rank:
+        pop_with_fit = chain_list(pop_with_fit)
+        for index, elem in enumerate(pop_with_fit):
+            individuals[index] = elem
 
 
 def eval_population(func, pop):

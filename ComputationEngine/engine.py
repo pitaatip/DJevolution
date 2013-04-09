@@ -1,7 +1,5 @@
 import random
 
-from collections import deque
-from multiprocessing import Event, Pipe, Process
 from datetime import datetime
 from time import sleep
 from algorithm.nsgaII_algorithm import NsgaIIAlgorithm

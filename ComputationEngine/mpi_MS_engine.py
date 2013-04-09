@@ -1,13 +1,9 @@
 import random
-
-from collections import deque
-from multiprocessing import Event, Pipe, Process
 from datetime import datetime
 from time import sleep
 from algorithm.nsgaII_algorithm import NsgaIIAlgorithm
 from algorithm.spea2_algorithm import Spea2Algorithm
 from algorithm.simple_genetic_algorithm import SimpleGeneticAlgorithm
-#from deap import dtm
 from mpi4py import MPI
 
 __author__ = 'pita'
@@ -17,7 +13,7 @@ def prepareArgs(computation, rank):
     for arg in ['problem','configuration','monitoring','is_part_spacing']:
         args[arg] = computation[arg]
     args['rank'] = rank
-    args['parallel'] = "MPI_DEMES"
+    args['parallel'] = "MPI_MS"
 
     return args
 
@@ -60,7 +56,6 @@ def main():
                 comm.bcast(computation)
                 compute(computation,computation['algorithm'], rank)
                 comm.Barrier()
-                print computation
                 computations_.save(computation)
 
             comm.bcast(empty_msg)

@@ -31,8 +31,8 @@ class Spea2Algorithm(BaseMultiAlgorithm):
                 print "CURRENT GEN: {}".format(curr_gen)
 
             # Step 2 Fitness assignement
-            toolbox.evaluate(toolbox.eval_ind, pop)
-            toolbox.evaluate(toolbox.eval_ind, archive)
+            toolbox.evaluate(pop)
+            toolbox.evaluate(archive)
 
             # Step 3 Environmental selection
             archive, archive_fitness = toolbox.select(pop + archive, k=self.Nbar)
@@ -63,9 +63,25 @@ class Spea2Algorithm(BaseMultiAlgorithm):
 
             if self.parallel and "DEMES" in self.parallel:
                 if curr_gen % self.migration_rate == 0 and curr_gen > 0:
-                    print "DEME {} MIGRATING".format(self.rank)
+                    print "DEME MIGRATING"
                     toolbox.migrate(pop)
 
             curr_gen += 1
 
         self.final_front = final_set
+
+    def main_computation_body_slave(self, pop, toolbox):
+        # Step 1 Initialization
+        archive = []
+        curr_gen = 1
+
+        while True:
+            #evaluation
+            toolbox.evaluate(pop)
+            toolbox.evaluate(archive)
+
+            # Step 4 Termination
+            if curr_gen >= self.GEN:
+                break
+
+            curr_gen += 1

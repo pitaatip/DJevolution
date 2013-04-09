@@ -38,18 +38,19 @@ class BaseMultiAlgorithm(object):
         self.toolbox.register("eval_ind", self.f_problem)
 
         if not self.parallel:
-            self.toolbox.register("evaluate", parallel_tools.eval_population)
+            self.toolbox.register("evaluate", parallel_tools.eval_population, self.toolbox.eval_ind)
         elif self.parallel == "MPI_MS":
-            self.toolbox.register("evaluate", parallel_tools.evaluate_individuals_in_groups)
+            self.toolbox.register("evaluate", parallel_tools.evaluate_individuals_in_groups,
+                self.toolbox.eval_ind, self.rank)
         elif self.parallel == "MPI_DEMES":
-            self.toolbox.register("evaluate", parallel_tools.eval_population)
+            self.toolbox.register("evaluate", parallel_tools.eval_population, self.toolbox.eval_ind)
             self.node = parallel_tools.Node()
             self.migration_rate = 5
             self.toolbox.register("migrate", parallel_tools.migRingMPI, k=5, node=self.node,
                 selection=tools.selBest, rank=self.rank, replacement=random.sample)
         elif self.parallel == "PIPES_DEMES":
             self.migration_rate = 5
-            self.toolbox.register("evaluate", parallel_tools.eval_population)
+            self.toolbox.register("evaluate", parallel_tools.eval_population, self.toolbox.eval_ind)
             self.toolbox.register("migrate", parallel_tools.migRingPipe, k=5, pipein=self.rank[0],
                 pipeout=self.rank[1], selection=tools.selBest, replacement=random.sample)
             queue = self.rank[2]
@@ -62,7 +63,12 @@ class BaseMultiAlgorithm(object):
         self.partial_spacing = []
 
         # main computation body, each algorithm implements it
-        self.main_computation_body(pop, self.toolbox)
+        if not self.parallel or not "MS" in self.parallel or not self.rank:
+            self.main_computation_body(pop, self.toolbox)
+        else:
+            self.main_computation_body_slave(pop, self.toolbox)
+            return
+
         objectives = len(self.final_front[0].fitness.values)
         sorted_individuals = sorted(self.final_front, key=lambda x: x.fitness.values[0])
         fitness_values = [[ind.fitness.values[i] for i in xrange(objectives)] for ind in sorted_individuals]
@@ -111,4 +117,7 @@ class BaseMultiAlgorithm(object):
             self.partial_spacing.append(self.compute_spacing(pop))
 
     def main_computation_body(self, pop, toolbox):
+        raise NotImplementedError("Implement this in concrete algorithm")
+
+    def main_computation_body_slave(self, pop, toolbox):
         raise NotImplementedError("Implement this in concrete algorithm")

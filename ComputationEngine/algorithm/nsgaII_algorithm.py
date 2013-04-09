@@ -22,7 +22,7 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
 
     def main_computation_body(self, pop, toolbox):
         # init population
-        toolbox.evaluate(toolbox.eval_ind, pop)
+        toolbox.evaluate(pop)
 
         # sort using non domination sort (k is the same as n of population - only sort is applied)
         pop = toolbox.select(pop, k=self.N)
@@ -43,7 +43,7 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
                     toolbox.mutate(mutant)
 
             # evaluate offsprings
-            toolbox.evaluate(toolbox.eval_ind, offspring_pool)
+            toolbox.evaluate(offspring_pool)
 
             # extend base population with offsprings, pop is now 2N size
             pop.extend(offspring_pool)
@@ -57,7 +57,12 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
 
             if self.parallel and "DEMES" in self.parallel:
                 if g % self.migration_rate == 0 and g > 0:
-                    print "DEME {} MIGRATING".format(self.rank)
+                    print "DEME MIGRATING"
                     toolbox.migrate(pop)
 
         self.final_front = tools.sortFastND(pop, k=self.N)[0]
+
+    def main_computation_body_slave(self, pop, toolbox):
+        #evaluation
+        for x in xrange(self.GEN+1):
+            toolbox.evaluate( pop)
