@@ -9,7 +9,6 @@ from deap import base
 from algorithm.nsgaII_algorithm import NsgaIIAlgorithm
 from algorithm.spea2_algorithm import Spea2Algorithm
 from algorithm.simple_genetic_algorithm import SimpleGeneticAlgorithm
-import demes_fromsite_PIPES
 import sys
 from utils import configuration_executor
 
@@ -37,7 +36,6 @@ def compute(computation, algorithm):
     pipes_out = deque(p[1] for p in pipes)
     pipes_in.rotate(1)
     pipes_out.rotate(-1)
-    processes = list()
     results = list()
 
     a = datetime.now()

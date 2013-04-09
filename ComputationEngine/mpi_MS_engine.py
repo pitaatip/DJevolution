@@ -10,8 +10,6 @@ from algorithm.simple_genetic_algorithm import SimpleGeneticAlgorithm
 #from deap import dtm
 from mpi4py import MPI
 
-import demes_fromsite_PIPES
-
 __author__ = 'pita'
 
 def prepareArgs(computation, rank):
