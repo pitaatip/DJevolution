@@ -35,7 +35,7 @@ class BaseMultiAlgorithm(object):
     def compute(self):
         self.parse_and_execute_configuration()
         self.set_globals()
-        self.toolbox.register("eval_func", self.f_problem)
+        self.toolbox.register("eval_ind", self.f_problem)
 
         if not self.parallel:
             self.toolbox.register("evaluate", parallel_tools.eval_population)

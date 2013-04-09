@@ -31,10 +31,8 @@ class Spea2Algorithm(BaseMultiAlgorithm):
                 print "CURRENT GEN: {}".format(curr_gen)
 
             # Step 2 Fitness assignement
-            pop = toolbox.evaluate(toolbox, pop)
-
-            if archive:
-                archive = toolbox.evaluate(toolbox, archive)
+            toolbox.evaluate(toolbox.eval_ind, pop)
+            toolbox.evaluate(toolbox.eval_ind, archive)
 
             # Step 3 Environmental selection
             archive, archive_fitness = toolbox.select(pop + archive, k=self.Nbar)

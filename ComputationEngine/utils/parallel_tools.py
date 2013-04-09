@@ -14,11 +14,10 @@ def evaluate_individuals_in_groups(individuals):
     return pop_with_fit
 
 
-def eval_population(toolbox, pop):
+def eval_population(func, pop):
     for ind in pop:
-        ind.fitness.values = toolbox.eval_func(ind)
+        ind.fitness.values = func(ind)
 
-    return pop
 
 class Node(object):
     SEND = "send"
@@ -30,25 +29,25 @@ class Node(object):
         self.size = self.comm.Get_size()
 
     def last_node(self):
-        return self.size-1
+        return self.size - 1
 
     def next(self):
         if self.rank != self.last_node():
-            return self.rank+1
+            return self.rank + 1
         else:
             return 0
 
     def prev(self):
         if self.rank:
-            return self.rank-1
+            return self.rank - 1
         else:
             return self.last_node()
 
     def pair(self, my_task):
         if my_task == self.SEND:
-            return self.rank*10 + self.next()
+            return self.rank * 10 + self.next()
         else:
-            return self.prev()*10 + self.rank
+            return self.prev() * 10 + self.rank
 
     def send(self, msg):
         self.comm.send(msg, dest=self.next(), tag=self.pair(self.SEND))
@@ -84,7 +83,7 @@ def migRingMPI(deme, k, node, selection, rank, replacement=None):
         immigrants = replacement(deme, k)
 
     # This if statement is present because of synchronous P2P communication
-    if not rank%2:
+    if not rank % 2:
         node.send(emigrants)
         buf = node.recv()
     else:

@@ -22,7 +22,7 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
 
     def main_computation_body(self, pop, toolbox):
         # init population
-        pop = toolbox.evaluate(toolbox, pop)
+        toolbox.evaluate(toolbox.eval_ind, pop)
 
         # sort using non domination sort (k is the same as n of population - only sort is applied)
         pop = toolbox.select(pop, k=self.N)
@@ -43,7 +43,7 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
                     toolbox.mutate(mutant)
 
             # evaluate offsprings
-            pop = toolbox.evaluate(toolbox, pop)
+            toolbox.evaluate(toolbox.eval_ind, offspring_pool)
 
             # extend base population with offsprings, pop is now 2N size
             pop.extend(offspring_pool)
