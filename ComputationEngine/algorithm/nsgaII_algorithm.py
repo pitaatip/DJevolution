@@ -1,6 +1,7 @@
 from deap import   tools
 import random
 from algorithm.base_algorithm import BaseMultiAlgorithm
+from datetime import datetime
 
 '''
 Created on 06-06-2012
@@ -22,12 +23,16 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
 
     def main_computation_body(self, pop, toolbox):
         # init population
-        toolbox.evaluate(pop)
+        toolbox.evaluate(pop, self.timer)
 
+        a = datetime.now()
         # sort using non domination sort (k is the same as n of population - only sort is applied)
         pop = toolbox.select(pop, k=self.N)
+        b = datetime.now()
+        self.timer[-1] += b - a
 
         for g in xrange(self.GEN):
+            c = datetime.now()
             if not self.rank:
                 print "CURRENT GEN: " + str(g)
             #select parent pool with tournament dominated selection
@@ -41,10 +46,11 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
             for mutant in offspring_pool:
                 if random.random() < 0.1:
                     toolbox.mutate(mutant)
-
+            d = datetime.now()
             # evaluate offsprings
-            toolbox.evaluate(offspring_pool)
+            toolbox.evaluate(offspring_pool, self.timer)
 
+            e = datetime.now()
             # extend base population with offsprings, pop is now 2N size
             pop.extend(offspring_pool)
 
@@ -54,6 +60,10 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
             self.monitor(g, pop)
 
             self.compute_partial_spacing(pop)
+            f = datetime.now()
+
+            self.timer[-1] += (d - c) + (e - d) + (f - e)
+
 
             if self.parallel and "DEMES" in self.parallel:
                 if g % self.migration_rate == 0 and g > 0:

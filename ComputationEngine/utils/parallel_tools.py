@@ -2,6 +2,7 @@ __author__ = 'wysek'
 
 from mpi4py import MPI
 from itertools import chain
+from datetime import datetime
 
 
 def divide_list(lst, n):
@@ -12,23 +13,39 @@ def chain_list(lst):
     return list(chain.from_iterable(lst))
 
 
-def evaluate_individuals_in_groups(func, rank, individuals):
+def evaluate_individuals_in_groups(func, rank, individuals, timer):
+    a = datetime.now()
     comm = MPI.COMM_WORLD
     size = MPI.COMM_WORLD.Get_size()
+    b = datetime.now()
 
     packages = None
     if not rank:
         packages = divide_list(individuals, size)
+    d = datetime.now()
 
     ind_for_eval = comm.scatter(packages)
+    f = datetime.now()
     eval_population(func, ind_for_eval)
+    g = datetime.now()
 
     pop_with_fit = comm.gather(ind_for_eval)
 
+    j= datetime.now()
     if not rank:
         pop_with_fit = chain_list(pop_with_fit)
+        k = datetime.now()
         for index, elem in enumerate(pop_with_fit):
             individuals[index] = elem
+        l = datetime.now()
+
+        timer[0] += b - a
+        timer[1] += d - b
+        timer[2] += f - d
+        timer[3] += g - f
+        timer[4] += j - g
+        timer[5] += k - j
+        timer[6] += l - k
 
 
 def eval_population(func, pop):
