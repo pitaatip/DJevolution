@@ -7,7 +7,7 @@ Created on 22-04-2012
 import array
 import random
 
-from deap import benchmarks, algorithms
+from deap import algorithms
 from deap import base
 from deap import tools
 from utils import configuration_executor, problems, alg_helper
@@ -15,7 +15,6 @@ from utils import configuration_executor, problems, alg_helper
 class SimpleGeneticAlgorithm(object):
     def __init__(self,monitoring,problem,configuration,is_part_spacing):
         self.monitoring = monitoring
-        # retrieve problem from benchmarks
         self.f_problem = getattr(problems, problem)
         self.configuration = configuration
         self.is_part_spacing = is_part_spacing

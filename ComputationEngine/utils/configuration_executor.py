@@ -2,7 +2,7 @@ import sys
 import array
 import random
 
-from deap import benchmarks, algorithms, base, creator, tools
+from deap import algorithms, base, creator, tools
 from CommonTools import my_rand
 import alg_helper
 

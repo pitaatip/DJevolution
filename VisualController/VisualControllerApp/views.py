@@ -27,8 +27,9 @@ def comp_detail(request,pk):
     if comp.algorithm == 'SimpleGeneticAlgorithm':
         return render_to_response('computation/singleDetails.html', c)
     else:
-        obj_range = range(len(comp.fitness_values[0][0]))
-        c['obj_range'] = obj_range
+        if comp.fitness_values:
+            obj_range = range(len(comp.fitness_values[0][0]))
+            c['obj_range'] = obj_range
         return render_to_response('computation/multiDetails.html', c)
 
 def partial_res(request,pk):

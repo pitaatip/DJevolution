@@ -63,6 +63,7 @@ $(document).ready(function() {
             minorTickColor: "#6bbb06",
             tickColor: "#6bbb06",
             maxPadding: 0.05,
+            tickInterval: 1,
             startOnTick: true,
             endOnTick: true,
             showLastLabel: true
@@ -137,7 +138,7 @@ $(document).ready(function() {
             renderTo: 'container{{ forloop.counter }}',
             type: 'scatter',
             inverted: false,
-            width: 900,
+            width: 450,
             zoomType: 'xy'
         },
         title: {
@@ -268,13 +269,18 @@ $(document).ready(function() {
 <br>
 <a href="/VisualControllerApp/computation/download/{{pk}}">DOWNLOAD RESULT</a>
 
-<div id="container" style="width: 100%; height: 600px"></div>
-<div id="container1" style="width: 100%; height: 600px"></div>
-<div id="container2" style="width: 100%; height: 600px"></div>
-<div id="container3" style="width: 100%; height: 600px"></div>
-<div id="container4" style="width: 100%; height: 600px"></div>
+<div id="container" style="width: 90%; height: 500px"></div>
+   <div style="float: left;">
+<div id="container1" style=" height: 300px"></div>
+<div id="container2" style=" height: 300px"></div>
+   </div>
+    <div style="float: left;">
+    <div id="container3" style="height: 300px"></div>
+<div id="container4" style="height: 300px"></div>
+    </div>
 
-
+    <br>
+    <br>
     <br>
 <a href="/VisualControllerApp"><button type="button">Back</button></a>
 

@@ -1,5 +1,5 @@
 from multiprocessing import Pool
-from deap import benchmarks, base
+from deap import base
 import math
 from numpy.numarray.util import MathDomainError
 from utils import configuration_executor, problems
@@ -14,7 +14,7 @@ Created on 06-06-2012
 class BaseMultiAlgorithm(object):
     def __init__(self,monitoring,problem,configuration,is_part_spacing,parallel):
         self.monitoring = monitoring
-        # retrieve problem from benchmarks
+        # retrieve problem from problem
         self.f_problem = getattr(problems, problem)
         self.configuration = configuration
         self.is_part_spacing = is_part_spacing
