@@ -19,6 +19,7 @@ class BaseMultiAlgorithm(object):
         self.configuration = configuration
         self.is_part_spacing = is_part_spacing
         self.comp_prop = dict()
+        self.parallel = parallel
         # init toolbox
         self.toolbox = base.Toolbox()
 
