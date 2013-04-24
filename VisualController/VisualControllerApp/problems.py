@@ -15,6 +15,11 @@ def logging_zdt1(individual):
     print os.getpid()
     return zdt1(individual)
 
+def hacked_zdt6(individual):
+    for _ in xrange(100):
+        res = zdt6(individual)
+    return res
+
 def uber_three(individual):
     g  = 1 + 10*(len(individual)-1) + sum(xi**2 - 10*cos(4*pi*xi) for xi in individual[1:])
     g2  = 1.0 + 9.0*sum(individual[1:])/(len(individual)-1)
