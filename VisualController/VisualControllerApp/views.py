@@ -1,5 +1,4 @@
 # Create your views here.
-from math import sin, cos
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
@@ -9,21 +8,6 @@ from VisualControllerApp.models import ComputationForm, Computation, Configurati
 ### VIEWS METHODS
 alg_conf_dispatcher = {"NsgaIIAlgorithm": "nsga_config.py", "Spea2Algorithm": "spea_config.py",
                        "SimpleGeneticAlgorithm": "sga_config.py"}
-
-init_data = [0.0+foo*0.1 for foo in xrange(0, 100)]
-
-def func_together(data):
-    data1 = [sin(x) * cos(x) for x in data]
-    data2 = [2 * sin(x) * cos(x) for x in data]
-
-    return data, data1, data, data2
-
-def myCharts(request):
-    quatros = func_together(init_data)
-    series1 = [[a,b] for a,b in zip(quatros[0],quatros[1]) ]
-    series2 = [[a,b] for a,b in zip(quatros[2],quatros[3]) ]
-    c = RequestContext(request, {'series1': series1,'series2' : series2})
-    return render_to_response('charts.html',c)
 
 def orderComputation(request):
     if request.method == 'POST':

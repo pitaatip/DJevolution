@@ -25,7 +25,6 @@ urlpatterns = patterns('',
     url(r'^VisualControllerApp/$', computation_list, name='computation_list'),
     url(r'^VisualControllerApp/order/start$', 'VisualControllerApp.views.start_computation'),
     url(r'^VisualControllerApp/delete_comp/(?P<pk>[a-z\d]+)/$', 'VisualControllerApp.views.comp_delete', name='comp_delete'),
-    url(r'^MyCharts/$', 'VisualControllerApp.views.myCharts'),
 
     # Examples:
     # url(r'^$', 'VisualController.views.home', name='home'),
