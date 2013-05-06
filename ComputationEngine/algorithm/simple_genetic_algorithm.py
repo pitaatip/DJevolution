@@ -13,11 +13,11 @@ from deap import tools
 from utils import configuration_executor, problems, alg_helper
 
 class SimpleGeneticAlgorithm(object):
-    def __init__(self,monitoring,problem,configuration,is_part_spacing):
+    def __init__(self,monitoring,problem,configuration,iter_spacing):
         self.monitoring = monitoring
         self.f_problem = getattr(problems, problem)
         self.configuration = configuration
-        self.is_part_spacing = is_part_spacing
+        self.iter_spacing = iter_spacing
         self.comp_prop = dict()
 
     def set_globals(self):
@@ -58,7 +58,7 @@ class SimpleGeneticAlgorithm(object):
         stats.register("max", max)
 
         population, partial_res = alg_helper.eaSimple(pop, toolbox, cxpb=0.8, mutpb=1, ngen=self.GEN,monitoring=self.monitoring,
-            is_partial_spacing=self.is_part_spacing, stats=stats, halloffame=hof, verbose=True)
+            stats=stats, halloffame=hof, verbose=True)
 
         print "Best individual:  " + str(self.convertArrToFloat(hof[0]))
         print "Rastrigin value: " + str(hof[0].fitness.values) + "\n\n\n"

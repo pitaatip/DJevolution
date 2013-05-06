@@ -63,9 +63,9 @@ def set_configuration(request):
 def set_monitoring(request):
     if request.method == 'POST':
         return updateSessionAndRedirect(request,MonitoringForm,
-            '/VisualControllerApp/order/parallelization','monitoring','is_part_spacing')
-    if request.session.get('monitoring') is not None:
-        form = MonitoringForm(get_data(request.session,'monitoring','is_part_spacing'))
+            '/VisualControllerApp/order/parallelization','monitoring','iter_spacing')
+    if request.session.get('monitoring') is not None and request.session.get('iter_spacing') is not None:
+        form = MonitoringForm(get_data(request.session,'monitoring','iter_spacing'))
     else:
         form = MonitoringForm()
     c = RequestContext(request, {'form': form,})
@@ -131,7 +131,7 @@ def download_ind(request, pk):
     return response
 
 def start_computation(request):
-    parameters = get_data(request.session,'problem','parallel','algorithm','configuration','monitoring','repeat','is_part_spacing')
+    parameters = get_data(request.session,'problem','parallel','algorithm','configuration','monitoring','repeat','iter_spacing')
     parameters['computed'] = False
     comp=Computation(**parameters)
     request.session.clear()

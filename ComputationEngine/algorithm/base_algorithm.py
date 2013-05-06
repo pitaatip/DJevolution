@@ -12,12 +12,12 @@ Created on 06-06-2012
 
 
 class BaseMultiAlgorithm(object):
-    def __init__(self,monitoring,problem,configuration,is_part_spacing,parallel):
+    def __init__(self,monitoring,problem,configuration,iter_spacing,parallel):
         self.monitoring = monitoring
         # retrieve problem from problem
         self.f_problem = getattr(problems, problem)
         self.configuration = configuration
-        self.is_part_spacing = is_part_spacing
+        self.iter_spacing = iter_spacing
         self.comp_prop = dict()
         self.parallel = parallel
         # init toolbox
@@ -77,8 +77,8 @@ class BaseMultiAlgorithm(object):
             pop_ = [[i for i in ind.fitness.values] for ind in pop]
             self.partial_res.append(sorted(pop_,key=lambda x:x[0]))
 
-    def compute_partial_spacing(self,pop):
-        if self.is_part_spacing:
+    def compute_partial_spacing(self, curr_gen, pop):
+        if self.iter_spacing and not curr_gen % self.iter_spacing:
             self.partial_spacing.append(self.compute_spacing(pop))
 
     def main_computation_body(self,pop,toolbox):

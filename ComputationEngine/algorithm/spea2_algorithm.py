@@ -7,32 +7,10 @@ Created on 13-11-2012
 @author: wysek
 '''
 
-def selTournamentSPEA2(individuals, k, tournsize):
-    """Select *k* individuals from the input *individuals* using *k*
-    tournaments of *tournsize* individuals. The list returned contains
-    references to the input *individuals*.
-
-    :param individuals: A list of individuals to select from.
-    :param k: The number of individuals to select.
-    :param tournsize: The number of individuals participating in each tournament.
-    :returns: A list of selected individuals.
-
-    This function uses the :func:`~random.choice` function from the python base
-    :mod:`random` module.
-    """
-    chosen = []
-    for i in xrange(k):
-        chosen.append(random.choice(individuals))
-        for j in xrange(tournsize - 1):
-            aspirant = random.choice(individuals)
-            if abs(sum(aspirant.fitness.wvalues)) > abs(sum(chosen[i].fitness.wvalues)):
-                chosen[i] = aspirant
-
-    return chosen
 
 class Spea2Algorithm(BaseMultiAlgorithm):
-    def __init__(self,monitoring,problem,configuration,is_part_spacing,parallel):
-        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,is_part_spacing,parallel)
+    def __init__(self,monitoring,problem,configuration,iter_spacing,parallel):
+        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,iter_spacing,parallel)
 
     def set_globals(self):
         if self.comp_prop:
@@ -83,7 +61,7 @@ class Spea2Algorithm(BaseMultiAlgorithm):
 
             self.monitor(curr_gen - 1,pop)
 
-            self.compute_partial_spacing(archive)
+            self.compute_partial_spacing(curr_gen - 1, archive)
 
             curr_gen += 1
 

@@ -66,7 +66,7 @@ def monitor(hof,monitoring,gen,partial_res):
     if gen % monitoring == 0:
         partial_res.append(hof[0].fitness.values[0])
 
-def eaSimple(population, toolbox, cxpb, mutpb, ngen,monitoring,is_partial_spacing, stats=None,
+def eaSimple(population, toolbox, cxpb, mutpb, ngen,monitoring, stats=None,
              halloffame=None, verbose=__debug__):
     """This algorithm reproduce the simplest evolutionary algorithm as
     presented in chapter 7 of [Back2000]_.

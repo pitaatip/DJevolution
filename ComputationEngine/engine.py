@@ -38,9 +38,8 @@ def compute_pipes(computation, computations):
 
 def prepareArgs(computation):
     args = {}
-    for arg in ['problem','configuration','monitoring','is_part_spacing']:
+    for arg in ['problem','configuration','monitoring', 'iter_spacing', 'parallel']:
         args[arg] = computation[arg]
-    args['parallel'] = computation['parallel']
     return args
 
 def compute(computation, algorithm):

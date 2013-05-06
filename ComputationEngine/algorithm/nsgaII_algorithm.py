@@ -10,8 +10,8 @@ Created on 06-06-2012
 '''
 
 class NsgaIIAlgorithm(BaseMultiAlgorithm):
-    def __init__(self,monitoring,problem,configuration,is_part_spacing,parallel):
-        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,is_part_spacing,parallel)
+    def __init__(self,monitoring,problem,configuration,iter_spacing,parallel):
+        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,iter_spacing,parallel)
 
     def multi_map(self):
         pool = Pool(2)
@@ -75,6 +75,6 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
 
             self.monitor(g,pop)
 
-            self.compute_partial_spacing(pop)
+            self.compute_partial_spacing(g, pop)
 
         self.final_front = tools.sortFastND(pop, k=self.N)[0]
