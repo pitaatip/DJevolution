@@ -9,8 +9,8 @@ Created on 13-11-2012
 
 
 class Spea2Algorithm(BaseMultiAlgorithm):
-    def __init__(self,monitoring,problem,configuration,iter_spacing,parallel):
-        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,iter_spacing,parallel)
+    def __init__(self,monitoring,problem,configuration,iter_spacing,parallel, rank=None):
+        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,iter_spacing,parallel, rank)
 
     def set_globals(self):
         if self.comp_prop:

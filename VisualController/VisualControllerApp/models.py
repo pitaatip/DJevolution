@@ -50,7 +50,7 @@ class MonitoringForm(forms.Form):
     iter_spacing = forms.IntegerField(label="Each x populations?",required=False)
 
 class ParallelForm(forms.Form):
-    parallel = forms.ChoiceField(choices=(('None', 'None',),('Multiprocess','Simple multiprocessing',), ('Demes pipe model', 'Demes pipe model',),('Demes Mpi model', 'Demes Mpi model',)),label="Parallelization")
+    parallel = forms.ChoiceField(choices=(('None', 'None',),('Multiprocess','Simple multiprocessing',), ('PIPES_DEMES', 'Demes pipe model',),('Demes Mpi model', 'Demes Mpi model',)),label="Parallelization")
 
 
 
