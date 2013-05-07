@@ -13,6 +13,11 @@ def retrieve_choices(benchmarks):
             choices.append((str(b),str(b),))
     return choices
 
+def decorate_number(some_field):
+    some_field.widget.input_type = "number"
+    some_field.widget.attrs = {'min': '0'}
+    return some_field
+
 # ENTITIES
 class Computation(models.Model):
     created_on = models.DateTimeField(auto_now_add=True, null=True)
@@ -45,12 +50,10 @@ class ConfigurationForm(forms.Form):
 
 class MonitoringForm(forms.Form):
     is_monitoring = forms.BooleanField(label="Apply monitoring?",initial=False,required=False)
-    monitoring = forms.IntegerField(label="Each x populations?",required=False)
+    monitoring = decorate_number(forms.IntegerField(label="Each x populations?",required=False))
     is_part_spacing = forms.BooleanField(label="Compute spacing?",initial=False,required=False)
-    iter_spacing = forms.IntegerField(label="Each x populations?",required=False)
+    iter_spacing = decorate_number(forms.IntegerField(label="Each x populations?",required=False))
 
 class ParallelForm(forms.Form):
     parallel = forms.ChoiceField(choices=(('None', 'None',),('Multiprocess','Simple multiprocessing',), ('PIPES_DEMES', 'Demes pipe model',),('Demes Mpi model', 'Demes Mpi model',)),label="Parallelization")
-
-
 
