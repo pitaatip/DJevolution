@@ -13,17 +13,6 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
     def __init__(self,monitoring,problem,configuration,iter_spacing,parallel):
         BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,iter_spacing,parallel)
 
-    def multi_map(self):
-        pool = Pool(2)
-        return pool.map
-
-    def simple_map(self):
-        return map
-
-    def prepareToolbox(self,parallel,toolbox):
-        map_fun = self.maps_fun[parallel]
-        toolbox.register("map", map_fun)
-
     def set_globals(self):
         if self.comp_prop:
             self.N = self.comp_prop["N"]
@@ -35,8 +24,7 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
     def main_computation_body(self,pop,toolbox):
 
         # init population
-        self.maps_fun = {"Multiprocess" : self.multi_map(),"None" : self.simple_map() }
-        self.prepareToolbox(self.parallel,self.toolbox)
+        self.prepareToolbox()
         fit_val = toolbox.map(toolbox.evaluate,pop)
         for ind,fit in zip(pop,fit_val):
             ind.fitness.values = fit

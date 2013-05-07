@@ -22,9 +22,21 @@ class BaseMultiAlgorithm(object):
         self.parallel = parallel
         # init toolbox
         self.toolbox = base.Toolbox()
+        self.maps_fun = {"Multiprocess" : self.multi_map,"None" : self.simple_map }
 
     def set_globals(self):
         raise NotImplementedError( "Implement this in concrete algorithm" )
+
+    def multi_map(self):
+        pool = Pool(4)
+        return pool.map
+
+    def simple_map(self):
+        return map
+
+    def prepareToolbox(self):
+        map_fun = self.maps_fun[self.parallel]()
+        self.toolbox.register("map", map_fun)
 
     def compute(self):
 
@@ -73,7 +85,7 @@ class BaseMultiAlgorithm(object):
         configuration_executor.execute(self.configuration, self.toolbox, self.comp_prop)
 
     def monitor(self,generation,pop):
-        if generation % self.monitoring == 0:
+        if self.monitoring and generation % self.monitoring == 0:
             pop_ = [[i for i in ind.fitness.values] for ind in pop]
             self.partial_res.append(sorted(pop_,key=lambda x:x[0]))
 

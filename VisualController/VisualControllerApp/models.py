@@ -27,7 +27,7 @@ class Computation(models.Model):
     configuration = models.TextField()
     problem = models.TextField()
     partial_result = RawField()
-    monitoring = models.IntegerField()
+    monitoring = models.IntegerField(null=True)
     repeat = models.IntegerField()
     final_space = ListField(models.FloatField(null=True))
     #is_part_spacing = models.BooleanField(default=False)
@@ -45,9 +45,9 @@ class ConfigurationForm(forms.Form):
 
 class MonitoringForm(forms.Form):
     is_monitoring = forms.BooleanField(label="Apply monitoring?",initial=False,required=False)
-    monitoring = forms.IntegerField(label="Each x populations?")
+    monitoring = forms.IntegerField(label="Each x populations?",required=False)
     is_part_spacing = forms.BooleanField(label="Compute spacing?",initial=False,required=False)
-    iter_spacing = forms.IntegerField(label="Each x populations?")
+    iter_spacing = forms.IntegerField(label="Each x populations?",required=False)
 
 class ParallelForm(forms.Form):
     parallel = forms.ChoiceField(choices=(('None', 'None',),('Multiprocess','Simple multiprocessing',), ('Demes pipe model', 'Demes pipe model',),('Demes Mpi model', 'Demes Mpi model',)),label="Parallelization")
