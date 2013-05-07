@@ -8,33 +8,10 @@ from deap import base
 from algorithm.nsgaII_algorithm import NsgaIIAlgorithm
 from algorithm.spea2_algorithm import Spea2Algorithm
 from algorithm.simple_genetic_algorithm import SimpleGeneticAlgorithm
-import demes_fromsite_PIPES
 
 __author__ = 'pita'
 
 import pymongo
-
-def compute_pipes(computation, computations):
-    size_ = computation['population_size']
-    random.seed(64)
-
-    NBR_DEMES = 3
-
-    pipes = [Pipe(False) for _ in range(NBR_DEMES)]
-    pipes_in = deque(p[0] for p in pipes)
-    pipes_out = deque(p[1] for p in pipes)
-    pipes_in.rotate(1)
-    pipes_out.rotate(-1)
-
-    e = Event()
-
-    processes = [Process(target=demes_fromsite_PIPES.main, args=(i, ipipe, opipe, e, computation, computations, random.random())) for i, (ipipe, opipe) in enumerate(zip(pipes_in, pipes_out))]
-
-    for proc in processes:
-        proc.start()
-
-    for proc in processes:
-        proc.join()
 
 def prepareArgs(computation):
     args = {}
