@@ -79,7 +79,7 @@ class BaseMultiAlgorithm(object):
 
     def compute_partial_spacing(self, curr_gen, pop):
         if self.iter_spacing and not curr_gen % self.iter_spacing:
-            self.partial_spacing.append(self.compute_spacing(pop))
+            self.partial_spacing.append([curr_gen, self.compute_spacing(pop)])
 
     def main_computation_body(self,pop,toolbox):
         raise NotImplementedError( "Implement this in concrete algorithm" )

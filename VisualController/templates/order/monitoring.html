@@ -11,11 +11,48 @@
     </div>
 {% endblock %}
 
-
 {% block content %}
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+                    $("#id_is_monitoring").change(function(){
+                            $("#field_monitor_id").toggle();
+                    });
+
+                    $("#id_is_part_spacing").change(function(){
+                            $("#field_spacing_id").toggle();
+                    });
+                }
+        )
+    </script>
+
     <h2>Monitoring settings</h2>
     <form action="/VisualControllerApp/order/monitoring/" method="post">{% csrf_token %}
-        {{ form.as_p }}
+        <p>
+            <div class="fieldWrapper">
+                <label for="id_is_monitoring">{{ form.is_monitoring.label_tag }} </label>
+                {{ form.is_monitoring }}
+            </div>
+        </p>
+        <p>
+            <div class="fieldWrapper" id="field_monitor_id" style="display: none;">
+                <label for="id_monitoring">{{ form.monitoring.label_tag }} </label>
+                {{ form.monitoring }}
+            </div>
+        </p>
+        <p>
+            <div class="fieldWrapper">
+                <label for="id_is_part_spacing">{{ form.is_part_spacing.label_tag }} </label>
+                {{ form.is_part_spacing }}
+            </div>
+        </p>
+        <p>
+            <div class="fieldWrapper" id="field_spacing_id" style="display: none;">
+                <label for="id_iter_spacing">{{ form.iter_spacing.label_tag }} </label>
+                {{ form.iter_spacing }}
+            </div>
+        </p>
         <input type="submit" value="Next" />
     </form>
 

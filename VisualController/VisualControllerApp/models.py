@@ -44,10 +44,10 @@ class ConfigurationForm(forms.Form):
     configuration = forms.CharField(widget=forms.Textarea(attrs={"rows":"15", "cols":"95"}),label="")
 
 class MonitoringForm(forms.Form):
-    monitoring = forms.IntegerField(label="Gather results after this many generations")
-    #is_part_spacing = forms.BooleanField(label="Compute spacing value after each generation?",initial=False,required=False)
-    iter_spacing = forms.IntegerField(label="Calculate spacing value after this many iterations")
-
+    is_monitoring = forms.BooleanField(label="Apply monitoring?",initial=False,required=False)
+    monitoring = forms.IntegerField(label="Each x populations?")
+    is_part_spacing = forms.BooleanField(label="Compute spacing?",initial=False,required=False)
+    iter_spacing = forms.IntegerField(label="Each x populations?")
 
 class ParallelForm(forms.Form):
     parallel = forms.ChoiceField(choices=(('None', 'None',),('Multiprocess','Simple multiprocessing',), ('Demes pipe model', 'Demes pipe model',),('Demes Mpi model', 'Demes Mpi model',)),label="Parallelization")
