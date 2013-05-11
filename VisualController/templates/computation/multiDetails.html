@@ -305,6 +305,9 @@
 <p>{{ comp.computation_time}}<p>
 <h2>Model of parallel computation: </h2>
 <p>{{ comp.parallel }}</p>
+<textarea rows="5" cols="60" >
+{{ comp.comments }}
+</textarea>
 <h2>Spacing value, standard deviation: </h2>
 <p>{{ comp.final_space|mean}} , {{ comp.final_space|std}}<p>
 <a href="/VisualControllerApp/computation/download/{{pk}}">DOWNLOAD RESULT</a>

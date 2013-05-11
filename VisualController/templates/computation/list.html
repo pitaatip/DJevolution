@@ -33,6 +33,7 @@
             <th>Algorithm</th>
             <th>Problem</th>
             <th>Completed</th>
+            <th><div style="width:150px;overflow:hidden;">Comments</div></th>
             <th>Spacing</th>
             <th>Action</th>
         </tr>
@@ -45,6 +46,7 @@
                 <td>{{ comp.algorithm }} </td>
                 <td>{{ comp.problem }} </td>
                 <td>{{ comp.computed }} </td>
+                <td><div style="width:150px;height:20px;overflow:hidden;">{{ comp.comments }}</div></td>
                 <td>{{ comp.final_space|mean }} </td>
                 <td><a href="{% url comp_delete comp.id %}"><button type="button">Delete</button></a></td>
             </tr>
