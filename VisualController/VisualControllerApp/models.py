@@ -44,7 +44,7 @@ class ComputationForm(forms.Form):
         label="Algorithm")
     problem = forms.ChoiceField(choices=retrieve_choices(problems), label="Problem")
     repeat = forms.IntegerField(label="Repeat computation")
-    comments = forms.CharField(widget=forms.Textarea(attrs={"rows": "1", "cols": "40"}), label="Comments")
+    comments = forms.CharField(widget=forms.Textarea(attrs={"rows": "1", "cols": "40"}), label="Comments", required=False)
 
 
 class ConfigurationForm(forms.Form):
@@ -64,4 +64,5 @@ class ParallelForm(forms.Form):
         ('Demes Mpi model', 'Demes Mpi model',)), label="Parallelization")
 
 
-
+class CommentForm(forms.Form):
+    comments = forms.CharField(widget=forms.Textarea(attrs={"rows": "5", "cols": "60"}))

@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template.context import RequestContext
 import csv
-from VisualControllerApp.models import ComputationForm, Computation, ConfigurationForm, ParallelForm, MonitoringForm
+from VisualControllerApp.models import ComputationForm, Computation, ConfigurationForm, ParallelForm, MonitoringForm, CommentForm
 
 ### VIEWS METHODS
 alg_conf_dispatcher = {"NsgaIIAlgorithm": "nsga_config.py", "Spea2Algorithm": "spea_config.py",
@@ -25,14 +25,17 @@ def orderComputation(request):
 
 def comp_detail(request, pk):
     comp = Computation.objects.get(pk=pk)
-
-    c = RequestContext(request, {'comp': comp, 'pk': pk})
+    form = CommentForm({"comments": comp.comments})
+    c = RequestContext(request, {'form': form, 'comp': comp, 'pk': pk})
+    if request.method == "POST":
+        raise Exception("The submit functionality will be implemented soon.")
     if comp.algorithm == 'SimpleGeneticAlgorithm':
         return render_to_response('computation/singleDetails.html', c)
     else:
         if comp.fitness_values:
             obj_range = range(len(comp.fitness_values[0][0]))
             c['obj_range'] = obj_range
+            print c
         return render_to_response('computation/multiDetails.html', c)
 
 
