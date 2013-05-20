@@ -305,14 +305,16 @@
 <p>{{ comp.computation_time}}<p>
 <h2>Model of parallel computation: </h2>
 <p>{{ comp.parallel }}</p>
-<h2>Comments</h2>
+<h2>Comments:</h2>
 <form action="." method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Submit" />
  </form>
 <h2>Spacing value, standard deviation: </h2>
 <p>{{ comp.final_space|mean}} , {{ comp.final_space|std}}<p>
-<a href="/VisualControllerApp/computation/download/{{pk}}">DOWNLOAD RESULT</a>
+<h2>Downloadable content:</h2>
+<a href="/VisualControllerApp/computation/download_ind/{{pk}}">Download individuals</a><br>
+<a href="/VisualControllerApp/computation/download_spacing/{{pk}}">Download spacing</a>
 <br>
 <br>
 <select id="function_x">

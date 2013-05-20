@@ -145,6 +145,22 @@ def download_ind(request, pk):
         c.writerow([])
     return response
 
+def download_spacing(request, pk):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="spacing.csv"'
+    comp = Computation.objects.get(pk=pk)
+    c = csv.writer(response)
+
+    # prepare header
+    header = []
+    header.append("Generation")
+    header.append("Spacing Value")
+    c.writerow(header)
+    for generations, spacing_val in comp.partial_spacing[0]:
+        c.writerow([generations, spacing_val])
+
+    return response
+
 
 def start_computation(request):
     parameters = get_data(request.session, 'problem', 'parallel', 'algorithm', 'configuration', 'monitoring', 'repeat',
