@@ -65,4 +65,4 @@ class ParallelForm(forms.Form):
 
 
 class CommentForm(forms.Form):
-    comments = forms.CharField(widget=forms.Textarea(attrs={"rows": "5", "cols": "60"}), label="")
+    comments = forms.CharField(widget=forms.Textarea(attrs={"rows": "5", "cols": "60"}), label="", required=False)
