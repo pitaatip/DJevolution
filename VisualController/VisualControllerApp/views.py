@@ -28,14 +28,15 @@ def comp_detail(request, pk):
     form = CommentForm({"comments": comp.comments})
     c = RequestContext(request, {'form': form, 'comp': comp, 'pk': pk})
     if request.method == "POST":
-        raise Exception("The submit functionality will be implemented soon.")
+        comp.comments = request.POST['comments']
+        comp.save()
+        return updateSessionAndRedirect(request, CommentForm, '.', 'comments')
     if comp.algorithm == 'SimpleGeneticAlgorithm':
         return render_to_response('computation/singleDetails.html', c)
     else:
         if comp.fitness_values:
             obj_range = range(len(comp.fitness_values[0][0]))
             c['obj_range'] = obj_range
-            print c
         return render_to_response('computation/multiDetails.html', c)
 
 
