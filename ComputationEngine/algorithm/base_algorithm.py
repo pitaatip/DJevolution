@@ -78,7 +78,7 @@ class BaseMultiAlgorithm(object):
         d_vects = []
         for ind in pop:
             try:
-                fs = self.f_problem(ind)
+                fs = ind.fitness.values
             except ValueError as e:
                 fs = [-1]
                 print e
@@ -86,7 +86,7 @@ class BaseMultiAlgorithm(object):
             for ind2 in pop:
                 if not ind is ind2:
                     try:
-                        fs_p = self.f_problem(ind2)
+                        fs_p = ind2.fitness.values
                     except ValueError as e:
                         fs_p = [1]
                         print e
