@@ -10,8 +10,8 @@ Created on 06-06-2012
 '''
 
 class NsgaIIAlgorithm(BaseMultiAlgorithm):
-    def __init__(self,monitoring,problem,configuration,iter_spacing,parallel):
-        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,iter_spacing,parallel)
+    def __init__(self,monitoring,problem,configuration,iter_spacing,parallel, rank=None):
+        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,iter_spacing,parallel, rank)
 
     def set_globals(self):
         if self.comp_prop:
@@ -28,9 +28,6 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
         fit_val = toolbox.map(toolbox.evaluate,pop)
         for ind,fit in zip(pop,fit_val):
             ind.fitness.values = fit
-#        for ind in pop:
-#            ind.fitness.values = toolbox.evaluate(ind)
-
         # sort using non domination sort (k is the same as n of population - only sort is applied)
         pop = toolbox.select(pop, k=self.N)
 
@@ -52,8 +49,6 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
             fit_val = toolbox.map(toolbox.evaluate,offspring_pool)
             for ind,fit in zip(offspring_pool,fit_val):
                 ind.fitness.values = fit
-#            for ind in offspring_pool:
-#                ind.fitness.values = toolbox.evaluate(ind)
 
             # extend base population with offsprings, pop is now 2N size
             pop.extend(offspring_pool)
@@ -64,5 +59,10 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
             self.monitor(g,pop)
 
             self.compute_partial_spacing(g, pop)
+
+            if self.parallel and "DEMES" in self.parallel:
+                if g % self.migration_rate == 0 and g > 0:
+                    print "DEMES MIGRATING"
+                    toolbox.migrate(pop)
 
         self.final_front = tools.sortFastND(pop, k=self.N)[0]

@@ -1,8 +1,22 @@
-import os
+from math import exp, sin, pi, cos
+from operator import mul
+import os, itertools
+import random
 
 __author__ = 'pita'
 
 from deap import benchmarks
+
+def non_optimazeable_fun(individual,a,b):
+    g  = 1 + 9 * (sum(individual[1:]) / (len(individual)-1))**a
+    f1 = 1 - exp(-4*individual[0]) * sin(6*pi*individual[0])**b
+    f2 = g * (1 - (f1/g)**2)
+    xc = individual[:1]
+    xm = individual[1:]
+    g = sum((xi-0.5)**2 for xi in xm)
+    f = [(1.0+g) *  reduce(mul, (cos(0.5*xi**a*pi) for xi in xc), 1.0)]
+    f.extend((1.0+g) * reduce(mul, (cos(0.5*xi**a*pi) for xi in xc[:m-1]), 1) * sin(0.5*xc[m]**a*pi) for m in reversed(xrange(1)))
+    return f1, f2
 
 for foo_k in benchmarks.__dict__:
     if not "__" in foo_k:
@@ -17,8 +31,9 @@ def logging_zdt1(individual):
     return zdt1(individual)
 
 def hacked_zdt6(individual):
-    for _ in xrange(100):
-        res = zdt6(individual)
+    for _ in xrange(10):
+        non_optimazeable_fun(individual,random.random(),random.randint(1,10))
+    res = zdt6(individual)
     return res
 
 def uber_three(individual):

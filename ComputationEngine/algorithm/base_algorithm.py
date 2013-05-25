@@ -1,8 +1,9 @@
 from multiprocessing import Pool
-from deap import base
+import random
+from deap import base, tools
 import math
 from numpy.numarray.util import MathDomainError
-from utils import configuration_executor, problems
+from utils import configuration_executor, problems, parallel_tools
 
 '''
 Created on 06-06-2012
@@ -12,23 +13,24 @@ Created on 06-06-2012
 
 
 class BaseMultiAlgorithm(object):
-    def __init__(self,monitoring,problem,configuration,iter_spacing,parallel):
+    def __init__(self,monitoring,problem,configuration,iter_spacing,parallel, rank=None):
         self.monitoring = monitoring
         # retrieve problem from problem
         self.f_problem = getattr(problems, problem)
         self.configuration = configuration
         self.iter_spacing = iter_spacing
         self.comp_prop = dict()
+        self.rank = rank
         self.parallel = parallel
         # init toolbox
         self.toolbox = base.Toolbox()
-        self.maps_fun = {"Multiprocess" : self.multi_map,"None" : self.simple_map }
+        self.maps_fun = {"Multiprocess" : self.multi_map,"None" : self.simple_map ,"PIPES_DEMES" : self.simple_map }
 
     def set_globals(self):
         raise NotImplementedError( "Implement this in concrete algorithm" )
 
     def multi_map(self):
-        pool = Pool(4)
+        pool = Pool(8)
         return pool.map
 
     def simple_map(self):
@@ -45,6 +47,13 @@ class BaseMultiAlgorithm(object):
 
         self.toolbox.register("evaluate", self.f_problem)
 
+        if self.parallel == "PIPES_DEMES":
+            self.migration_rate = 5
+            self.toolbox.register("migrate", parallel_tools.migRingPipe, k=5, pipein=self.rank[0],
+                pipeout=self.rank[1], selection=tools.selBest, replacement=random.sample)
+            queue = self.rank[2]
+
+        # main computation body, each algorithm implements it
         # init population
         pop = self.toolbox.population(n=self.comp_prop["N"])
 
@@ -52,12 +61,18 @@ class BaseMultiAlgorithm(object):
         self.partial_res = []
         self.partial_spacing = []
 
-        # main computation body, each algorithm implements it
         self.main_computation_body(pop,self.toolbox)
         objectives = len(self.final_front[0].fitness.values)
         sorted_individuals = sorted(self.final_front,key=lambda x:x.fitness.values[0])
         fitness_values = [[ind.fitness.values[i] for i in xrange(objectives)] for ind in sorted_individuals]
-        return sorted_individuals,fitness_values, self.partial_res, self.compute_spacing(sorted_individuals), self.partial_spacing
+
+        answer_to_return = sorted_individuals,fitness_values, self.partial_res, self.compute_spacing(sorted_individuals), self.partial_spacing
+
+        if self.parallel == "PIPES_DEMES":
+            queue.put(answer_to_return)
+            return
+
+        return answer_to_return
 
     def compute_spacing(self,pop):
         d_vects = []

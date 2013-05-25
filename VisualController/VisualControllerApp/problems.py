@@ -1,4 +1,7 @@
 from math import cos, pi, sqrt
+import os
+import random
+import itertools
 
 __author__ = 'pita'
 
@@ -16,8 +19,10 @@ def logging_zdt1(individual):
     return zdt1(individual)
 
 def hacked_zdt6(individual):
-    for _ in xrange(100):
-        res = zdt6(individual)
+    for _ in xrange(5):
+        l = [random.random() for _ in xrange(6)]
+        [a for a in itertools.permutations(l)]
+    res = zdt6(individual)
     return res
 
 def uber_three(individual):
