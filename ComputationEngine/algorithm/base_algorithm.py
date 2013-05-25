@@ -30,7 +30,7 @@ class BaseMultiAlgorithm(object):
         raise NotImplementedError( "Implement this in concrete algorithm" )
 
     def multi_map(self):
-        pool = Pool(4)
+        pool = Pool(8)
         return pool.map
 
     def simple_map(self):
