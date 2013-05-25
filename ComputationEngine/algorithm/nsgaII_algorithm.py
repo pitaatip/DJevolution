@@ -63,6 +63,8 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
             if self.parallel and "DEMES" in self.parallel:
                 if g % self.migration_rate == 0 and g > 0:
                     print "DEMES MIGRATING"
+                    pareto = tools.sortFastND(pop, k=self.N)[0]
+                    print "PARETO SIZE: ",len(pareto)
                     toolbox.migrate(pop)
 
         self.final_front = tools.sortFastND(pop, k=self.N)[0]

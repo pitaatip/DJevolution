@@ -16,7 +16,7 @@ import pymongo
 
 def computePipes(computation, algorithm, args):
     NBR_DEMES = 3  # hardcoded for the moment because VM has only 3 threads
-    pipes = [Pipe(False) for _ in range(NBR_DEMES)]
+    pipes = [Pipe(True) for _ in range(NBR_DEMES)]
     pipes_in = deque(p[0] for p in pipes)
     pipes_out = deque(p[1] for p in pipes)
     pipes_in.rotate(1)

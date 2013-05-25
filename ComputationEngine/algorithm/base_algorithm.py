@@ -24,6 +24,7 @@ class BaseMultiAlgorithm(object):
         self.parallel = parallel
         # init toolbox
         self.toolbox = base.Toolbox()
+        self.temp_spacing = []
         self.maps_fun = {"Multiprocess" : self.multi_map,"None" : self.simple_map ,"PIPES_DEMES" : self.simple_map }
 
     def set_globals(self):
@@ -105,8 +106,15 @@ class BaseMultiAlgorithm(object):
             self.partial_res.append(sorted(pop_,key=lambda x:x[0]))
 
     def compute_partial_spacing(self, curr_gen, pop):
-        if self.iter_spacing and not curr_gen % self.iter_spacing:
-            self.partial_spacing.append([curr_gen, self.compute_spacing(pop)])
+        if self.iter_spacing and curr_gen > 0 and (curr_gen % 10 == 0):
+            self.temp_spacing.remove(max(self.temp_spacing))
+            self.partial_spacing.append(sum(self.temp_spacing)/len(self.temp_spacing))
+            self.temp_spacing = []
+        elif self.iter_spacing:
+            self.temp_spacing.append(self.compute_spacing(pop))
+#
+#        if self.iter_spacing and not curr_gen % self.iter_spacing:
+#            self.partial_spacing.append([curr_gen, self.compute_spacing(pop)])
 
     def main_computation_body(self,pop,toolbox):
         raise NotImplementedError( "Implement this in concrete algorithm" )
