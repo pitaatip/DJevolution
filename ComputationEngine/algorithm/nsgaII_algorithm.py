@@ -29,7 +29,7 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
         for ind,fit in zip(pop,fit_val):
             ind.fitness.values = fit
         # sort using non domination sort (k is the same as n of population - only sort is applied)
-        pop = toolbox.select(pop, k=self.N)
+        pop, main_front = toolbox.select(pop, k=self.N)
 
         for g in xrange(self.GEN):
             print "CURRENT GEN: " + str(g)
@@ -54,11 +54,11 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
             pop.extend(offspring_pool)
 
             # sort and select new population
-            pop = toolbox.select(pop, k=self.N)
+            pop, main_front = toolbox.select(pop, k=self.N)
 
             self.monitor(g,pop)
 
-            self.compute_partial_spacing(g, pop)
+            self.compute_partial_spacing(g, main_front)
 
             if self.parallel and "DEMES" in self.parallel:
                 if g % self.migration_rate == 0 and g > 0:
