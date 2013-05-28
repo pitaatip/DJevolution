@@ -4,9 +4,12 @@ Created on 22-04-2012
 @author: pita
 '''
 from copy import deepcopy
+from itertoolsmodule import chain
+from operator import attrgetter
 from deap import tools
 import random
 import math
+from deap.tools import sortFastND, assignCrowdingDist
 
 
 def my_rand(V=1,U=0):
@@ -66,7 +69,7 @@ def monitor(hof,monitoring,gen,partial_res):
     if gen % monitoring == 0:
         partial_res.append(hof[0].fitness.values[0])
 
-def eaSimple(population, toolbox, cxpb, mutpb, ngen,monitoring,is_partial_spacing, stats=None,
+def eaSimple(population, toolbox, cxpb, mutpb, ngen,monitoring, stats=None,
              halloffame=None, verbose=__debug__):
     """This algorithm reproduce the simplest evolutionary algorithm as
     presented in chapter 7 of [Back2000]_.
@@ -310,3 +313,32 @@ def selTournament(individuals, k, tournsize, fitness):
                 chosen[i] = individuals[aspirant]
 
     return chosen
+
+def selNSGA2(individuals, k):
+    """Apply NSGA-II selection operator on the *individuals*. Usually, the
+    size of *individuals* will be larger than *k* because any individual
+    present in *individuals* will appear in the returned list at most once.
+    Having the size of *individuals* equals to *k* will have no effect other
+    than sorting the population according to a non-domination scheme. The list
+    returned contains references to the input *individuals*. For more details
+    on the NSGA-II operator see [Deb2002]_.
+
+    :param individuals: A list of individuals to select from.
+    :param k: The number of individuals to select.
+    :returns: A list of selected individuals.
+
+    .. [Deb2002] Deb, Pratab, Agarwal, and Meyarivan, "A fast elitist
+       non-dominated sorting genetic algorithm for multi-objective
+       optimization: NSGA-II", 2002.
+    """
+    pareto_fronts = sortFastND(individuals, k)
+    for front in pareto_fronts:
+        assignCrowdingDist(front)
+
+    chosen = list(chain(*pareto_fronts[:-1]))
+    k = k - len(chosen)
+    if k > 0:
+        sorted_front = sorted(pareto_fronts[-1], key=attrgetter("fitness.crowding_dist"), reverse=True)
+        chosen.extend(sorted_front[:k])
+
+    return chosen, pareto_fronts[0]

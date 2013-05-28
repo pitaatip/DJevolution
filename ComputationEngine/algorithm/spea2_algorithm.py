@@ -1,5 +1,5 @@
 import random
-from base_algorithm import BaseMultiAlgorithm
+from algorithm.base_algorithm import BaseMultiAlgorithm
 
 '''
 Created on 13-11-2012
@@ -7,9 +7,10 @@ Created on 13-11-2012
 @author: wysek
 '''
 
+
 class Spea2Algorithm(BaseMultiAlgorithm):
-    def __init__(self, monitoring, problem, configuration, is_part_spacing, parallel=None, rank=None):
-        BaseMultiAlgorithm.__init__(self, monitoring, problem, configuration, is_part_spacing, parallel, rank)
+    def __init__(self,monitoring,problem,configuration,iter_spacing,parallel, rank=None):
+        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,iter_spacing,parallel, rank)
 
     def set_globals(self):
         if self.comp_prop:
@@ -59,7 +60,7 @@ class Spea2Algorithm(BaseMultiAlgorithm):
 
             self.monitor(curr_gen - 1, pop)
 
-            self.compute_partial_spacing(archive)
+            self.compute_partial_spacing(curr_gen - 1, archive)
 
             if self.parallel and "DEMES" in self.parallel:
                 if curr_gen % self.migration_rate == 0 and curr_gen > 0:

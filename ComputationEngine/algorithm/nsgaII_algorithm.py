@@ -9,8 +9,8 @@ Created on 06-06-2012
 '''
 
 class NsgaIIAlgorithm(BaseMultiAlgorithm):
-    def __init__(self, monitoring, problem, configuration, is_part_spacing, parallel=None, rank=None):
-        BaseMultiAlgorithm.__init__(self, monitoring, problem, configuration, is_part_spacing, parallel, rank)
+    def __init__(self,monitoring,problem,configuration,iter_spacing,parallel, rank=None):
+        BaseMultiAlgorithm.__init__(self,monitoring,problem,configuration,iter_spacing,parallel, rank)
 
     def set_globals(self):
         if self.comp_prop:
@@ -25,7 +25,7 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
         toolbox.evaluate(pop)
 
         # sort using non domination sort (k is the same as n of population - only sort is applied)
-        pop = toolbox.select(pop, k=self.N)
+        pop, main_front = toolbox.select(pop, k=self.N)
 
         for g in xrange(self.GEN):
             if not self.rank:
@@ -49,11 +49,11 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
             pop.extend(offspring_pool)
 
             # sort and select new population
-            pop = toolbox.select(pop, k=self.N)
+            pop, main_front = toolbox.select(pop, k=self.N)
 
-            self.monitor(g, pop)
+            self.monitor(g,pop)
 
-            self.compute_partial_spacing(pop)
+            self.compute_partial_spacing(g, main_front)
 
             if self.parallel and "DEMES" in self.parallel:
                 if g % self.migration_rate == 0 and g > 0:

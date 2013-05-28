@@ -16,16 +16,17 @@ Created on 06-06-2012
 @author: pita
 '''
 
+
 class BaseMultiAlgorithm(object):
-    def __init__(self, monitoring, problem, configuration, is_part_spacing, parallel, rank):
+    def __init__(self,monitoring,problem,configuration,iter_spacing,parallel, rank=None):
         self.monitoring = monitoring
-        # retrieve problem from benchmarks
+        # retrieve problem from problem
         self.f_problem = getattr(problems, problem)
         self.configuration = configuration
-        self.is_part_spacing = is_part_spacing
-        self.parallel = parallel
-        self.rank = rank
+        self.iter_spacing = iter_spacing
         self.comp_prop = dict()
+        self.rank = rank
+        self.parallel = parallel
         # init toolbox
         self.toolbox = base.Toolbox()
 
@@ -33,6 +34,7 @@ class BaseMultiAlgorithm(object):
         raise NotImplementedError("Implement this in concrete algorithm")
 
     def compute(self):
+
         self.parse_and_execute_configuration()
         self.set_globals()
         self.toolbox.register("eval_ind", self.f_problem)
@@ -107,16 +109,16 @@ class BaseMultiAlgorithm(object):
     def parse_and_execute_configuration(self):
         configuration_executor.execute(self.configuration, self.toolbox, self.comp_prop)
 
-    def monitor(self, generation, pop):
-        if generation % self.monitoring == 0:
+    def monitor(self,generation,pop):
+        if self.monitoring and generation % self.monitoring == 0:
             pop_ = [[i for i in ind.fitness.values] for ind in pop]
-            self.partial_res.append(sorted(pop_, key=lambda x: x[0]))
+            self.partial_res.append(sorted(pop_,key=lambda x:x[0]))
 
-    def compute_partial_spacing(self, pop):
-        if self.is_part_spacing:
-            self.partial_spacing.append(self.compute_spacing(pop))
+    def compute_partial_spacing(self, curr_gen, pop):
+        if self.iter_spacing and not curr_gen % self.iter_spacing:
+            self.partial_spacing.append([curr_gen, self.compute_spacing(pop)])
 
-    def main_computation_body(self, pop, toolbox):
+    def main_computation_body(self,pop,toolbox):
         raise NotImplementedError("Implement this in concrete algorithm")
 
     def main_computation_body_slave(self, pop, toolbox):
