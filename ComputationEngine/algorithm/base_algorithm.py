@@ -30,8 +30,8 @@ class BaseMultiAlgorithm(object):
         raise NotImplementedError( "Implement this in concrete algorithm" )
 
     def multi_map(self):
-        pool = Pool(2)
-        return pool.map
+        self.pool = Pool(6)
+        return self.pool.map
 
     def simple_map(self):
         return map
@@ -67,7 +67,8 @@ class BaseMultiAlgorithm(object):
         fitness_values = [[ind.fitness.values[i] for i in xrange(objectives)] for ind in sorted_individuals]
 
         answer_to_return = sorted_individuals,fitness_values, self.partial_res, self.compute_spacing(sorted_individuals), self.partial_spacing
-
+        self.pool.close()
+        self.pool = None
         if self.parallel == "PIPES_DEMES":
             queue.put(answer_to_return)
             return
