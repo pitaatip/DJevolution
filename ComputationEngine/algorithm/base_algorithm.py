@@ -31,8 +31,8 @@ class BaseMultiAlgorithm(object):
         raise NotImplementedError( "Implement this in concrete algorithm" )
 
     def multi_map(self):
-        pool = Pool(8)
-        return pool.map
+        self.pool = Pool(8)
+        return self.pool.map
 
     def simple_map(self):
         return map
@@ -49,8 +49,8 @@ class BaseMultiAlgorithm(object):
         self.toolbox.register("evaluate", self.f_problem)
 
         if self.parallel == "PIPES_DEMES":
-            self.migration_rate = 5
-            self.toolbox.register("migrate", parallel_tools.migRingPipe, k=5, pipein=self.rank[0],
+            self.migration_rate = 10
+            self.toolbox.register("migrate", parallel_tools.migRingPipe, k=10, pipein=self.rank[0],
                 pipeout=self.rank[1], selection=tools.selBest, replacement=random.sample)
             queue = self.rank[2]
 
@@ -68,7 +68,9 @@ class BaseMultiAlgorithm(object):
         fitness_values = [[ind.fitness.values[i] for i in xrange(objectives)] for ind in sorted_individuals]
 
         answer_to_return = sorted_individuals,fitness_values, self.partial_res, self.compute_spacing(sorted_individuals), self.partial_spacing
-
+        if "pool" in self.__dict__.keys():
+            self.pool.close()
+            self.pool = None
         if self.parallel == "PIPES_DEMES":
             queue.put(answer_to_return)
             return
