@@ -1,5 +1,5 @@
 import pickle
-from deap import benchmarks, base
+from deap import base, tools
 import math
 from numpy.numarray.util import MathDomainError
 from utils import configuration_executor, problems
@@ -29,6 +29,7 @@ class BaseMultiAlgorithm(object):
         self.parallel = parallel
         # init toolbox
         self.toolbox = base.Toolbox()
+        self.temp_spacing = []
 
     def set_globals(self):
         raise NotImplementedError("Implement this in concrete algorithm")
@@ -41,14 +42,15 @@ class BaseMultiAlgorithm(object):
 
         if not self.parallel:
             self.toolbox.register("evaluate", parallel_tools.eval_population, self.toolbox.eval_ind)
+
         elif self.parallel == "MPI_MS":
             self.toolbox.register("evaluate", parallel_tools.evaluate_individuals_in_groups,
                 self.toolbox.eval_ind, self.rank)
         elif self.parallel == "MPI_DEMES":
             self.toolbox.register("evaluate", parallel_tools.eval_population, self.toolbox.eval_ind)
             self.node = parallel_tools.Node()
-            self.migration_rate = 5
-            self.toolbox.register("migrate", parallel_tools.migRingMPI, k=5, node=self.node,
+            self.migration_rate = 10
+            self.toolbox.register("migrate", parallel_tools.migRingMPI, k=10, node=self.node,
                 selection=tools.selBest, rank=self.rank, replacement=random.sample)
         elif self.parallel == "PIPES_DEMES":
             self.migration_rate = 5
@@ -57,6 +59,7 @@ class BaseMultiAlgorithm(object):
                 pipeout=self.rank[1], selection=tools.selBest, replacement=random.sample)
             queue = self.rank[2]
 
+        # main computation body, each algorithm implements it
         # init population
         pop = self.toolbox.population(n=self.comp_prop["N"])
 
@@ -84,11 +87,11 @@ class BaseMultiAlgorithm(object):
 
         return answer_to_return
 
-    def compute_spacing(self, pop):
+    def compute_spacing(self,pop):
         d_vects = []
         for ind in pop:
             try:
-                fs = self.f_problem(ind)
+                fs = ind.fitness.values
             except ValueError as e:
                 fs = [-1]
                 print e
@@ -96,15 +99,15 @@ class BaseMultiAlgorithm(object):
             for ind2 in pop:
                 if not ind is ind2:
                     try:
-                        fs_p = self.f_problem(ind2)
+                        fs_p = ind2.fitness.values
                     except ValueError as e:
                         fs_p = [1]
                         print e
-                    all.append(sum([abs(f - f_p) for f, f_p in zip(fs, fs_p)]))
+                    all.append( sum( [abs(f - f_p) for f,f_p in zip(fs,fs_p)]))
             d_vects.append(min(all))
         d_mean = sum(d_vects) / len(d_vects)
-        part = sum([math.pow(d_mean - d_vect, 2) for d_vect in d_vects])
-        return math.sqrt(( 1.0 / (len(d_vects) - 1.0) ) * part)
+        part = sum( [math.pow(d_mean - d_vect,2) for d_vect in d_vects] )
+        return math.sqrt( ( 1.0 / (len(d_vects) - 1.0) ) * part )
 
     def parse_and_execute_configuration(self):
         configuration_executor.execute(self.configuration, self.toolbox, self.comp_prop)
@@ -115,8 +118,15 @@ class BaseMultiAlgorithm(object):
             self.partial_res.append(sorted(pop_,key=lambda x:x[0]))
 
     def compute_partial_spacing(self, curr_gen, pop):
-        if self.iter_spacing and not curr_gen % self.iter_spacing:
-            self.partial_spacing.append([curr_gen, self.compute_spacing(pop)])
+        if self.iter_spacing and curr_gen > 0 and (curr_gen % 10 == 0):
+            self.temp_spacing.remove(max(self.temp_spacing))
+            self.partial_spacing.append(sum(self.temp_spacing)/len(self.temp_spacing))
+            self.temp_spacing = []
+        elif self.iter_spacing:
+            self.temp_spacing.append(self.compute_spacing(pop))
+#
+#        if self.iter_spacing and not curr_gen % self.iter_spacing:
+#            self.partial_spacing.append([curr_gen, self.compute_spacing(pop)])
 
     def main_computation_body(self,pop,toolbox):
         raise NotImplementedError("Implement this in concrete algorithm")

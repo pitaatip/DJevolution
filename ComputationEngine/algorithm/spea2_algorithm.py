@@ -18,11 +18,11 @@ class Spea2Algorithm(BaseMultiAlgorithm):
             self.Nbar = self.comp_prop["Nbar"]
             self.GEN = self.comp_prop["GEN"]
         else:
-            self.N = 80
-            self.GEN = 100
+            self.N=80
+            self.GEN=100
             self.Nbar = 40
 
-    def main_computation_body(self, pop, toolbox):
+    def main_computation_body(self,pop,toolbox):
         # Step 1 Initialization
         archive = []
         curr_gen = 1
@@ -36,7 +36,7 @@ class Spea2Algorithm(BaseMultiAlgorithm):
             toolbox.evaluate(archive)
 
             # Step 3 Environmental selection
-            archive, archive_fitness = toolbox.select(pop + archive, k=self.Nbar)
+            archive,archive_fitness  = toolbox.select(pop + archive, k=self.Nbar)
 
             # Step 4 Termination
             if curr_gen >= self.GEN:
@@ -58,7 +58,7 @@ class Spea2Algorithm(BaseMultiAlgorithm):
 
             pop = offspring_pool
 
-            self.monitor(curr_gen - 1, pop)
+            self.monitor(curr_gen - 1,pop)
 
             self.compute_partial_spacing(curr_gen - 1, archive)
 

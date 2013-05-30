@@ -17,10 +17,10 @@ class NsgaIIAlgorithm(BaseMultiAlgorithm):
             self.N = self.comp_prop["N"]
             self.GEN = self.comp_prop["GEN"]
         else:
-            self.N = 100
-            self.GEN = 200
+            self.N=100
+            self.GEN=200
 
-    def main_computation_body(self, pop, toolbox):
+    def main_computation_body(self,pop,toolbox):
         # init population
         toolbox.evaluate(pop)
 

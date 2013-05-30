@@ -4,7 +4,7 @@ Created on 22-04-2012
 @author: pita
 '''
 from copy import deepcopy
-from itertoolsmodule import chain
+from itertools import chain
 from operator import attrgetter
 from deap import tools
 import random
