@@ -1,6 +1,11 @@
+from itertools import chain
+
 __author__ = 'wysek'
 
 from mpi4py import MPI
+
+def divide_list(lst, n):
+    return (lst[i::n] for i in xrange(n))
 
 
 def evaluate_individuals_in_groups(individuals):
@@ -121,9 +126,14 @@ def migRingPipe(deme, k, pipein, pipeout, selection, replacement=None):
         # Else select those who will be replaced
         immigrants = replacement(deme, k)
 
-    pipeout.send(emigrants)
-    buf = pipein.recv()
+#    res = []
+    for index, chunk in enumerate(divide_list(emigrants,4)):
+        pipeout.send(chunk)
+        if not index:
+            res = pipein.recv()
+        else:
+            res.append(pipein.recv())
 
-    for place, immigrant in zip(immigrants, buf):
+    for place, immigrant in zip(immigrants, res):
         indx = deme.index(place)
         deme[indx] = immigrant
