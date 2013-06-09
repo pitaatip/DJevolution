@@ -10,14 +10,19 @@ def retrieve_choices(benchmarks):
     choices = []
     for b in dir(benchmarks):
         if "__" not in b:
-            choices.append((str(b),str(b),))
+            choices.append((str(b), str(b),))
     return choices
+
+def decorate_number(some_field):
+    some_field.widget.input_type = "number"
+    some_field.widget.attrs = {'min': '0'}
+    return some_field
 
 # ENTITIES
 class Computation(models.Model):
     created_on = models.DateTimeField(auto_now_add=True, null=True)
     computed = models.BooleanField()
-    results = ListField(models.FloatField(),null=True,default=[])
+    results = ListField(models.FloatField(), null=True, default=[])
     restrigin_val = models.FloatField(null=True)
     parallel = models.TextField()
     computation_time = models.TextField()
@@ -26,29 +31,38 @@ class Computation(models.Model):
     fitness_values = RawField()
     configuration = models.TextField()
     problem = models.TextField()
+    comments = models.TextField()
     partial_result = RawField()
-    monitoring = models.IntegerField()
+    monitoring = models.IntegerField(null=True)
     repeat = models.IntegerField()
     final_space = ListField(models.FloatField(null=True))
-    is_part_spacing = models.BooleanField(default=False)
+    #is_part_spacing = models.BooleanField(default=False)
+    iter_spacing = models.IntegerField(null=True)
     partial_spacing = RawField()
-
 
 #FORMS
 class ComputationForm(forms.Form):
-    algorithm = forms.ChoiceField(choices=(('NsgaIIAlgorithm', 'NSGA-II',),('Spea2Algorithm', 'SPEA 2',),('SimpleGeneticAlgorithm', 'SGA',)),label="Algorithm")
-    problem = forms.ChoiceField(choices=retrieve_choices(problems),label="Problem")
+    algorithm = forms.ChoiceField(
+        choices=(('NsgaIIAlgorithm', 'NSGA-II',), ('Spea2Algorithm', 'SPEA 2',), ('SimpleGeneticAlgorithm', 'SGA',)),
+        label="Algorithm")
+    problem = forms.ChoiceField(choices=retrieve_choices(problems), label="Problem")
     repeat = forms.IntegerField(label="Repeat computation")
+    comments = forms.CharField(widget=forms.Textarea(attrs={"rows": "1", "cols": "40"}), label="Comments", required=False)
+
 
 class ConfigurationForm(forms.Form):
-    configuration = forms.CharField(widget=forms.Textarea(attrs={"rows":"15", "cols":"95"}),label="")
+    configuration = forms.CharField(widget=forms.Textarea(attrs={"rows": "15", "cols": "95"}), label="")
+
 
 class MonitoringForm(forms.Form):
-    monitoring = forms.IntegerField(label="Gather results after this many generations")
-    is_part_spacing = forms.BooleanField(label="Compute spacing value after each generation?",initial=False,required=False)
+    is_monitoring = forms.BooleanField(label="Apply monitoring?",initial=False,required=False)
+    monitoring = decorate_number(forms.IntegerField(label="Each x populations?",required=False))
+    is_part_spacing = forms.BooleanField(label="Compute spacing?",initial=False,required=False)
+    iter_spacing = decorate_number(forms.IntegerField(label="Each x populations?",required=False))
+
 
 class ParallelForm(forms.Form):
-    parallel = forms.ChoiceField(choices=(('None', 'None',), ('Demes pipe model', 'Demes pipe model',),('Demes Mpi model', 'Demes Mpi model',)),label="Parallelization")
+    parallel = forms.ChoiceField(choices=(('None', 'None',),('Multiprocess','Simple multiprocessing',), ('PIPES_DEMES', 'Demes pipe model',),('Demes Mpi model', 'Demes Mpi model',)),label="Parallelization")
 
-
-
+class CommentForm(forms.Form):
+    comments = forms.CharField(widget=forms.Textarea(attrs={"rows": "5", "cols": "60"}), label="", required=False)

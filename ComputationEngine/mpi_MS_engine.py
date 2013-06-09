@@ -10,7 +10,7 @@ __author__ = 'pita'
 
 def prepareArgs(computation, rank):
     args = {}
-    for arg in ['problem','configuration','monitoring','is_part_spacing']:
+    for arg in ['problem','configuration','monitoring','iter_spacing', 'parallel']:
         args[arg] = computation[arg]
     args['rank'] = rank
     args['parallel'] = "MPI_MS"
@@ -50,12 +50,12 @@ def main():
         db = connection['djevolution_db']
 
         while True:
-            comm.Barrier()
+#            comm.Barrier()
             computations_ = db['VisualControllerApp_computation']
             for computation in computations_.find({"computed": False}):
                 comm.bcast(computation)
                 compute(computation,computation['algorithm'], rank)
-                comm.Barrier()
+#                comm.Barrier()
                 computations_.save(computation)
 
             comm.bcast(empty_msg)
@@ -65,12 +65,12 @@ def main():
     #slave process
     else:
         while True:
-            comm.Barrier()
+#            comm.Barrier()
             computation = comm.bcast()
             if computation:
                 print "Node", rank, "received a computation."
                 compute(computation,computation['algorithm'], rank)
-                comm.Barrier()
+#                comm.Barrier()
 
             print "Node", rank, "sleeping..."
             sleep(5)

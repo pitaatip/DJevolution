@@ -12,7 +12,7 @@ import pymongo
 
 def prepareArgs(computation):
     args = {}
-    for arg in ['problem','configuration','monitoring','is_part_spacing']:
+    for arg in ['problem','configuration','monitoring', 'iter_spacing', 'parallel']:
         args[arg] = computation[arg]
     return args
 

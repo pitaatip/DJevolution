@@ -12,7 +12,7 @@ __author__ = 'pita'
 
 def prepareArgs(computation, rank):
     args = {}
-    for arg in ['problem','configuration','monitoring','is_part_spacing']:
+    for arg in ['problem','configuration','monitoring','iter_spacing', 'parallel']:
         args[arg] = computation[arg]
     args['rank'] = rank
     args['parallel'] = "MPI_DEMES"

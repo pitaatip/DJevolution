@@ -49,7 +49,7 @@ class BaseMultiAlgorithm(object):
         elif self.parallel == "MPI_DEMES":
             self.toolbox.register("evaluate", parallel_tools.eval_population, self.toolbox.eval_ind)
             self.node = parallel_tools.Node()
-            self.migration_rate = 10
+            self.migration_rate = 100
             self.toolbox.register("migrate", parallel_tools.migRingMPI, k=10, node=self.node,
                 selection=tools.selBest, rank=self.rank, replacement=random.sample)
         elif self.parallel == "PIPES_DEMES":
@@ -104,7 +104,10 @@ class BaseMultiAlgorithm(object):
                         fs_p = [1]
                         print e
                     all.append( sum( [abs(f - f_p) for f,f_p in zip(fs,fs_p)]))
-            d_vects.append(min(all))
+            if len(all) > 0:
+                d_vects.append(min(all))
+        if len(d_vects) == 0:
+            return  -1
         d_mean = sum(d_vects) / len(d_vects)
         part = sum( [math.pow(d_mean - d_vect,2) for d_vect in d_vects] )
         return math.sqrt( ( 1.0 / (len(d_vects) - 1.0) ) * part )
