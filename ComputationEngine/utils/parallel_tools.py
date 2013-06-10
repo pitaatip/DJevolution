@@ -12,18 +12,26 @@ def chain_list(lst):
     return list(chain.from_iterable(lst))
 
 
-def evaluate_individuals_in_groups(func, rank, individuals):
+def evaluate_individuals_in_groups(func, rank, individuals, measurer):
     comm = MPI.COMM_WORLD
     size = MPI.COMM_WORLD.Get_size()
 
     packages = None
     if not rank:
+        measurer.start('list_division')
         packages = divide_list(individuals, size)
+        measurer.stop('list_division')
 
+    measurer.start('scatter')
     ind_for_eval = comm.scatter(packages)
+    measurer.stop('scatter')
+    measurer.start('eval_in_eval_in_groups')
     eval_population(func, ind_for_eval)
+    measurer.stop('eval_in_eval_in_groups')
 
+    measurer.start('gather')
     pop_with_fit = comm.gather(ind_for_eval)
+    measurer.stop('gather')
 
     if not rank:
         pop_with_fit = chain_list(pop_with_fit)
@@ -74,7 +82,7 @@ class Node(object):
         return msg
 
 
-def migRingMPI(deme, k, node, selection, rank, replacement=None):
+def migRingMPI(deme, k, node, selection, rank,  measurer, replacement=None):
     """Migration using MPI between initialized processes. It first selects
     *k* individuals from the *deme* and writes them in *pipeout*. Then it
     reads the individuals from *pipein* and replace some individuals in the
@@ -101,11 +109,19 @@ def migRingMPI(deme, k, node, selection, rank, replacement=None):
 
     # This if statement is present because of synchronous P2P communication
     if not rank % 2:
+        measurer.start('mig_send')
         node.send(emigrants)
+        measurer.stop('mig_send')
+        measurer.start('mig_recv')
         buf = node.recv()
+        measurer.stop('mig_recv')
     else:
+        measurer.start('mig_recv')
         buf = node.recv()
+        measurer.stop('mig_recv')
+        measurer.start('mig_send')
         node.send(emigrants)
+        measurer.stop('mig_send')
 
     for place, immigrant in zip(immigrants, buf):
         indx = deme.index(place)

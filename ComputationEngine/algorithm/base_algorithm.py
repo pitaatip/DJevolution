@@ -7,8 +7,10 @@ from utils import parallel_tools
 from deap import tools
 from collections import deque
 from multiprocessing import Pipe, Process
+from utils.common_tools import TimeMeasurer
 
 import random
+
 
 '''
 Created on 06-06-2012
@@ -30,6 +32,7 @@ class BaseMultiAlgorithm(object):
         # init toolbox
         self.toolbox = base.Toolbox()
         self.temp_spacing = []
+        self.measurer = TimeMeasurer(self.rank)
 
     def set_globals(self):
         raise NotImplementedError("Implement this in concrete algorithm")
@@ -49,9 +52,9 @@ class BaseMultiAlgorithm(object):
         elif self.parallel == "MPI_DEMES":
             self.toolbox.register("evaluate", parallel_tools.eval_population, self.toolbox.eval_ind)
             self.node = parallel_tools.Node()
-            self.migration_rate = 100
+            self.migration_rate = 10
             self.toolbox.register("migrate", parallel_tools.migRingMPI, k=10, node=self.node,
-                selection=tools.selBest, rank=self.rank, replacement=random.sample)
+                selection=tools.selBest, rank=self.rank, measurer=self.measurer, replacement=random.sample)
         elif self.parallel == "PIPES_DEMES":
             self.migration_rate = 5
             self.toolbox.register("evaluate", parallel_tools.eval_population, self.toolbox.eval_ind)
@@ -84,6 +87,8 @@ class BaseMultiAlgorithm(object):
         if self.parallel == "PIPES_DEMES":
             queue.put(answer_to_return)
             return
+
+        self.measurer.print_times()
 
         return answer_to_return
 
